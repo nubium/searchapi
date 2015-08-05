@@ -1,0 +1,463 @@
+FORMAT: 1A
+HOST: http://polls.apiblueprint.org/
+
+# Ulož.to API
+
+First draft of Ulož.to API, with support for user login, logout and file search.
+
+Security keys used thoughout the API
+
++ X-Auth-Token
+
+        This key is issued for every application. Each application should have exactly one, unique auth token.
+
++ user_token
+
+        User token is used to prove to API that your application has access to user's account. User token is obtained by validating login information through API /session.
+        
++ X-Checksum 
+
+        Security checksum to sign your request with, assuring API that request was not tampered with.
+
+
+# Group Root
+
+## API Root [/]
+
+This resource does not have any attributes. Instead it offers the initial
+API affordances in the form of the links in the JSON body.
+
+It is recommend to follow the “url” link values,
+[Link](https://tools.ietf.org/html/rfc5988) or Location headers where
+applicable to retrieve resources. Instead of constructing your own URLs,
+to keep your client decoupled from implementation details.
+
+
+## Retrieve entry points [GET]
+
++ Request
+
+    + Header
+    
+            X-Auth-Token: 3284hedgf237ruewhfvgi2378
+
++ Response 200 (application/json)
+
+        {
+            "search_url": "/search/v1",
+            "session_url": "/session/v1"
+            "userinfo_url": "/user/v1"
+        }
+        
++ Response 401 (application/json)
+
+    Invalid X-Auth-Token provided , could not authorize your application. 
+
+    + Header
+            
+            WWW-Authenticate: X-Auth-Token
+        
+    + Body
+            
+            {
+                "result": "error",
+                "message": "Invalid authorization token."
+            }
+        
+# Group Sessions
+
+
+## Authentication [/session/v1]
+
+### Authenticate user [PUT]
+
+We need to authenticate user to get a session token. Session token is later used to identify a user.
+
++ Request (application/json)
+
+    + Header
+    
+            X-Auth-Token: 3284hedgf237ruewhfvgi2378
+            
+    + Body
+
+            {
+                "login": "medvidek",
+                "password": "123456"
+            }
+
++ Response 201 (application/json)
+
+    User session created.
+
+    + Headers
+        
+            ETag: "asdiu328reewhfikw" - Session token
+            
+    + Body
+            
+            {
+                "token": "asdiu328reewhfikw",
+                "result": "ok",
+                "message": null
+            }
+
++ Response 401 (application/json)
+
+    Invalid X-Auth-Token provided , could not authorize your application. 
+
+    + Header
+            
+            WWW-Authenticate: X-Auth-Token
+        
+    + Body
+            
+            {
+                "result": "error",
+                "message": "Invalid authorization token."
+            }
+        
+        
++ Response 412 (application/json)
+
+    Unable to create user session.
+
+    + Body
+
+            {
+                "token": null,
+                "result": "error",
+                "message": "Wrong password or invalid username"
+            }
+
++ Response 429 (application/json)
+
+        Too many requests - slow down, try again later.
+
+    + Body
+
+            {
+                "token": null,
+                "result": "error"
+                "message": "Too many requests. Please slow down a little and try again later."
+            }
+
+## User sessions [/session/v1/{user_token}]
+
++ Parameters
+
+    + user_token: asdiu328reewhfikw (string, optional) - Identifier of session
+        
+
+### Delete user session [DELETE]
+
+Effectively a logout.
+
++ Request
+
+    + Header
+    
+            X-Auth-Token: 3284hedgf237ruewhfvgi2378
+
++ Response 200 (application/json)
+
+    + Headers
+
+            ETag: "asdiu328reewhfikw"
+
+    + Body
+
+            {
+                "result": "ok",
+                "message": null
+            }
+
++ Response 401 (application/json)
+
+    Invalid X-Auth-Token provided , could not authorize your application. 
+
+    + Header
+            
+            WWW-Authenticate: X-Auth-Token
+        
+    + Body
+            
+            {
+                "result": "error",
+                "message": "Invalid authorization token."
+            }
+        
+
+# Group User
+
+## Basic user info [/user/v1/{user_token}]
+
++ Parameters
+    + user_token: asdiu328reewhfikw (string, optional) - User session token, obtained by authentication
+
+### Get user data [GET]
+
++ Request 
+
+    + Header
+    
+            X-Auth-Token: 3284hedgf237ruewhfvgi2378
+
++ Response 200 (application/json)
+
+    Basic user info. Credit amount is measured in kilobytes [kB].
+
+    + Body
+            
+            {
+                "result": "ok",
+                "message": null
+                "user_id": 666,
+                "login": "medvidek",
+                "credit": 413967
+            }
+
++ Response 401 (application/json)
+
+    Invalid X-Auth-Token provided , could not authorize your application. 
+
+    + Header
+            
+            WWW-Authenticate: X-Auth-Token
+        
+    + Body
+            
+            {
+                "result": "error",
+                "message": "Invalid authorization token."
+            }
+
++ Response 412 (application/json)
+
+    + Body
+    
+            {
+                "result": "error",
+                "message": "Invalid user session."
+            }
+
+    
+    
+
+# Group Search
+
+## Search [/search/v1/{query}{?page,limit,user_token,sort,filetype,include_password_protected}]
+
++ Parameters
+    + query: zahradniceni rostliny (optional, string) - ID of the Question in form of an integer
+    + user_token: asdiu328reewhfikw (required, string) - Perform search as a frontend user (instead of anonymous search)
+    + page: 1 (optional, int) - Fetch specific page number
+        Default: 1
+    + limit: 20 (optional, int) - Limit the result set to <limit> items
+        Default: 20
+    + sort: weight (optional, string) - Sorting, one of [weight, created; ratings; size; -size]. This option may not be used without specifying `query`.
+    + filetype: video (optional, string) - Filter found files, value might be one of [video; audio; image; document].
+    + include_password_protected: false (optional, boolean) - If set to true, will include password protected files in the search results.
+
+### Get search result [GET]
+
+Perform search request. Response consists of two parts
+- metadata with informaton about the search (time, page, items count etc.)
+- list of search items (list of entries, one for each file)
+
+
+
++ Request
+
+        X-Checksum is a security checksum, assuring API that request was not tampered with.
+        X-Timestamp is the time the request was created.
+        
+
+    + Header
+    
+            X-Auth-Token: 3284hedgf237ruewhfvgi2378
+            X-Checksum: 93bd5933f956598617c73c2864b00c00
+            X-Timestamp: 1436957691
+
++ Response 200 (application/json)
+    + Headers
+    
+            Link: </search/zahradniceni rostliny>;rel=self,</search/zahradniceni rostliny>;rel=next,</search/zahradniceni rostliny>;rel=previous
+
+    + Attributes (object)
+        + url: http://www.uloz.to/xBwuV4rR/poznavacka-rostliny-pptx (string, required) - Detail url, can be used as a file identifier
+        + realm: ulozto (string, required) - Enum, one of [ulozto; pornfile]. 
+        + name: Poznávačka rostliny.pptx (string, required) - Name of the file
+        + filesize: 158367932 (number, required) - filesize in bytes
+        + extension: pptx (string, required) - file extension
+        + rating: 0 (number, required) - File rating (sum of thumbs up and thumbs down)
+        + content_type: '' (string, required) - Enum  ('video', 'audio', 'image', 'archive', 'document', '')
+        + password_protected_archive: false (boolean, required) - IF the file is archive, AND that archive is password protected. This file can be downloaded.
+        + password_protected_file: false (boolean, required) - You must know correct password to access the file detail or to download this file .
+        + media_info: Array(object) - key:value array. Key defines size and format of thumbnail, value is a list of images.
+
+    + Body
+
+            {
+                "result": "ok",
+                "message": null,
+                "metadata": {
+                    "query": "zahradniceni rostliny",
+                    "displayed_query": "zahradniceni rostliny",
+                    "run_at": "2014-11-11T08:40:51.620Z",
+                    "page": 1,
+                    "limit": 20,
+                    "page_count": 12,
+                    "items_count": 236
+                },
+                "items": [
+                    {
+                        "name": "Vedma z Weiry 1 část_pdf_pro_ePub.pdf",
+                        "extension": "pdf",
+                        "url": "/xugRqqug/vedma-z-weiry-1-cast-pdf-pro-epub-pdf",
+                        "filesize": 10241024,
+                        "rating": 0,
+                        "content_type": "",
+                        "password_protected_archive": false,
+                        "password_protected_file": false,
+                        "media_info": {
+                            "s160x120": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ],
+                            "s640x360": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ]
+                        }
+                    },
+                    {
+                        "name": "Poznávačka rostliny.pptx",
+                        "extension": "pptx",
+                        "url": "/xBwuV4rR/poznavacka-rostliny-pptx",
+                        "filesize": 158367932,
+                        "rating": 0,
+                        "content_type": "",
+                        "password_protected_archive": false,
+                        "password_protected_file": false,
+                        "media_info": {
+                            "s160x120": [ "http://img4.uloz.to/ul3/images/ico/unknown.png" ],
+                            "s640x360": [ "http://img4.uloz.to/ul3/images/ico/unknown.png" ]
+                        }
+                    },
+                    {
+                        "name": "Tajomstvo kruhu čarodejníc - USA 2011 dab. SK diel 11 - U17 -.avi",
+                        "extension": "avi",
+                        "url": "/xgLEqCrR/tajomstvo-kruhu-carodejnic-usa-2011-dab-sk-diel-11-u17-avi",
+                        "filesize": 622180912,
+                        "rating": 2,
+                        "content_type": "video",
+                        "password_protected_archive": false,
+                        "password_protected_file": false,
+                        "media_info": {
+                            "s160x120": [ "http://videoth.uloz.to/g/L/E/xgLEqCrR.160x120.1.jpg", "http://static.uloz.to/cdn/X/T/Y/xXTYmuMs.160x120.1.jpg", "http://static.uloz.to/cdn/X/T/Y/xXTYmuMs.160x120.2.jpg" ],
+                            "s640x360": [ "http://videoth.uloz.to/g/L/E/xgLEqCrR.640x360.2.jpg", "http://videoth.uloz.to/g/L/E/xgLEqCrR.640x360.2.jpg", "http://videoth.uloz.to/g/L/E/xgLEqCrR.640x360.2.jpg", "http://videoth.uloz.to/g/L/E/xgLEqCrR.640x360.2.jpg" ]
+                        }
+                    },
+                    {
+                        "name": "Terminator.Genisys.2015.CAM.HUN.MD-JLX.avi",
+                        "extension": "avi",
+                        "url": "/xXnKDmxF/terminator-genisys-2015-cam-hun-md-jlx-avi",
+                        "filesize": 622180912,
+                        "rating": 2,
+                        "content_type": "video",
+                        "password_protected_archive": false,
+                        "password_protected_file": false,
+                        "media_info": {
+                            "s160x120": [ "http://videoth.uloz.to/X/n/K/xXnKDmxF.160x120.1.jpg", "http://static.uloz.to/cdn/X/T/Y/xXTYmuMs.160x120.1.jpg", "http://static.uloz.to/cdn/X/T/Y/xXTYmuMs.160x120.2.jpg" ],
+                            "s640x360": [ "http://videoth.uloz.to/X/n/K/xXnKDmxF.640x360.1.jpg", "http://videoth.uloz.to/X/n/K/xXnKDmxF.640x360.1.jpg", "http://videoth.uloz.to/X/n/K/xXnKDmxF.640x360.1.jpg", "http://videoth.uloz.to/X/n/K/xXnKDmxF.640x360.1.jpg" ]
+                        }
+                    },
+                    {
+                        "name": "239-Ženatý se závazky - Married with Children (1987)(CZ).avi",
+                        "extension": "avi",
+                        "url": "/xXTYmuMs/linder-bandolero-avi",
+                        "filesize": 622180912,
+                        "rating": -2,
+                        "content_type": "video",
+                        "password_protected_archive": false,
+                        "password_protected_file": false,
+                        "media_info": {
+                            "s160x120": [ "http://static.uloz.to/cdn/X/T/Y/xXTYmuMs.160x120.0.jpg", "http://static.uloz.to/cdn/X/T/Y/xXTYmuMs.160x120.1.jpg", "http://static.uloz.to/cdn/X/T/Y/xXTYmuMs.160x120.2.jpg" ],
+                            "s640x360": [ "http://static.uloz.to/cdn/2/H/o/x2HoPV7N.640x360.0.jpg", "http://static.uloz.to/cdn/2/H/o/x2HoPV7N.640x360.0.jpg", "http://static.uloz.to/cdn/2/H/o/x2HoPV7N.640x360.0.jpg", "http://static.uloz.to/cdn/2/H/o/x2HoPV7N.640x360.0.jpg" ]
+                        }
+                    },
+                    {
+                        "name": "Sila osudu - novela Mex. - Špan. 2011 HD dab.SK - diel 065 - FU17 -.avi",
+                        "extension": "avi",
+                        "url": "/xzXhJZzx/sila-osudu-novela-mex-span-2011-hd-dab-sk-diel-065-fu17-avi",
+                        "filesize": 622180912,
+                        "rating": 2,
+                        "content_type": "video",
+                        "password_protected_archive": false,
+                        "password_protected_file": false,
+                        "media_info": {
+                            "s160x120": [ "http://videoth.uloz.to/z/X/h/xzXhJZzx.160x120.0.jpg", "http://static.uloz.to/cdn/X/T/Y/xXTYmuMs.160x120.1.jpg", "http://static.uloz.to/cdn/X/T/Y/xXTYmuMs.160x120.2.jpg" ],
+                            "s640x360": [ "http://videoth.uloz.to/z/X/h/xzXhJZzx.640x360.2.jpg", "http://videoth.uloz.to/z/X/h/xzXhJZzx.640x360.2.jpg", "http://videoth.uloz.to/z/X/h/xzXhJZzx.640x360.2.jpg", "http://videoth.uloz.to/z/X/h/xzXhJZzx.640x360.2.jpg" ]
+                        }
+                    }
+                ]
+            }
+            
++ Response 429 (application/json)
+
+    + Body
+    
+            {
+                "result": "error",
+                "message": "Too many requests. Please slow down a little and try again later."
+            }
+
+            
++ Response 412 (application/json)
+
+    Wrong request parameter. For e.g. `limit` less than 1 or more than 100, unsupported filter etc.
+    
+    + Body
+    
+            {
+                "result": "error",
+                "message": "Wrong request parameter.",
+                "extra": "Parameter limit must be between <1, 100>"
+            }
+
+            
++ Response 404 (application/json)
+
+    Requested response does not exist. Maybe you are trying to access `page` parameter beyond the existing results?
+    
+    + Header
+            
+    + Body
+    
++ Response 401 (application/json)
+
+    Invalid X-Auth-Token or user_token provided , could not authorize your application. Use WWW-Authenticate header value to find out which part of authentication is wrong (X-Auth-Token or user_token).
+
+    + Header
+            
+            WWW-Authenticate: X-Auth-Token
+        
+    + Body
+            
+            {
+                "result": "error",
+                "message": "Invalid authorization token."
+            }
+        
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
