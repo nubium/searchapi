@@ -249,15 +249,18 @@ Effectively a logout.
 ## Search [/search/v1/{query}{?page,limit,user_token,sort,filetype,include_password_protected}]
 
 + Parameters
-    + query: zahradniceni rostliny (optional, string) - ID of the Question in form of an integer
+    + query: zahradniceni rostliny (optional, string) - Searched query. If query is empty, search will return random files in random order.
     + user_token: asdiu328reewhfikw (required, string) - Perform search as a frontend user (instead of anonymous search)
     + page: 1 (optional, int) - Fetch specific page number
         Default: 1
     + limit: 20 (optional, int) - Limit the result set to <limit> items
         Default: 20
     + sort: weight (optional, string) - Sorting, one of [weight, created; ratings; size; -size]. This option may not be used without specifying `query`.
-    + filetype: video (optional, string) - Filter found files, value might be one of [video; audio; image; document].
+        Default: weight
+    + filetype: video (optional, string) - Filter found files, value might be one of [video; audio; image; document]. If empty type send, search will return all filetypes
+        Default: empty
     + include_password_protected: false (optional, boolean) - If set to true, will include password protected files in the search results.
+        Default: true
 
 ### Get search result [GET]
 
