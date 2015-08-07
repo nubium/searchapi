@@ -430,6 +430,14 @@ Perform search request. Response consists of two parts
     + Header
             
     + Body
+            
+            {
+                "result": "error",
+                "message": "Requested page index is out of range for given query.",
+                "page_count": 1,
+                "items_count": 8
+            }
+
     
 + Response 401 (application/json)
 
@@ -446,7 +454,6 @@ Perform search request. Response consists of two parts
                 "message": "Invalid authorization token."
             }
         
-
             
 
 
