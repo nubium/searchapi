@@ -219,7 +219,7 @@ Effectively a logout.
 
 + Response 401 (application/json)
 
-    Invalid X-Auth-Token provided , could not authorize your application. 
+    Invalid X-Auth-Token or user_token provided , could not authorize your application. Use WWW-Authenticate header value to find out which part of authentication is wrong (X-Auth-Token or user_token).
 
     + Header
             
@@ -231,15 +231,7 @@ Effectively a logout.
                 "result": "error",
                 "message": "Invalid authorization token."
             }
-
-+ Response 412 (application/json)
-
-    + Body
-    
-            {
-                "result": "error",
-                "message": "Invalid user session."
-            }
+        
 
     
     
