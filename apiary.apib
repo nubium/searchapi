@@ -73,6 +73,8 @@ to keep your client decoupled from implementation details.
 
 We need to authenticate user to get a session token. Session token is later used to identify a user.
 
+`device_id` parameter is optional.
+
 + Request (application/json)
 
     + Header
@@ -83,7 +85,8 @@ We need to authenticate user to get a session token. Session token is later used
 
             {
                 "login": "medvidek",
-                "password": "123456"
+                "password": "123456",
+                "device_id": "23489efgih2841"
             }
 
 + Response 201 (application/json)
