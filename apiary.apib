@@ -45,8 +45,9 @@ to keep your client decoupled from implementation details.
 
         {
             "search_url": "/search/v1",
-            "session_url": "/session/v1"
-            "userinfo_url": "/user/v1"
+            "session_url": "/session/v1",
+            "userinfo_url": "/user/v1",
+            "app_version_url": "/app-version/v1"
         }
         
 + Response 401 (application/json)
@@ -424,7 +425,7 @@ Perform search request. Response consists of two parts
 + Response 412 (application/json)
 
     Wrong request parameter. For e.g. `limit` less than 1 or more than 100, unsupported filter etc.
-    
+
     + Body
     
             {
@@ -464,9 +465,52 @@ Perform search request. Response consists of two parts
                 "result": "error",
                 "message": "Invalid authorization token."
             }
-        
-            
 
+# Group Application info        
+            
+## Aplication version [/app-version/v1/{app_name}]
+
+This entry point is not secured, and is publicly accessible.
+
++ Parameters
+    + app_name: ulozto-android (required, string) - Uniquely identifies application.
+
+### Get version info [GET]
+
++ Response 200 (application/json)
+
+    + Attributes (object)
+    
+        + version.internal: "1.0097" (string, required) - Internal version, should at least loosely follow some kind of semantic versioning (SEMVER)
+        + version.displayed: "1.1" (string, required) - Version number to show to users
+        + url: http://uloz.to/path/to/app (string, required) - Url to download last version
+        + checksum: 217acf325c6012c1a50828e74626b945 (string, required) - MD5 checksum of the last version 
+        
+
+    + Body
+            
+            {
+                "result": "ok",
+                "message": null,
+                "version": {
+                    "internal": "1.0097",
+                    "displayed": "1.1"
+                },
+                "url": "http://uloz.to/path/to/app",
+                "checksum": "217acf325c6012c1a50828e74626b945"
+            }
+
++ Response 404 (application/json)
+
+    Unknown application name (app_name)
+    
+    + Body 
+    
+            {
+                "result": "error",
+                "message": "Unknown application."
+            }
+    
 
 
 
