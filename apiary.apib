@@ -473,7 +473,7 @@ Perform search request. Response consists of two parts
 This entry point is not secured, and is publicly accessible.
 
 + Parameters
-    + app_name: ulozto-android (required, string) - Uniquely identifies application.
+    + app_name: `ulozto-android` (required, string) - Uniquely identifies application.
 
 ### Get version info [GET]
 
@@ -481,8 +481,8 @@ This entry point is not secured, and is publicly accessible.
 
     + Attributes (object)
     
-        + version.internal: "1.0097" (string, required) - Internal version, should at least loosely follow some kind of semantic versioning (SEMVER)
-        + version.displayed: "1.1" (string, required) - Version number to show to users
+        + version.internal: `10097` (number, required) - Internal version, should at least loosely follow some kind of semantic versioning (SEMVER)
+        + version.displayed: `1.1` (string, required) - Version number to show to users
         + url: http://uloz.to/path/to/app (string, required) - Url to download last version
         + checksum: 217acf325c6012c1a50828e74626b945 (string, required) - MD5 checksum of the last version 
         
@@ -493,7 +493,7 @@ This entry point is not secured, and is publicly accessible.
                 "result": "ok",
                 "message": null,
                 "version": {
-                    "internal": "1.0097",
+                    "internal": 10097,
                     "displayed": "1.1"
                 },
                 "url": "http://uloz.to/path/to/app",
