@@ -47,7 +47,10 @@ to keep your client decoupled from implementation details.
             "search_url": "/search/v1",
             "session_url": "/session/v1",
             "userinfo_url": "/user/v1",
-            "app_version_url": "/app-version/v1"
+            "app_version_url": "/app-version/v1",
+            "files_url": "/v1/files",
+            "userfolders_list_url": "/v1/user/{user_token}/folders",
+            "userfolders_url": "/v1/user/{user_token}/folders/{folder_id}"
         }
         
 + Response 401 (application/json)
@@ -237,8 +240,152 @@ Effectively a logout.
             }
         
 
-    
-    
+## User's folders [/v1/user/{user_token}/folders{?tree}]
+
+### Get all user's folders [GET]
+
+List of all user's folders.
+
++ Folder data format
+    + id: 25792 (int) - Folder id
+    + name: "My very own folder" (string) - Folder's name/caption
+    + visibility (enum) - Either "public" or "private"
+    + is_password_protected (boolean) - Public folder, other users need to provide password to see contents of this folder
+    + type (enum) - One of ('gallery', 'normal', 'videoshare', 'tv', 'favorites', 'documents', 'audios', 'videos')
+    + children (collection of folders) - this field is present if requesting folders in `tree` format
+
++ Parameters
+    + user_token:  (string) - Identification of an user, obtained through /session entry point
+    + tree (bool) - If set to `true`, folder entities will be returned in the tree-like structure, with each folder entity containing its children in the `children` field.
+        + Default: false
+
++ Request
+
+    + Header
+
+        X-Auth-Token: 3284hedgf237ruewhfvgi2378
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "items": [
+                    {
+                        "id": 0,
+                        "name": "Root",
+                        "visibility": "public",
+                        "public_url": "/m/soubory/my_username/folder_slug",
+                        "is_password_protected": false,
+                        "type": "root",
+                        "children": [
+                            {
+                                "id": 25792,
+                                "name": "Dokumenty",
+                                "visibility": "public",
+                                "public_url": "/m/soubory/my_username/folder_slug",
+                                "is_password_protected": false,
+                                "type": "documents",
+                                "children": []
+                            },
+                            {
+                                "id": 25794,
+                                "name": "Oblíbené",
+                                "visibility": "public",
+                                "public_url": "/m/soubory/my_username/folder_slug",
+                                "is_password_protected": false,
+                                "type": "favorites",
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            }
+
++ Response 401 (application/json)
+
+    Invalid X-Auth-Token , could not authorize your application. Use correct WWW-Authenticate header.
+
+    + Header
+
+            WWW-Authenticate: X-Auth-Token
+
+    + Body
+
+            {
+                "result": "error",
+                "message": "Invalid authorization token."
+            }
+
+
+### Create new folder [PUT]
+
++ `password protected` is always false
++ `type` is always `normal`
++ `public_url` is provided only for public folders
+
+
++ Request (application/json)
+
+    + Header
+
+            X-Auth-Token: 3284hedgf237ruewhfvgi2378
+
+    + Body
+
+            {
+                "name": "Cute folder name",
+                "visibility": "public",
+                "parent_folder_id": 0
+            }
+
++ Response 201 (application/json)
+
+    + Body
+
+            {
+                "result": "ok",
+                "message": null,
+                "folder_id": "78256",
+                "public_url": "/m/soubory/my_username/cute_folder_name_slug"
+            }
+
++ Response 412 (application/json)
+
+    Unable to create folder - wrong data submitted.
+
+    + Body
+
+            {
+                "result": "error",
+                "message": "Unable to create folder.",
+                "items": [
+                    {
+                        "data-element": "name",
+                        "message": "Name cannot be empty."
+                    },
+                    {
+                        "data-element": "parent_folder_id",
+                        "message": "You must be owner of parent folder."
+                    }
+                ]
+            }
+
++ Response 401 (application/json)
+
+    Invalid X-Auth-Token provided , could not authorize your application. Use correct WWW-Authenticate header.
+
+    + Header
+
+            WWW-Authenticate: X-Auth-Token
+
+    + Body
+
+            {
+                "result": "error",
+                "message": "Invalid authorization token."
+            }
+
 
 # Group Search
 
@@ -510,18 +657,3 @@ This entry point is not secured, and is publicly accessible.
                 "result": "error",
                 "message": "Unknown application."
             }
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
