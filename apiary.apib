@@ -518,6 +518,7 @@ File detail data
     + download_links
         + free: "http://uloz.to/free-download-link" (string, required) - Url for free download
         + vip: "http://uloz.to/vip-download-link" (string, optional) - Url for vip download, this url is present ONLY if you provided user_token and this user has enough credit for download.
+        + vip_stream: "http://uloz.to/vip-stream-link" (string, optional) - Url for vip stream, this url is present ONLY if you provided user_token, this user has enough credit for download and the file is streamable.
 
 + Request
 
@@ -542,6 +543,10 @@ File detail data
                 "media_info": {
                     "s160x120": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ],
                     "s640x360": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ]
+                },
+                "download_links": {
+                    "free": "http://uloz.to/free-download-link",
+                    "vip": "http://uloz.to/vip-download-link",
                 }
             }
 
