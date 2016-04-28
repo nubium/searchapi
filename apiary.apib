@@ -255,15 +255,15 @@ List of all user's folders.
     + children (collection of folders) - this field is present if requesting folders in `tree` format
 
 + Parameters
-    + user_token:  (string) - Identification of an user, obtained through /session entry point
-    + tree (bool) - If set to `true`, folder entities will be returned in the tree-like structure, with each folder entity containing its children in the `children` field.
+    + user_token: "asdiu328reewhfikw" (string) - Identification of an user, obtained through /session entry point
+    + tree (bool, optional) - If set to `true`, folder entities will be returned in the tree-like structure, with each folder entity containing its children in the `children` field.
         + Default: false
 
 + Request
 
     + Header
 
-        X-Auth-Token: 3284hedgf237ruewhfvgi2378
+            X-Auth-Token: 3284hedgf237ruewhfvgi2378
 
 + Response 200 (application/json)
 
@@ -385,6 +385,138 @@ List of all user's folders.
                 "result": "error",
                 "message": "Invalid authorization token."
             }
+            
+# Group File
+
+## File info [/v1/files/{slug}{?password,user_token}]
+
+File detail data
+
++ Parameters
+    + slug: "/x2EfXNKe/tera-online-prikaz-na-stahovanie-na-steam-txt" (string, required) - Full uloz.to slug is basically the file url
+    + user_token: "asdiu328reewhfikw" (string, optional) - To access user's private file, you need to identify yourself with his token
+    + password: "123macko" (string, optional) - To access password protected file, you need to provide the file's password
+
++ File entity
+    + id: "x2EfXNKe"
+    + slug: "/x2EfXNKe/tera-"
+    + realm: ulozto (string, required) - Enum, one of [ulozto; pornfile].
+    + name: Poznávačka rostliny.pptx (string, required) - Name of the file
+    + filesize: 158367932 (number, required) - filesize in bytes
+    + extension: pptx (string, required) - file extension
+    + rating: 0 (number, required) - File rating (sum of thumbs up and thumbs down)
+    + content_type: '' (string, required) - Enum  ('video', 'audio', 'image', 'archive', 'document', '')
+    + password_protected_archive: false (boolean, required) - IF the file is archive, AND that archive is password protected. This file can be downloaded.
+    + password_protected_file: false (boolean, required) - You must know correct password to access the file detail or to download this file .
+    + media_info: Array(object) - key:value array. Key defines size and format of thumbnail, value is a list of images.
+    + visibility (enum) - Either "public" or "private"
+    + duration: 296 (int, optional) - Length of the video in seconds (if videofile)
+    + streamable: false (boolean) - TRUE for streamable videofile
+    + download_links
+        + free: "http://uloz.to/free-download-link" (string, required) - Url for free download
+        + vip: "http://uloz.to/vip-download-link" (string, optional) - Url for vip download, this url is present ONLY if you provided user_token and this user has enough credit for download.
+
+
+## Files in user's folders [/v1/user/{user_token}/folder/{folder_id}{?page,limit,sort,search_query,filetype,include_password_protected}]
+
++ Parameters
+    + query: zahradniceni rostliny (optional, string) - Searched query. If query is empty, search will return random files in random order.
+    + user_token: asdiu328reewhfikw (required, string) - Perform search as a frontend user (instead of anonymous search)
+    + page: 1 (optional, int) - Fetch specific page number
+        Default: 1
+    + limit: 20 (optional, int) - Limit the result set to <limit> items
+        Default: 20
+    + sort: weight (optional, string) - Sorting, one of [name; -name; created; -created; size; -size; extension; -extension]. This option may not be used without specifying `query`.
+        Default: weight
+    + `search_query`: app (string, optional) - Return only files with names containing search_query
+    + filetype: video (optional, string) - Filter found files, value might be one of [video; audio; image; document]. If empty, search will return all filetypes.
+    + include_password_protected: false (optional, boolean) - If set to true, will include password protected files in the search results.
+        Default: true
+
+
+### Get user's files in folder [GET]
+
++ File entity
+    + id: "x2EfXNKe"
+    + slug: "/x2EfXNKe/tera-"
+    + realm: ulozto (string, required) - Enum, one of [ulozto; pornfile].
+    + name: Poznávačka rostliny.pptx (string, required) - Name of the file
+    + filesize: 158367932 (number, required) - filesize in bytes
+    + extension: pptx (string, required) - file extension
+    + rating: 0 (number, required) - File rating (sum of thumbs up and thumbs down)
+    + content_type: '' (string, required) - Enum  ('video', 'audio', 'image', 'archive', 'document', '')
+    + password_protected_archive: false (boolean, required) - IF the file is archive, AND that archive is password protected. This file can be downloaded.
+    + password_protected_file: false (boolean, required) - You must know correct password to access the file detail or to download this file .
+    + media_info: Array(object) - key:value array. Key defines size and format of thumbnail, value is a list of images.
+    + visibility (enum) - Either "public" or "private"
+    + duration: 296 (int, optional) - Length of the video in seconds (if videofile)
+    + streamable: false (boolean) - TRUE for streamable videofile
+    + download_links
+        + free: "http://uloz.to/free-download-link" (string, required) - Url for free download
+        + vip: "http://uloz.to/vip-download-link" (string, optional) - Url for vip download, this url is present ONLY if you provided user_token and this user has enough credit for download.
+
++ Request
+
+    + Header
+
+            X-Auth-Token: 3284hedgf237ruewhfvgi2378
+
++ Response 200 (application/json)
+    + Headers
+
+            Link: </v1/user/{user_token}/folder/{folder_id}?page=1>;rel=self,</v1/user/{user_token}/folder/{folder_id}?page=2>;rel=next
+
+    + Body
+
+             {
+                "metadata": {
+                    "page": 1,
+                    "limit": 20,
+                    "page_count": 12,
+                    "items_count": 236
+                },
+                "folder": {
+
+                },
+                "items": [
+                    {
+                        "id": "ugRqqug",
+                        "slug": "/xugRqqug/vedma"
+                        "url": "/xugRqqug/vedma-z-weiry-1-cast-pdf-pro-epub-pdf",
+                        "name": "Vedma z Weiry 1 část_pdf_pro_ePub.pdf",
+                        "realm": "ulozto",
+                        "extension": "pdf",
+                        "duration": null,
+                        "filesize": 10241024,
+                        "rating": 0,
+                        "content_type": "",
+                        "password_protected_archive": false,
+                        "password_protected_file": false,
+                        "media_info": {
+                            "s160x120": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ],
+                            "s640x360": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ]
+                        }
+                    },
+                    {
+                        "id": "BwuV4rR",
+                        "slug": "/xBwuV4rR/pozna",
+                        "url": "/xBwuV4rR/poznavacka-rostliny-pptx",
+                        "name": "Poznávačka rostliny.pptx",
+                        "realm": "pornfile",
+                        "extension": "pptx",
+                        "duration": null,
+                        "filesize": 158367932,
+                        "rating": 0,
+                        "content_type": "",
+                        "password_protected_archive": false,
+                        "password_protected_file": false,
+                        "media_info": {
+                            "s160x120": [ "http://img4.uloz.to/ul3/images/ico/unknown.png" ],
+                            "s640x360": [ "http://img4.uloz.to/ul3/images/ico/unknown.png" ]
+                        }
+                    },
+                ]
+             }
 
 
 # Group Search
