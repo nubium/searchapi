@@ -240,9 +240,9 @@ Effectively a logout.
             }
         
 
-## User's folders [/v1/user/{user_token}/folders{?tree}]
+## Users folders [/v1/user/{user_token}/folders{?tree}]
 
-### Get all user's folders [GET]
+### Get all users folders [GET]
 
 List of all user's folders.
 
@@ -320,9 +320,9 @@ List of all user's folders.
 
 ### Create new folder [PUT]
 
-+ `password protected` is always false
 + `type` is always `normal`
 + `public_url` is provided only for public folders
++ `password` may be omitted or set to null if creating folder without password protection
 
 
 + Request (application/json)
@@ -336,6 +336,7 @@ List of all user's folders.
             {
                 "name": "Cute folder name",
                 "visibility": "public",
+                "password": null,
                 "parent_folder_id": 0
             }
 
@@ -386,7 +387,7 @@ List of all user's folders.
                 "message": "Invalid authorization token."
             }
             
-## Files in user's folders [/v1/user/{user_token}/folder/{folder_id}{?page,limit,sort,search_query,filetype,include_password_protected}]
+## Files in users folders [/v1/user/{user_token}/folder/{folder_id}{?page,limit,sort,search_query,filetype,include_password_protected}]
 
 + Parameters
     + query: zahradniceni rostliny (optional, string) - Searched query. If query is empty, search will return random files in random order.
@@ -395,15 +396,15 @@ List of all user's folders.
         Default: 1
     + limit: 20 (optional, int) - Limit the result set to <limit> items
         Default: 20
-    + sort: weight (optional, string) - Sorting, one of [name; -name; created; -created; size; -size; extension; -extension]. This option may not be used without specifying `query`.
-        Default: weight
+    + sort: name (optional, string) - Sorting, one of [name; -name; created; -created; size; -size; extension; -extension]. This option may not be used without specifying `query`.
+        Default: name
     + `search_query` (string, optional) - Return only files with names containing search_query
     + filetype: video (optional, string) - Filter found files, value might be one of [video; audio; image; document]. If empty, search will return all filetypes.
     + `include_password_protected`: false (optional, boolean) - If set to true, will include password protected files in the search results.
         Default: true
 
 
-### Get user's files in folder [GET]
+### Get users files in folder [GET]
 
 + File entity
     + id: "x2EfXNKe"
@@ -418,11 +419,8 @@ List of all user's folders.
     + password_protected_file: false (boolean, required) - You must know correct password to access the file detail or to download this file .
     + media_info: Array(object) - key:value array. Key defines size and format of thumbnail, value is a list of images.
     + visibility (enum) - Either "public" or "private"
-    + duration: 296 (int, optional) - Length of the video in seconds (if videofile)
+    + duration: 296 (int, optional) - Length of the video/audio in seconds (if videofile)
     + streamable: false (boolean) - TRUE for streamable videofile
-    + download_links
-        + free: "http://uloz.to/free-download-link" (string, required) - Url for free download
-        + vip: "http://uloz.to/vip-download-link" (string, optional) - Url for vip download, this url is present ONLY if you provided user_token and this user has enough credit for download.
 
 + Request
 
@@ -509,17 +507,21 @@ File detail data
     + filesize: 158367932 (number, required) - filesize in bytes
     + extension: pptx (string, required) - file extension
     + rating: 0 (number, required) - File rating (sum of thumbs up and thumbs down)
-    + content_type: '' (string, required) - Enum  ('video', 'audio', 'image', 'archive', 'document', '')
     + password_protected_archive: false (boolean, required) - IF the file is archive, AND that archive is password protected. This file can be downloaded.
     + password_protected_file: false (boolean, required) - You must know correct password to access the file detail or to download this file .
     + media_info: Array(object) - key:value array. Key defines size and format of thumbnail, value is a list of images.
     + visibility (enum) - Either "public" or "private"
-    + duration: 296 (int, optional) - Length of the video in seconds (if videofile)
-    + streamable: false (boolean) - TRUE for streamable videofile
     + download_links
         + free: "http://uloz.to/free-download-link" (string, required) - Url for free download
         + vip: "http://uloz.to/vip-download-link" (string, optional) - Url for vip download, this url is present ONLY if you provided user_token and this user has enough credit for download.
-        + vip_stream: "http://uloz.to/vip-stream-link" (string, optional) - Url for vip stream, this url is present ONLY if you provided user_token, this user has enough credit for download and the file is streamable.
+    + stream_links
+        + vip: "http://uloz.to/vip-stream-link" (string, optional) - Url for vip stream, this url is present ONLY if you provided user_token, this user has enough credit for download and the file is streamable.
+    + format
+        + width: 320 (int, optional) - If available, width of video/image
+        + height: 200 (int, optional) - If available, height of video/image
+        + duration: 296 (int, optional) - Length of the video/audio in seconds
+        + content_type: video (enum, optional) - Enum  ('video', 'audio', 'image', 'archive', 'document', '')
+        + streamable: false (boolean) - TRUE for streamable videofile
 
 + Request
 
@@ -537,17 +539,25 @@ File detail data
                 "url": "/xugRqqug/vedma-z-weiry-1-cast-pdf-pro-epub-pdf",
                 "filesize": 10241024,
                 "rating": 0,
-                "content_type": "",
                 "password_protected_archive": false,
                 "password_protected_file": false,
-                "streamable": false,
                 "media_info": {
                     "s160x120": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ],
                     "s640x360": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ]
                 },
                 "download_links": {
                     "free": "http://uloz.to/free-download-link",
-                    "vip": "http://uloz.to/vip-download-link",
+                    "vip": "http://uloz.to/vip-download-link"
+                },
+                "stream_links": {
+                    "vip": "http://uloz.to/vip-stream-link"
+                },
+                "format": {
+                    "width": 1024,
+                    "height": 768,
+                    "duration": 1598,
+                    "content_type": "video",
+                    "streamable": false
                 }
             }
 
