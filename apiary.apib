@@ -390,8 +390,7 @@ List of all user's folders.
 ## Files in users folders [/v1/user/{user_token}/folder/{folder_id}{?page,limit,sort,search_query,filetype,include_password_protected}]
 
 + Parameters
-    + query: zahradniceni rostliny (optional, string) - Searched query. If query is empty, search will return random files in random order.
-    + user_token: asdiu328reewhfikw (required, string) - Perform search as a frontend user (instead of anonymous search)
+    + user_token: asdiu328reewhfikw (required, string) - User token of folder owner
     + page: 1 (optional, int) - Fetch specific page number
         Default: 1
     + limit: 20 (optional, int) - Limit the result set to <limit> items
@@ -487,16 +486,16 @@ List of all user's folders.
      
 # Group File
 
-## File info [/v1/files/{slug}{?password,user_token}]
+## File detail info [/v1/files/{slug}{?password,user_token}]
 
 File detail data
 
 + Parameters
     + slug: "/x2EfXNKe/tera-online-prikaz-na-stahovanie-na-steam-txt" (string, required) - Full uloz.to slug is basically the file url
     + user_token: "asdiu328reewhfikw" (string, optional) - To access user's private file, you need to identify yourself with his token
-    + password: "123macko" (string, optional) - To access password protected file, you need to provide the file's password
+    + password: "123macko" (string, optional) - To access password protected file, you need to provide the file's password (password is not necessary to access own files)
 
-### Get file info [GET]
+### Get file detail info [GET]
 
 + File entity
     + id: "x2EfXNKe"
@@ -522,6 +521,10 @@ File detail data
         + duration: 296 (int, optional) - Length of the video/audio in seconds
         + content_type: video (enum, optional) - Enum  ('video', 'audio', 'image', 'archive', 'document', '')
         + streamable: false (boolean) - TRUE for streamable videofile
+    + attributes
+        + archive_files - to be specified
+        + video_data - to be specified
+        + audio_data - to be specified
 
 + Request
 
