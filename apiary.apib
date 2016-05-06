@@ -247,12 +247,13 @@ Effectively a logout.
 List of all user's folders.
 
 + Folder data format
-    + id: 25792 (int) - Folder id (0 is root folder for each user)
-    + name: "My very own folder" (string) - Folder's name/caption
-    + visibility (enum) - Either "public" or "private"
+    + id: `25792` (int) - Folder id (`0` is root folder for each user)
+    + name: `"My very own folder"` (string) - Folder's name/caption
+    + visibility (enum) - Either `public` or `private`
+    + public_url: `"/soubory/my_username/folder_slug"` (string) - Url to folder's public view (`null` when not available)
     + is_password_protected (boolean) - Public folder, other users need to provide password to see contents of this folder
-    + type (enum) - One of ('gallery', 'normal', 'videoshare', 'tv', 'favorites', 'documents', 'audios', 'videos')
-    + parent_folder_id: 0 (int) - Folder id
+    + type (enum) - One of (`root`, `gallery`, `normal`, `videoshare`, `favorites`, `documents`, `audios`, `videos`)
+    + parent_folder_id: `0` (int) - Folder id
     + children (collection of folders) - this field is present if requesting folders in `tree` format
 
 + Parameters
@@ -275,8 +276,8 @@ List of all user's folders.
                     {
                         "id": 0,
                         "name": "Root",
-                        "visibility": "public",
-                        "public_url": "/m/soubory/my_username/folder_slug",
+                        "visibility": "private",
+                        "public_url": null,
                         "is_password_protected": false,
                         "type": "root",
                         "parent_folder_id": null,
@@ -285,7 +286,7 @@ List of all user's folders.
                                 "id": 25792,
                                 "name": "Dokumenty",
                                 "visibility": "public",
-                                "public_url": "/m/soubory/my_username/folder_slug",
+                                "public_url": "/soubory/my_username/folder_slug",
                                 "is_password_protected": false,
                                 "type": "documents",
                                 "parent_folder_id": 0,
@@ -295,7 +296,7 @@ List of all user's folders.
                                 "id": 25794,
                                 "name": "Oblíbené",
                                 "visibility": "public",
-                                "public_url": "/m/soubory/my_username/folder_slug",
+                                "public_url": "/soubory/my_username/folder_slug",
                                 "is_password_protected": false,
                                 "type": "favorites",
                                 "parent_folder_id": 0,
@@ -306,6 +307,18 @@ List of all user's folders.
                 ]
             }
 
++ Response 400 (application/json)
+
+    Invalid parameter value
+
+    + Body
+
+            {
+                "result": "error",
+                "message": "Invalid tree parameter value."
+            }
+            
+            
 + Response 401 (application/json)
 
     Invalid X-Auth-Token , could not authorize your application. Use correct WWW-Authenticate header.
@@ -598,18 +611,18 @@ File detail data
 
 Update file properties. 
 All properties are optional, every property present in request body will be changed.
-Property set to null will be removed or set to default value where possible.
+Property set to `null` will be removed or set to default value where possible.
 Updating any property may affect other properties (e.g., changing `name` may change `url` and `realm`).
 
 + Update entity
-    + name: (string, not empty) - Change name of the file
-    + description: (string, default empty) - Change file description
-    + visibility (enum, default public) - Either "public" or "private"
-    + password: (string) - Set password protection
-    + is_searchable: (boolean, default true) - Set to false to hide file from public search
-    + expire_download: (int, 0..2^24) - Restrict public access to file by number of downloads remaining
-    + expire_time: (date) - Restrict public access to file by date
-    + folder_id: (int, optional) - Assign file to folder (0 = root folder, file and folder owner must match)
+    + `name`: (string, not empty) - Change name of the file
+    + `description`: (string, default empty) - Change file description
+    + `visibility`: (enum, default `public`) - Either `public` or `private`
+    + `password`: (string) - Set password protection
+    + `is_searchable`: (boolean, default `true`) - Set to false to hide file from public search
+    + `expire_download`: (int, `0..2^24`) - Restrict public access to file by number of downloads remaining
+    + `expire_time`: (date) - Restrict public access to file by date
+    + `folder_id`: (int, optional) - Assign file to folder (`0` = root folder, file and folder owner must match)
 
 + Request (application/json)
 
@@ -668,7 +681,7 @@ Updating any property may affect other properties (e.g., changing `name` may cha
 
 + Response 401 (application/json)
 
-    Invalid X-Auth-Token, user_token or upload_token, could not authorize your request.
+    Invalid `X-Auth-Token`, `user_token` or `upload_token`, could not authorize your request.
 
     + Header
 
@@ -724,7 +737,7 @@ Delete your file.
 
 + Response 401 (application/json)
 
-    Invalid X-Auth-Token, user_token or upload_token, could not authorize your request.
+    Invalid `X-Auth-Token`, `user_token` or `upload_token`, could not authorize your request.
 
     + Header
 
@@ -740,10 +753,11 @@ Delete your file.
 
 # Group Upload
 
-## Upload batch commit [/v1/upload/batch/{uuid}/commit]
+## Upload batch commit [/v1/upload/batch/{batch_uuid}/commit{?user_token}]
 
 + Parameters
-    + uuid: `d5ec97a3-cb15-46d3-8f5f-5125378a22c9` (string, required) - Upload batch unique ID
+    + batch_uuid: `d5ec97a3-cb15-46d3-8f5f-5125378a22c9` (string, required) - Upload batch unique ID
+    + user_token: `asdiu328reewhfikw` (string, optional) - To access user's upload batch, you need to identify yourself with his token
 
 ### Upload batch commit [PUT]
 
@@ -760,12 +774,12 @@ Delete your file.
     + Body
     
             {
-                "after_upload_url": "http://uloz.to/sem/uploaded/d5ec97a3-cb15-46d3-8f5f-5125378a22c9"
+                "after_upload_url": "/sem/nahrano/d5ec97a3-cb15-46d3-8f5f-5125378a22c9"
             }
 
 + Response 400 (application/json)
 
-    Unable to commit.
+    Upload batch is not in valid state for commit.
 
     + Body
 
@@ -776,7 +790,7 @@ Delete your file.
 
 + Response 401 (application/json)
 
-    Invalid X-Auth-Token provided. Use correct WWW-Authenticate header.
+    Invalid `X-Auth-Token` or `user_token`, could not authorize your request.
     
     + Header
     
@@ -788,15 +802,28 @@ Delete your file.
                 "result": "error",
                 "message": "Invalid authorization token."
             }
+            
++ Response 404
 
-## Upload file progress [/v1/upload/batch/{uuid}/file/{file_temp_id}]
+    Unknown `batch_uuid`
+    
+    + Body
+
+
+## Upload file progress [/v1/upload/batch/{batch_uuid}/file/{batch_file_id}]
 
 + Parameters
-    + uuid: `d5ec97a3-cb15-46d3-8f5f-5125378a22c9` (string, required) - Upload batch unique ID
-    + file_temp_id: `10` (int, required) - Temporary file id in upload batch (i.e., ordinal number of file in upload batch)
+    + batch_uuid: `d5ec97a3-cb15-46d3-8f5f-5125378a22c9` (string, required) - Upload batch unique ID
+    + batch_file_id: `10` (int, required) - File ID in upload batch (i.e., ordinal number of file in upload batch)
 
-### Upload file progress [GET]
+### Get file upload status [GET]
 
++ Status entity
+    + `status`: (enum) - Either `uploading`, `done`or `error`
+    + `received`: (int) - Number of bytes recieved on server
+    + `size`: (int) - File size in bytes
+    + `slug`: (string, optional) - File slug, available only when `status = done`
+    
 + Request
 
     + Header
@@ -808,11 +835,15 @@ Delete your file.
     + Body
     
             {
+                "status": "uploading",
+                "received": 2791412
+                "size": 843344997
+                "slug": null
             }
 
 + Response 401 (application/json)
 
-    Invalid X-Auth-Token provided. Use correct WWW-Authenticate header.
+    Invalid `X-Auth-Token` provided. Use correct `WWW-Authenticate` header.
     
     + Header
     
@@ -824,7 +855,14 @@ Delete your file.
                 "result": "error",
                 "message": "Invalid authorization token."
             }
-        
+
++ Response 404
+
+    Unknown `batch_uuid` or `batch_file_id`
+    
+    + Body
+    
+
 # Group Search
 
 ## Search [/search/v1/{query}{?page,limit,user_token,sort,filetype,include_password_protected}]
