@@ -737,6 +737,93 @@ Delete your file.
                 "message": "Invalid authorization token."
             }
             
+
+# Group Upload
+
+## Upload batch commit [/v1/upload/batch/{uuid}/commit]
+
++ Parameters
+    + uuid: `d5ec97a3-cb15-46d3-8f5f-5125378a22c9` (string, required) - Upload batch unique ID
+
+### Upload batch commit [PUT]
+
++ Request
+
+    + Header
+
+            X-Auth-Token: 3284hedgf237ruewhfvgi2378
+
++ Response 200 (application/json)
+
+    Commit succesfull 
+
+    + Body
+    
+            {
+                "after_upload_url": "http://uloz.to/sem/uploaded/d5ec97a3-cb15-46d3-8f5f-5125378a22c9"
+            }
+
++ Response 400 (application/json)
+
+    Unable to commit.
+
+    + Body
+
+            {
+                "result": "error",
+                "message": "Unable to commit now. Wait for file uploading completion or abort it."
+            }
+
++ Response 401 (application/json)
+
+    Invalid X-Auth-Token provided. Use correct WWW-Authenticate header.
+    
+    + Header
+    
+            WWW-Authenticate: X-Auth-Token
+    
+    + Body
+    
+            {
+                "result": "error",
+                "message": "Invalid authorization token."
+            }
+
+## Upload file progress [/v1/upload/batch/{uuid}/file/{file_temp_id}]
+
++ Parameters
+    + uuid: `d5ec97a3-cb15-46d3-8f5f-5125378a22c9` (string, required) - Upload batch unique ID
+    + file_temp_id: `10` (int, required) - Temporary file id in upload batch (i.e., ordinal number of file in upload batch)
+
+### Upload file progress [GET]
+
++ Request
+
+    + Header
+
+            X-Auth-Token: 3284hedgf237ruewhfvgi2378
+
++ Response 200 (application/json)
+
+    + Body
+    
+            {
+            }
+
++ Response 401 (application/json)
+
+    Invalid X-Auth-Token provided. Use correct WWW-Authenticate header.
+    
+    + Header
+    
+            WWW-Authenticate: X-Auth-Token
+    
+    + Body
+    
+            {
+                "result": "error",
+                "message": "Invalid authorization token."
+            }
         
 # Group Search
 
