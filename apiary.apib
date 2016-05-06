@@ -753,10 +753,12 @@ Delete your file.
 
 # Group Upload
 
-## Upload batch commit [/v1/upload/batch/{batch_uuid}/commit{?user_token}]
+## Upload batch commit [/v1/upload/batch/{batch_uuid}/commit{?user_token,visibility,is_searchable}]
 
 + Parameters
     + batch_uuid: `d5ec97a3-cb15-46d3-8f5f-5125378a22c9` (string, required) - Upload batch unique ID
+    + visibility: `public` (enum, required) - Either `public` or `private`, sets this visibility to all files currently in batch
+    + is_searchable: `true` (boolean, required) - Sets sets this searchable flag to all files currently in batch
     + user_token: `asdiu328reewhfikw` (string, optional) - To access user's upload batch, you need to identify yourself with his token
 
 ### Upload batch commit [PUT]
@@ -775,17 +777,6 @@ Delete your file.
     
             {
                 "after_upload_url": "/sem/nahrano/d5ec97a3-cb15-46d3-8f5f-5125378a22c9"
-            }
-
-+ Response 400 (application/json)
-
-    Upload batch is not in valid state for commit.
-
-    + Body
-
-            {
-                "result": "error",
-                "message": "Unable to commit now. Wait for file uploading completion or abort it."
             }
 
 + Response 401 (application/json)
