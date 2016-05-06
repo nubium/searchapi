@@ -247,11 +247,12 @@ Effectively a logout.
 List of all user's folders.
 
 + Folder data format
-    + id: 25792 (int) - Folder id
+    + id: 25792 (int) - Folder id (0 is root folder for each user)
     + name: "My very own folder" (string) - Folder's name/caption
     + visibility (enum) - Either "public" or "private"
     + is_password_protected (boolean) - Public folder, other users need to provide password to see contents of this folder
     + type (enum) - One of ('gallery', 'normal', 'videoshare', 'tv', 'favorites', 'documents', 'audios', 'videos')
+    + parent_folder_id: 0 (int) - Folder id
     + children (collection of folders) - this field is present if requesting folders in `tree` format
 
 + Parameters
@@ -278,6 +279,7 @@ List of all user's folders.
                         "public_url": "/m/soubory/my_username/folder_slug",
                         "is_password_protected": false,
                         "type": "root",
+                        "parent_folder_id": null,
                         "children": [
                             {
                                 "id": 25792,
@@ -286,6 +288,7 @@ List of all user's folders.
                                 "public_url": "/m/soubory/my_username/folder_slug",
                                 "is_password_protected": false,
                                 "type": "documents",
+                                "parent_folder_id": 0,
                                 "children": []
                             },
                             {
@@ -295,6 +298,7 @@ List of all user's folders.
                                 "public_url": "/m/soubory/my_username/folder_slug",
                                 "is_password_protected": false,
                                 "type": "favorites",
+                                "parent_folder_id": 0,
                                 "children": []
                             }
                         ]
@@ -337,7 +341,7 @@ List of all user's folders.
                 "name": "Cute folder name",
                 "visibility": "public",
                 "password": null,
-                "parent_folder_id": 0
+                "parent_folder_id": 100
             }
 
 + Response 201 (application/json)
@@ -345,13 +349,17 @@ List of all user's folders.
     + Body
 
             {
-                "result": "ok",
-                "message": null,
-                "folder_id": "78256",
-                "public_url": "/m/soubory/my_username/cute_folder_name_slug"
+                "id": 45678,
+                "name": "Cute folder name",
+                "visibility": "public",
+                "public_url": "/m/soubory/my_username/cute_folder_name",
+                "is_password_protected": false,
+                "type": "normal",
+                "parent_folder_id": 100
             }
 
-+ Response 412 (application/json)
+
++ Response 400 (application/json)
 
     Unable to create folder - wrong data submitted.
 
@@ -491,10 +499,10 @@ List of all user's folders.
 File detail data
 
 + Parameters
-    + slug: "/x2EfXNKe/tera-online-prikaz-na-stahovanie-na-steam-txt" (string, required) - Full uloz.to slug is basically the file url
-    + user_token: "asdiu328reewhfikw" (string, optional) - To access user's private file, you need to identify yourself with his token
-    + upload_token: "skesfwkfjsnfsefk:123" (string, optional) - To write access to anonymous file in upload process, you need to use upload token
-    + password: "123macko" (string, optional) - To access password protected file, you need to provide the file's password (password is not necessary to access own files, password does not allow writing file not my own)
+    + slug: `/x2EfXNKe/tera-online-prikaz-na-stahovanie-na-steam-txt` (string, required) - Full uloz.to slug is basically the file url
+    + user_token: `asdiu328reewhfikw` (string, optional) - To access user's private file, you need to identify yourself with his token
+    + upload_token: `skesfwkfjsnfsefk:123` (string, optional) - To write access to anonymous file in upload process, you need to use upload token
+    + password: `123macko` (string, optional) - To access password protected file, you need to provide the file's password (password is not necessary to access own files, password does not allow writing file not my own)
 
 ### Get file detail info [GET]
 
@@ -512,6 +520,7 @@ File detail data
     + password_protected_file: false (boolean, required) - You must know correct password to access the file detail or to download this file .
     + media_info: Array(object) - key:value array. Key defines size and format of thumbnail, value is a list of images.
     + visibility (enum) - Either "public" or "private"
+    + status (enum) - Either "ok" (regular file) or "incomplete" (file is in process of uploading)
     + download_links
         + free: "http://uloz.to/free-download-link" (string, required) - Url for free download
         + vip: "http://uloz.to/vip-download-link" (string, optional) - Url for vip download, this url is present ONLY if you provided user_token and this user has enough credit for download.
@@ -548,6 +557,8 @@ File detail data
                 "rating": 0,
                 "password_protected_archive": false,
                 "password_protected_file": false,
+                "visibility": "public",
+                "status": "ok",
                 "media_info": {
                     "s160x120": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ],
                     "s640x360": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ]
@@ -588,7 +599,7 @@ File detail data
 Update file properties. 
 All properties are optional, every property present in request body will be changed.
 Property set to null will be removed or set to default value where possible.
-Updating any property may affect other properties (ex. changing `name` will change `url` and may change `realm`).
+Updating any property may affect other properties (e.g., changing `name` may change `url` and `realm`).
 
 + Update entity
     + name: (string, not empty) - Change name of the file
@@ -608,16 +619,16 @@ Updating any property may affect other properties (ex. changing `name` will chan
 
     + Body
     
-        {
-            "name": "New file name.jpg",
-            "description": "New\tfile\ndescription.",
-            "visibility": "private",
-            "password": "heslo",
-            "is_searchable": true,
-            "expire_download": 10,
-            "expire_time": "2000-01-01",
-            "folder_id": 0
-        }
+            {
+                "name": "New file name.jpg",
+                "description": "New\tfile\ndescription.",
+                "visibility": "private",
+                "password": "heslo",
+                "is_searchable": true,
+                "expire_download": 10,
+                "expire_time": "2000-01-01",
+                "folder_id": 0
+            }
 
 + Response 200 (application/json)
     + Body
@@ -633,6 +644,8 @@ Updating any property may affect other properties (ex. changing `name` will chan
                 "rating": 0,
                 "password_protected_archive": false,
                 "password_protected_file": false,
+                "visibility": "public",
+                "status": "ok",
                 "media_info": {
                     "s160x120": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ],
                     "s640x360": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ]
@@ -685,10 +698,46 @@ Updating any property may affect other properties (ex. changing `name` will chan
                     {
                         "data-element": "folder_id",
                         "message": "File owner must own the folder too."
+                    },
+                    {
+                        "data-element": "visibility",
+                        "message": "Public visibility is forbidden for this file."
                     }
                 ]
             }
 
+### Delete file [DELETE]
+
+Delete your file.
+
++ Request
+
+    + Header
+    
+            X-Auth-Token: 3284hedgf237ruewhfvgi2378
+
++ Response 204 (application/json)
+
+    Delete successfull
+    
+    + Header
+
++ Response 401 (application/json)
+
+    Invalid X-Auth-Token, user_token or upload_token, could not authorize your request.
+
+    + Header
+
+            WWW-Authenticate: X-Auth-Token
+
+    + Body
+
+            {
+                "result": "error",
+                "message": "Invalid authorization token."
+            }
+            
+        
 # Group Search
 
 ## Search [/search/v1/{query}{?page,limit,user_token,sort,filetype,include_password_protected}]
