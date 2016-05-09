@@ -244,11 +244,11 @@ Effectively a logout.
 
 ### Get all users folders [GET]
 
-List of all user's folders.
+List of all user's folders. Folders are always ordered by name.
 
 + Folder data format
     + id: `25792` (int) - Folder id (`0` is root folder for each user)
-    + name: `"My very own folder"` (string) - Folder's name/caption
+    + name: `"My very own folder"` (string) - Folder's name/caption. Root folder is always named `root`, you are advised to translate this name to something that suits your application.
     + visibility (enum) - Either `public` or `private`
     + public_url: `"/soubory/my_username/folder_slug"` (string) - Url to folder's public view (`null` when not available)
     + is_password_protected (boolean) - Public folder, other users need to provide password to see contents of this folder
@@ -811,8 +811,8 @@ Delete your file.
 
 + Status entity
     + `status`: (enum) - Either `uploading`, `done`or `error`
-    + `received`: (int) - Number of bytes recieved on server
-    + `size`: (int) - File size in bytes
+    + `received`: (int) - Number of bytes of HTTP request recieved on server
+    + `size`: (int) - Uploading HTTP request size
     + `slug`: (string, optional) - File slug, available only when `status = done`
     
 + Request
@@ -906,7 +906,7 @@ Perform search request. Response consists of two parts
         + content_type: '' (string, required) - Enum  ('video', 'audio', 'image', 'archive', 'document', '')
         + password_protected_archive: false (boolean, required) - IF the file is archive, AND that archive is password protected. This file can be downloaded.
         + password_protected_file: false (boolean, required) - You must know correct password to access the file detail or to download this file .
-        + media_info: Array(object) - key:value array. Key defines size and format of thumbnail, value is a list of images.
+        + media_info: array - key:value array. Key defines size and format of thumbnail, value is a list of images.
 
     + Body
     
