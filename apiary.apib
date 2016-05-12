@@ -615,14 +615,14 @@ Property set to `null` will be removed or set to default value where possible.
 Updating any property may affect other properties (e.g., changing `name` may change `url` and `realm`).
 
 + Update entity
-    + `name`: (string, not empty) - Change name of the file
-    + `description`: (string, default empty) - Change file description
-    + `visibility`: (enum, default `public`) - Either `public` or `private`
-    + `password`: (string) - Set password protection
-    + `is_searchable`: (boolean, default `true`) - Set to false to hide file from public search
-    + `expire_download`: (int, `0..2^24`) - Restrict public access to file by number of downloads remaining
-    + `expire_time`: (date) - Restrict public access to file by date
-    + `folder_id`: (int, optional) - Assign file to folder (`0` = root folder, file and folder owner must match)
+    + `name`: (string, not empty) - Change name of the file. New name must end with same extension as old one (case-sensitive).
+    + `description`: (string, default empty) - Change file description.
+    + `visibility`: (enum, default `public`) - Either `public` or `private`.
+    + `password`: (string) - Set password protection.
+    + `is_searchable`: (boolean, default `true`) - Set to false to hide file from public search.
+    + `expire_download`: (int, `0..2^24`) - Restrict public access to file by number of downloads remaining.
+    + `expire_time`: (date) - Restrict public access to file by date.
+    + `folder_id`: (int, optional) - Assign file to folder (`0` = root folder, file and folder owner must match).
 
 + Request (application/json)
 
