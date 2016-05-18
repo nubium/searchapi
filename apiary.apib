@@ -381,7 +381,7 @@ List of all user's folders. Folders are always ordered by name.
             {
                 "result": "error",
                 "message": "Unable to create folder.",
-                "items": [
+                "errors": [
                     {
                         "data-element": "name",
                         "message": "Name cannot be empty."
@@ -534,11 +534,6 @@ File detail data
     + media_info: Array(object) - key:value array. Key defines size and format of thumbnail, value is a list of images.
     + visibility (enum) - Either "public" or "private"
     + status (enum) - Either "ok" (regular file) or "incomplete" (file is in process of uploading)
-    + download_links
-        + free: "http://uloz.to/free-download-link" (string, required) - Url for free download
-        + vip: "http://uloz.to/vip-download-link" (string, optional) - Url for vip download, this url is present ONLY if you provided user_token and this user has enough credit for download.
-    + stream_links
-        + vip: "http://uloz.to/vip-stream-link" (string, optional) - Url for vip stream, this url is present ONLY if you provided user_token, this user has enough credit for download and the file is streamable.
     + format
         + width: 320 (int, optional) - If available, width of video/image
         + height: 200 (int, optional) - If available, height of video/image
@@ -576,13 +571,6 @@ File detail data
                     "s160x120": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ],
                     "s640x360": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ]
                 },
-                "download_links": {
-                    "free": "http://uloz.to/free-download-link",
-                    "vip": "http://uloz.to/vip-download-link"
-                },
-                "stream_links": {
-                    "vip": "http://uloz.to/vip-stream-link"
-                },
                 "format": {
                     "width": 1024,
                     "height": 768,
@@ -611,18 +599,18 @@ File detail data
 
 Update file properties. 
 All properties are optional, every property present in request body will be changed.
-Property set to `null` will be removed or set to default value where possible.
+Property set to `null` will be set to default value where possible.
 Updating any property may affect other properties (e.g., changing `name` may change `url` and `realm`).
 
 + Update entity
     + `name`: (string, not empty) - Change name of the file. New name must end with same extension as old one (case-sensitive).
     + `description`: (string, default empty) - Change file description.
     + `visibility`: (enum, default `public`) - Either `public` or `private`.
-    + `password`: (string) - Set password protection.
+    + `password`: (string, default no password) - Set password protection.
     + `is_searchable`: (boolean, default `true`) - Set to false to hide file from public search.
-    + `expire_download`: (int, `0..2^24`) - Restrict public access to file by number of downloads remaining.
-    + `expire_time`: (date) - Restrict public access to file by date.
-    + `folder_id`: (int, optional) - Assign file to folder (`0` = root folder, file and folder owner must match).
+    + `expire_download`: (int, `0..2^24`, default no limit) - Restrict public access to file by number of downloads remaining.
+    + `expire_time`: (date, default no limit) - Restrict public access to file by date.
+    + `folder_id`: (int, optional, default `0`) - Assign file to folder (`0` = root folder, file and folder owner must match).
 
 + Request (application/json)
 
@@ -663,13 +651,6 @@ Updating any property may affect other properties (e.g., changing `name` may cha
                     "s160x120": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ],
                     "s640x360": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ]
                 },
-                "download_links": {
-                    "free": "http://uloz.to/free-download-link",
-                    "vip": "http://uloz.to/vip-download-link"
-                },
-                "stream_links": {
-                    "vip": "http://uloz.to/vip-stream-link"
-                },
                 "format": {
                     "width": 1024,
                     "height": 768,
@@ -703,17 +684,17 @@ Updating any property may affect other properties (e.g., changing `name` may cha
             {
                 "result": "error",
                 "message": "Unable to update file.",
-                "items": [
+                "errors": [
                     {
-                        "data-element": "name",
+                        "data_element": "name",
                         "message": "Name cannot be empty."
                     },
                     {
-                        "data-element": "folder_id",
+                        "data_element": "folder_id",
                         "message": "File owner must own the folder too."
                     },
                     {
-                        "data-element": "visibility",
+                        "data_element": "visibility",
                         "message": "Public visibility is forbidden for this file."
                     }
                 ]
@@ -776,9 +757,32 @@ Delete your file.
     + Body
     
             {
-                "after_upload_url": "/sem/nahrano/d5ec97a3-cb15-46d3-8f5f-5125378a22c9"
+                "after_upload_url": "/sem/nahrano/d5ec97a3-cb15-46d3-8f5f-5125378a22c9",
+                "files": [
+                    {
+                        "slug": "abcd/asdasd",
+                        "visibility": "public",
+                        "is_searchable": false
+                    },
+                    {
+                        "slug": "efgh/sfefefe",
+                        "visibility": "private",
+                        "is_searchable": false
+                    }
+                ]
             }
 
++ Response 400 (application/json)
+
+    Input data invalid
+
+    + Body
+
+            {
+                "result": "error",
+                "message": "Unknown data received."
+            }
+            
 + Response 401 (application/json)
 
     Invalid `X-Auth-Token` or `user_token`, could not authorize your request.
@@ -793,12 +797,28 @@ Delete your file.
                 "result": "error",
                 "message": "Invalid authorization token."
             }
-            
-+ Response 404
+
++ Response 403 (application/json)
+
+    Batch is not valid for edit.
+    
+    + Body
+    
+            {
+                "result": "error",
+                "message": "Batch is not valid for edit."
+            }
+
++ Response 404 (application/json)
 
     Unknown `batch_uuid`
     
     + Body
+    
+            {
+                "result": "error",
+                "message": "Unknown batch uuid."
+            }
 
 
 ## Upload file progress [/v1/upload/batch/{batch_uuid}/file/{batch_file_id}]
