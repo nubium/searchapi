@@ -249,6 +249,7 @@ List of all user's folders. Folders are always ordered by name.
 + Folder data format
     + id: `25792` (int) - Folder id (`0` is root folder for each user)
     + name: `"My very own folder"` (string) - Folder's name/caption. Root folder is always named `root`, you are advised to translate this name to something that suits your application.
+    + name_sanitized: `"My *** folder"` (string) - Folder's name/caption with bad words replaced.
     + visibility (enum) - Either `public` or `private`
     + public_url: `"/soubory/my_username/folder_slug"` (string) - Url to folder's public view (`null` when not available)
     + is_password_protected (boolean) - Public folder, other users need to provide password to see contents of this folder
@@ -276,6 +277,7 @@ List of all user's folders. Folders are always ordered by name.
                     {
                         "id": 0,
                         "name": "Root",
+                        "name_sanitized": "Root",
                         "visibility": "private",
                         "public_url": null,
                         "is_password_protected": false,
@@ -285,6 +287,7 @@ List of all user's folders. Folders are always ordered by name.
                             {
                                 "id": 25792,
                                 "name": "Dokumenty",
+                                "name_sanitized": "Dokumenty",
                                 "visibility": "public",
                                 "public_url": "/soubory/my_username/folder_slug",
                                 "is_password_protected": false,
@@ -294,11 +297,12 @@ List of all user's folders. Folders are always ordered by name.
                             },
                             {
                                 "id": 25794,
-                                "name": "Oblíbené",
+                                "name": "Domácí porno",
+                                "name_sanitized": "Domácí ***",
                                 "visibility": "public",
                                 "public_url": "/soubory/my_username/folder_slug",
                                 "is_password_protected": false,
-                                "type": "favorites",
+                                "type": "normal",
                                 "parent_folder_id": 0,
                                 "children": []
                             }
@@ -364,6 +368,7 @@ List of all user's folders. Folders are always ordered by name.
             {
                 "id": 45678,
                 "name": "Cute folder name",
+                "name_sanitized": "Cute folder name",
                 "visibility": "public",
                 "public_url": "/m/soubory/my_username/cute_folder_name",
                 "is_password_protected": false,
@@ -427,20 +432,22 @@ List of all user's folders. Folders are always ordered by name.
 ### Get users files in folder [GET]
 
 + File entity
-    + id: "x2EfXNKe"
-    + slug: "/x2EfXNKe/tera-"
-    + realm: ulozto (string, required) - Enum, one of [ulozto; pornfile].
-    + name: Poznávačka rostliny.pptx (string, required) - Name of the file
-    + filesize: 158367932 (number, required) - filesize in bytes
-    + extension: pptx (string, required) - file extension
-    + rating: 0 (number, required) - File rating (sum of thumbs up and thumbs down)
-    + content_type: '' (string, required) - Enum  ('video', 'audio', 'image', 'archive', 'document', '')
-    + password_protected_archive: false (boolean, required) - IF the file is archive, AND that archive is password protected. This file can be downloaded.
-    + password_protected_file: false (boolean, required) - You must know correct password to access the file detail or to download this file .
+    + id: `"xugRqqug"`
+    + slug: `"/xugRqqug/pozna"` - Identificator used for other API calls affecting file. Slug may change when file is renamed. Old slug will keep working, but new slug will be issued by API calls.
+    + url: `"/xugRqqug/poznavacka-rostliny-pptx"`,
+    + realm: `ulozto` (enum, required) - Enum, one of (`ulozto`, `pornfile`).
+    + name: `"Poznávačka rostliny.pptx"` (string, required) - Name of the file
+    + name_sanitized: `"Poznávačka ***.pptx"` (string, required) - Name of the file with bad words replaced
+    + filesize: `158367932` (number, required) - filesize in bytes
+    + extension: `"pptx"` (string, required) - file extension
+    + rating: `0` (number, required) - File rating (sum of thumbs up and thumbs down)
+    + content_type: `video` (string, required) - Enum  (`"video"`, `"audio"`, `"image"`, `"archive"`, `"document"`, `""`), new posibilities will be added.
+    + password_protected_archive: `false` (boolean, required) - IF the file is archive, AND that archive is password protected. This file can be downloaded.
+    + password_protected_file: `false` (boolean, required) - You must know correct password to access the file detail or to download this file.
     + media_info: Array(object) - key:value array. Key defines size and format of thumbnail, value is a list of images.
-    + visibility (enum) - Either "public" or "private"
-    + duration: 296 (int, optional) - Length of the video/audio in seconds (if videofile)
-    + streamable: false (boolean) - TRUE for streamable videofile
+    + visibility: `public` (enum) - Either `public` or `private`
+    + duration: `296` (int, optional) - Length of the video/audio in seconds (if videofile)
+    + streamable: `false` (boolean) - `true` for streamable videofile
 
 + Request
 
@@ -469,6 +476,7 @@ List of all user's folders. Folders are always ordered by name.
                         "slug": "/xugRqqug/vedma"
                         "url": "/xugRqqug/vedma-z-weiry-1-cast-pdf-pro-epub-pdf",
                         "name": "Vedma z Weiry 1 část_pdf_pro_ePub.pdf",
+                        "name_sanitized": "Vedma z Weiry 1 ***_***_pro_ePub.pdf",
                         "realm": "ulozto",
                         "extension": "pdf",
                         "duration": null,
@@ -487,6 +495,7 @@ List of all user's folders. Folders are always ordered by name.
                         "slug": "/xBwuV4rR/pozna",
                         "url": "/xBwuV4rR/poznavacka-rostliny-pptx",
                         "name": "Poznávačka rostliny.pptx",
+                        "name_sanitized": "Poznávačka rostliny.pptx",
                         "realm": "pornfile",
                         "extension": "pptx",
                         "duration": null,
@@ -512,34 +521,40 @@ List of all user's folders. Folders are always ordered by name.
 File detail data
 
 + Parameters
-    + slug: `/x2EfXNKe/tera-online-prikaz-na-stahovanie-na-steam-txt` (string, required) - Full uloz.to slug is basically the file url
-    + user_token: `asdiu328reewhfikw` (string, optional) - To access user's private file, you need to identify yourself with his token
-    + upload_token: `skesfwkfjsnfsefk:123` (string, optional) - To write access to anonymous file in upload process, you need to use upload token
-    + password: `123macko` (string, optional) - To access password protected file, you need to provide the file's password (password is not necessary to access own files, password does not allow writing file not my own)
+    + slug: `"/x2EfXNKe/tera-online-prikaz-na-stahovanie-na-steam-txt"` (string, required) - Slug from file listing API calls. Slug may change when file is renamed. Old slug will keep working, but new slug will be issued by API calls.
+    + user_token: `"asdiu328reewhfikw"` (string, optional) - To access user's private file, you need to identify yourself with his token
+    + upload_token: `"skesfwkfjsnfsefk:123"` (string, optional) - To write access to anonymous file in upload process, you need to use upload token
+    + password: `"123macko"` (string, optional) - To access password protected file, you need to provide the file's password (password is not necessary to access own files, password does not allow writing file not my own)
 
 ### Get file detail info [GET]
 
 + File entity
-    + id: "x2EfXNKe"
-    + slug: "/xugRqqug/vedma"
-    + url: "/xugRqqug/vedma-z-weiry-1-cast-pdf-pro-epub-pdf",
-    + realm: ulozto (string, required) - Enum, one of [ulozto; pornfile].
-    + name: Poznávačka rostliny.pptx (string, required) - Name of the file
-    + description: this could potentially be a rather long description (string, optional) - File description
-    + filesize: 158367932 (number, required) - filesize in bytes
-    + extension: pptx (string, required) - file extension
-    + rating: 0 (number, required) - File rating (sum of thumbs up and thumbs down)
-    + password_protected_archive: false (boolean, required) - IF the file is archive, AND that archive is password protected. This file can be downloaded.
-    + password_protected_file: false (boolean, required) - You must know correct password to access the file detail or to download this file .
+    + id: `"xugRqqug"`
+    + slug: `"/xugRqqug/pozna"` - Identificator used for other API calls affecting file. Slug may change when file is renamed. Old slug will keep working, but new slug will be issued by API calls.
+    + url: `"/xugRqqug/poznavacka-rostliny-pptx"`,
+    + realm: `ulozto` (enum, required) - Enum, one of (`ulozto`, `pornfile`).
+    + name: `"Poznávačka rostliny.pptx"` (string, required) - Name of the file
+    + name_sanitized: `"Poznávačka ***.pptx"` (string, required) - Name of the file with bad words replaced
+    + description: `"this could potentially be a rather\r\nlong description"` (string, optional) - File description
+    + description_sanitized: `"this could *** *** a rather\r\nlong description"` (string, optional) - File description with bad words replaced
+    + filesize: `158367932` (number, required) - filesize in bytes
+    + extension: `"pptx"` (string, required) - file extension
+    + rating: `0` (number, required) - File rating (sum of thumbs up and thumbs down)
+    + password_protected_archive: `false` (boolean, required) - IF the file is archive, AND that archive is password protected. This file can be downloaded.
+    + password_protected_file: `false` (boolean, required) - You must know correct password to access the file detail or to download this file .
     + media_info: Array(object) - key:value array. Key defines size and format of thumbnail, value is a list of images.
-    + visibility (enum) - Either "public" or "private"
-    + status (enum) - Either "ok" (regular file) or "incomplete" (file is in process of uploading)
+    + visibility: `public` (enum) - Either "public" or "private"
+    + status: `ok` (enum) - Either `ok` (regular file) or `incomplete` (file is in process of uploading)
+    + is_searchable: `true` (boolean, required) - When `false`, file will be hidden form public searchers
+    + expire_download: `null` (int, optional) - When not `null`, file is download resticted up to this number.
+    + expire_time: `2016-01-01` (date, optional) - When not `null`, file is download resticted up to this day.
+    + folder_id: `0` (int, required) - ID of folder containing this file. `0` is root folder for every user and only possible folder for anonymous files.
     + format
-        + width: 320 (int, optional) - If available, width of video/image
-        + height: 200 (int, optional) - If available, height of video/image
-        + duration: 296 (int, optional) - Length of the video/audio in seconds
-        + content_type: video (enum, optional) - Enum  ('video', 'audio', 'image', 'archive', 'document', '')
-        + streamable: false (boolean) - TRUE for streamable videofile
+        + width: `320` (int, optional) - If available, width of video/image
+        + height: `200` (int, optional) - If available, height of video/image
+        + duration: `296` (int, optional) - Length of the video/audio in seconds
+        + content_type: `video` (string, required) - Enum  (`"video"`, `"audio"`, `"image"`, `"archive"`, `"document"`, `""`), new posibilities will be added.
+        + streamable: `false` (boolean) - `true` for streamable videofile
     + attributes
         + archive_files - to be specified
         + video_data - to be specified
@@ -558,6 +573,9 @@ File detail data
                 "id": "ugRqqug",
                 "slug": "/ugRqqug/vedma",
                 "name": "Vedma z Weiry 1 část_pdf_pro_ePub.pdf",
+                "name_sanitized": "Vedma *** *** *** část_pdf_pro_ePub.pdf",
+                "description": "this could potentially be a rather\r\nlong description",
+                "description_sanitized": "this could *** *** a rather\r\nlong description",
                 "extension": "pdf",
                 "url": "/xugRqqug/vedma-z-weiry-1-cast-pdf-pro-epub-pdf",
                 "realm": "ulozto",
@@ -567,6 +585,10 @@ File detail data
                 "password_protected_file": false,
                 "visibility": "public",
                 "status": "ok",
+                "is_searchable": true,
+                "expire_download": null,
+                "expire_time": "2016-01-01",
+                "folder_id": 0,
                 "media_info": {
                     "s160x120": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ],
                     "s640x360": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ]
@@ -607,7 +629,7 @@ Updating any property may affect other properties (e.g., changing `name` may cha
     + `description`: (string, default empty) - Change file description.
     + `visibility`: (enum, default `public`) - Either `public` or `private`.
     + `password`: (string, default no password) - Set password protection.
-    + `is_searchable`: (boolean, default `true`) - Set to false to hide file from public search.
+    + `is_searchable`: (boolean, default `true`) - Set to `false` to hide file from public search.
     + `expire_download`: (int, `0..2^24`, default no limit) - Restrict public access to file by number of downloads remaining.
     + `expire_time`: (date, default no limit) - Restrict public access to file by date.
     + `folder_id`: (int, optional, default `0`) - Assign file to folder (`0` = root folder, file and folder owner must match).
@@ -638,6 +660,9 @@ Updating any property may affect other properties (e.g., changing `name` may cha
                 "id": "ugRqqug",
                 "slug": "/ugRqqug/vedma",
                 "name": "Vedma z Weiry 1 část_pdf_pro_ePub.pdf",
+                "name_sanitized": "Vedma *** *** *** část_pdf_pro_ePub.pdf",
+                "description": "New\tfile\ndescription.",
+                "description_sanitized": "New\tfile\n***.",
                 "extension": "pdf",
                 "url": "/xugRqqug/vedma-z-weiry-1-cast-pdf-pro-epub-pdf",
                 "realm": "ulozto",
@@ -647,6 +672,10 @@ Updating any property may affect other properties (e.g., changing `name` may cha
                 "password_protected_file": false,
                 "visibility": "public",
                 "status": "ok",
+                "is_searchable": true,
+                "expire_download": null,
+                "expire_time": "2016-01-01",
+                "folder_id": 0,
                 "media_info": {
                     "s160x120": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ],
                     "s640x360": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ]
@@ -737,10 +766,10 @@ Delete your file.
 ## Upload batch commit [/v1/upload/batch/{batch_uuid}/commit{?user_token,visibility,is_searchable}]
 
 + Parameters
-    + batch_uuid: `d5ec97a3-cb15-46d3-8f5f-5125378a22c9` (string, required) - Upload batch unique ID
+    + batch_uuid: `"d5ec97a3-cb15-46d3-8f5f-5125378a22c9"` (string, required) - Upload batch unique ID
     + visibility: `public` (enum, required) - Either `public` or `private`, sets this visibility to all files currently in batch
     + is_searchable: `true` (boolean, required) - Sets sets this searchable flag to all files currently in batch
-    + user_token: `asdiu328reewhfikw` (string, optional) - To access user's upload batch, you need to identify yourself with his token
+    + user_token: `"asdiu328reewhfikw"` (string, optional) - To access user's upload batch, you need to identify yourself with his token
 
 ### Upload batch commit [PUT]
 
@@ -824,16 +853,16 @@ Delete your file.
 ## Upload file progress [/v1/upload/batch/{batch_uuid}/file/{batch_file_id}]
 
 + Parameters
-    + batch_uuid: `d5ec97a3-cb15-46d3-8f5f-5125378a22c9` (string, required) - Upload batch unique ID
+    + batch_uuid: `"d5ec97a3-cb15-46d3-8f5f-5125378a22c9"` (string, required) - Upload batch unique ID
     + batch_file_id: `10` (int, required) - File ID in upload batch (i.e., ordinal number of file in upload batch)
 
 ### Get file upload status [GET]
 
 + Status entity
-    + `status`: (enum) - Either `uploading`, `done`or `error`
-    + `received`: (int) - Number of bytes of HTTP request recieved on server
-    + `size`: (int) - Uploading HTTP request size
-    + `slug`: (string, optional) - File slug, available only when `status = done`
+    + status: `uploading` (enum, required) - Either `uploading`, `done`or `error`
+    + received: `456789` (int, required) - Number of bytes of HTTP request recieved on server
+    + size: `54646546` (int, required) - Uploading HTTP request size
+    + slug: `null` (string, optional) - File slug, available only when `status = done`
     
 + Request
 
@@ -879,17 +908,17 @@ Delete your file.
 ## Search [/search/v1/{query}{?page,limit,user_token,sort,filetype,include_password_protected}]
 
 + Parameters
-    + query: zahradniceni rostliny (optional, string) - Searched query. If query is empty, search will return random files in random order.
-    + user_token: asdiu328reewhfikw (required, string) - Perform search as a frontend user (instead of anonymous search)
-    + page: 1 (optional, int) - Fetch specific page number
-        Default: 1
-    + limit: 20 (optional, int) - Limit the result set to <limit> items
-        Default: 20
-    + sort: weight (optional, string) - Sorting, one of [weight, created; ratings; size; -size]. This option may not be used without specifying `query`.
-        Default: weight
-    + filetype: video (optional, string) - Filter found files, value might be one of [video; audio; image; document]. If empty, search will return all filetypes.
-    + include_password_protected: false (optional, boolean) - If set to true, will include password protected files in the search results.
-        Default: true
+    + query: `"zahradniceni rostliny"` (string, optional) - Searched query. If query is empty, search will return random files in random order.
+    + user_token: `"asdiu328reewhfikw"` (string, required) - Perform search as a frontend user (instead of anonymous search)
+    + page: `1` (int, optional) - Fetch specific page number
+        Default: `1`
+    + limit: `20` (int, optional) - Limit the result set to <limit> items
+        Default: `20`
+    + sort: `weight` (enum, optional) - Sorting, one of [`weight`, `created`, `ratings`, `size`, `-size`]. This option may not be used without specifying `query`.
+        Default: `weight`
+    + filetype: `video` (string, optional) - Filter found files, value might be one of (`video`, `audio`, `image`, `document`). If empty, search will return all filetypes.
+    + include_password_protected: `false` (boolean, optional) - If set to `true`, will include password protected files in the search results.
+        Default: `true`
 
 ### Get search result [GET]
 
@@ -917,15 +946,18 @@ Perform search request. Response consists of two parts
             Link: </search/zahradniceni rostliny>;rel=self,</search/zahradniceni rostliny>;rel=next,</search/zahradniceni rostliny>;rel=previous
 
     + Attributes (object)
-        + url: http://www.uloz.to/xBwuV4rR/poznavacka-rostliny-pptx (string, required) - Detail url, can be used as a file identifier
-        + realm: ulozto (string, required) - Enum, one of [ulozto; pornfile]. 
-        + name: Poznávačka rostliny.pptx (string, required) - Name of the file
-        + filesize: 158367932 (number, required) - filesize in bytes
-        + extension: pptx (string, required) - file extension
-        + rating: 0 (number, required) - File rating (sum of thumbs up and thumbs down)
-        + content_type: '' (string, required) - Enum  ('video', 'audio', 'image', 'archive', 'document', '')
-        + password_protected_archive: false (boolean, required) - IF the file is archive, AND that archive is password protected. This file can be downloaded.
-        + password_protected_file: false (boolean, required) - You must know correct password to access the file detail or to download this file .
+        + id: `"xugRqqug"`
+        + slug: `"/xugRqqug/pozna"` - Identificator used for other API calls affecting file. Slug may change when file is renamed. Old slug will keep working, but new slug will be issued by API calls.
+        + url: `"http://www.uloz.to/xBwuV4rR/poznavacka-rostliny-pptx"` (string, required) - Detail url, can be used as a file identifier
+        + realm: `ulozto` (enum, required) - Enum, one of (`ulozto`, `pornfile`).
+        + name: `"Poznávačka rostliny.pptx"` (string, required) - Name of the file
+        + name_sanitized: `"Poznávačka ***.pptx"` (string, required) - Name of the file with bad words replaced
+        + filesize: `158367932` (number, required) - filesize in bytes
+        + extension: `"pptx"` (string, required) - file extension
+        + rating: `0` (number, required) - File rating (sum of thumbs up and thumbs down)
+        + content_type: `video` (string, required) - Enum  (`"video"`, `"audio"`, `"image"`, `"archive"`, `"document"`, `""`), new posibilities will be added.
+        + password_protected_archive: `false` (boolean, required) - IF the file is archive, AND that archive is password protected. This file can be downloaded.
+        + password_protected_file: `false` (boolean, required) - You must know correct password to access the file detail or to download this file.
         + media_info: array - key:value array. Key defines size and format of thumbnail, value is a list of images.
 
     + Body
@@ -946,15 +978,20 @@ Perform search request. Response consists of two parts
                     "exact": [
                         {
                             "id": "ugRqqug",
+                            "slug": "/xugRqqug/vedma",
                             "name": "Vedma z Weiry 1 část_pdf_pro_ePub.pdf",
+                            "name_sanitized": "Vedma z *** 1 část_pdf_pro_ePub.pdf",
                             "extension": "pdf",
                             "duration": null,
                             "url": "/xugRqqug/vedma-z-weiry-1-cast-pdf-pro-epub-pdf",
+                            "realm": "ulozto",
                             "filesize": 10241024,
                             "rating": 0,
                             "content_type": "",
                             "password_protected_archive": false,
                             "password_protected_file": false,
+                            "visibility": "public",
+                            "streamable": false,
                             "media_info": {
                                 "s160x120": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ],
                                 "s640x360": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ]
@@ -962,15 +999,20 @@ Perform search request. Response consists of two parts
                         },
                         {
                             "id": "BwuV4rR", 
+                            "slug": "/xBwuV4rR/pozna",
                             "name": "Poznávačka rostliny.pptx",
+                            "name_sanitized": "*** rostliny.pptx",
                             "extension": "pptx",
                             "duration": null,
                             "url": "/xBwuV4rR/poznavacka-rostliny-pptx",
+                            "realm": "ulozto",
                             "filesize": 158367932,
                             "rating": 0,
                             "content_type": "",
                             "password_protected_archive": false,
                             "password_protected_file": false,
+                            "visibility": "public",
+                            "streamable": false,
                             "media_info": {
                                 "s160x120": [ "http://img4.uloz.to/ul3/images/ico/unknown.png" ],
                                 "s640x360": [ "http://img4.uloz.to/ul3/images/ico/unknown.png" ]
@@ -978,15 +1020,20 @@ Perform search request. Response consists of two parts
                         },
                         {
                             "id": "gLEqCrR",
+                            "slug": "/xgLEqCrR/tajom",
                             "name": "Tajomstvo kruhu čarodejníc - USA 2011 dab. SK diel 11 - U17 -.avi",
+                            "name_sanitized": "Tajomstvo kruhu čarodejníc - *** *** dab. SK diel 11 - U17 -.avi",
                             "extension": "avi",
                             "duration": 12345,
                             "url": "/xgLEqCrR/tajomstvo-kruhu-carodejnic-usa-2011-dab-sk-diel-11-u17-avi",
+                            "realm": "ulozto",
                             "filesize": 622180912,
                             "rating": 2,
                             "content_type": "video",
                             "password_protected_archive": false,
                             "password_protected_file": false,
+                            "visibility": "public",
+                            "streamable": false,
                             "media_info": {
                                 "s160x120": [ "http://videoth.uloz.to/g/L/E/xgLEqCrR.160x120.1.jpg", "http://static.uloz.to/cdn/X/T/Y/xXTYmuMs.160x120.1.jpg", "http://static.uloz.to/cdn/X/T/Y/xXTYmuMs.160x120.2.jpg" ],
                                 "s640x360": [ "http://videoth.uloz.to/g/L/E/xgLEqCrR.640x360.2.jpg", "http://videoth.uloz.to/g/L/E/xgLEqCrR.640x360.2.jpg", "http://videoth.uloz.to/g/L/E/xgLEqCrR.640x360.2.jpg", "http://videoth.uloz.to/g/L/E/xgLEqCrR.640x360.2.jpg" ]
@@ -996,15 +1043,20 @@ Perform search request. Response consists of two parts
                     "partial": [
                          {
                             "id": "XnKDmxF",
+                            "slug": "/xXnKDmxF/termi",
                             "name": "Terminator.Genisys.2015.CAM.HUN.MD-JLX.avi",
+                            "name_sanitized": "Terminator.Genisys.2015.CAM.HUN.MD-JLX.avi",
                             "extension": "avi",
                             "duration": 3323223,
                             "url": "/xXnKDmxF/terminator-genisys-2015-cam-hun-md-jlx-avi",
+                            "realm": "ulozto",
                             "filesize": 622180912,
                             "rating": 2,
                             "content_type": "video",
                             "password_protected_archive": false,
                             "password_protected_file": false,
+                            "visibility": "public",
+                            "streamable": false,
                             "media_info": {
                                 "s160x120": [ "http://videoth.uloz.to/X/n/K/xXnKDmxF.160x120.1.jpg", "http://static.uloz.to/cdn/X/T/Y/xXTYmuMs.160x120.1.jpg", "http://static.uloz.to/cdn/X/T/Y/xXTYmuMs.160x120.2.jpg" ],
                                 "s640x360": [ "http://videoth.uloz.to/X/n/K/xXnKDmxF.640x360.1.jpg", "http://videoth.uloz.to/X/n/K/xXnKDmxF.640x360.1.jpg", "http://videoth.uloz.to/X/n/K/xXnKDmxF.640x360.1.jpg", "http://videoth.uloz.to/X/n/K/xXnKDmxF.640x360.1.jpg" ]
@@ -1012,15 +1064,20 @@ Perform search request. Response consists of two parts
                         },
                         {
                             "id": "XTYmuMs",
+                            "slug": "/xXTYmuMs/linde",
                             "name": "239-Ženatý se závazky - Married with Children (1987)(CZ).avi",
+                            "name_sanitized": "239-Ženatý se závazky - Married with Children (1987)(CZ).avi",
                             "extension": "avi",
                             "duration": 3432435,
                             "url": "/xXTYmuMs/linder-bandolero-avi",
+                            "realm": "ulozto",
                             "filesize": 622180912,
                             "rating": -2,
                             "content_type": "video",
                             "password_protected_archive": false,
                             "password_protected_file": false,
+                            "visibility": "public",
+                            "streamable": false,
                             "media_info": {
                                 "s160x120": [ "http://static.uloz.to/cdn/X/T/Y/xXTYmuMs.160x120.0.jpg", "http://static.uloz.to/cdn/X/T/Y/xXTYmuMs.160x120.1.jpg", "http://static.uloz.to/cdn/X/T/Y/xXTYmuMs.160x120.2.jpg" ],
                                 "s640x360": [ "http://static.uloz.to/cdn/2/H/o/x2HoPV7N.640x360.0.jpg", "http://static.uloz.to/cdn/2/H/o/x2HoPV7N.640x360.0.jpg", "http://static.uloz.to/cdn/2/H/o/x2HoPV7N.640x360.0.jpg", "http://static.uloz.to/cdn/2/H/o/x2HoPV7N.640x360.0.jpg" ]
@@ -1028,15 +1085,20 @@ Perform search request. Response consists of two parts
                         },
                         {
                             "id": "zXhJZzx",
+                            "slug": "/xzXhJZzx/sila-",
                             "name": "Sila osudu - novela Mex. - Špan. 2011 HD dab.SK - diel 065 - FU17 -.avi",
+                            "name_sanitized": "Sila osudu - novela Mex. - Špan. 2011 HD dab.SK - diel 065 - FU17 -.avi",
                             "extension": "avi",
                             "duration": 9454954,
                             "url": "/xzXhJZzx/sila-osudu-novela-mex-span-2011-hd-dab-sk-diel-065-fu17-avi",
+                            "realm": "ulozto",
                             "filesize": 622180912,
                             "rating": 2,
                             "content_type": "video",
                             "password_protected_archive": false,
                             "password_protected_file": false,
+                            "visibility": "public",
+                            "streamable": false,
                             "media_info": {
                                 "s160x120": [ "http://videoth.uloz.to/z/X/h/xzXhJZzx.160x120.0.jpg", "http://static.uloz.to/cdn/X/T/Y/xXTYmuMs.160x120.1.jpg", "http://static.uloz.to/cdn/X/T/Y/xXTYmuMs.160x120.2.jpg" ],
                                 "s640x360": [ "http://videoth.uloz.to/z/X/h/xzXhJZzx.640x360.2.jpg", "http://videoth.uloz.to/z/X/h/xzXhJZzx.640x360.2.jpg", "http://videoth.uloz.to/z/X/h/xzXhJZzx.640x360.2.jpg", "http://videoth.uloz.to/z/X/h/xzXhJZzx.640x360.2.jpg" ]
@@ -1117,8 +1179,8 @@ This entry point is not secured, and is publicly accessible.
     
         + version.internal: `10097` (number, required) - Internal version, should at least loosely follow some kind of semantic versioning (SEMVER)
         + version.displayed: `1.1` (string, required) - Version number to show to users
-        + url: http://uloz.to/path/to/app (string, required) - Url to download last version
-        + checksum: 217acf325c6012c1a50828e74626b945 (string, required) - MD5 checksum of the last version 
+        + url: `"http://uloz.to/path/to/app"` (string, required) - Url to download last version
+        + checksum: `"217acf325c6012c1a50828e74626b945"` (string, required) - MD5 checksum of the last version 
         
 
     + Body
