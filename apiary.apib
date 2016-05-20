@@ -14,8 +14,8 @@ Security keys used thoughout the API
 + user_token
 
         User token is used to prove to API that your application has access to user's account. User token is obtained by validating login information through API /session.
-        
-+ X-Checksum 
+
++ X-Checksum
 
         Security checksum to sign your request with, assuring API that request was not tampered with.
 
@@ -38,7 +38,7 @@ to keep your client decoupled from implementation details.
 + Request
 
     + Header
-    
+
             X-Auth-Token: 3284hedgf237ruewhfvgi2378
 
 + Response 200 (application/json)
@@ -52,22 +52,22 @@ to keep your client decoupled from implementation details.
             "userfolders_list_url": "/v1/user/{user_token}/folders",
             "userfolders_url": "/v1/user/{user_token}/folders/{folder_id}"
         }
-        
+
 + Response 401 (application/json)
 
-    Invalid X-Auth-Token provided , could not authorize your application. 
+    Invalid X-Auth-Token provided , could not authorize your application.
 
     + Header
-            
+
             WWW-Authenticate: X-Auth-Token
-        
+
     + Body
-            
+
             {
                 "result": "error",
                 "message": "Invalid authorization token."
             }
-        
+
 # Group Sessions
 
 
@@ -82,9 +82,9 @@ We need to authenticate user to get a session token. Session token is later used
 + Request (application/json)
 
     + Header
-    
+
             X-Auth-Token: 3284hedgf237ruewhfvgi2378
-            
+
     + Body
 
             {
@@ -98,11 +98,11 @@ We need to authenticate user to get a session token. Session token is later used
     User session created.
 
     + Headers
-        
+
             ETag: "asdiu328reewhfikw" - Session token
-            
+
     + Body
-            
+
             {
                 "token_id": "asdiu328reewhfikw",
                 "result": "ok",
@@ -111,20 +111,20 @@ We need to authenticate user to get a session token. Session token is later used
 
 + Response 401 (application/json)
 
-    Invalid X-Auth-Token provided , could not authorize your application. 
+    Invalid X-Auth-Token provided , could not authorize your application.
 
     + Header
-            
+
             WWW-Authenticate: X-Auth-Token
-        
+
     + Body
-            
+
             {
                 "result": "error",
                 "message": "Invalid authorization token."
             }
-        
-        
+
+
 + Response 412 (application/json)
 
     Unable to create user session.
@@ -154,7 +154,7 @@ We need to authenticate user to get a session token. Session token is later used
 + Parameters
 
     + user_token: asdiu328reewhfikw (string, optional) - Identifier of session
-        
+
 
 ### Delete user session [DELETE]
 
@@ -163,7 +163,7 @@ Effectively a logout.
 + Request
 
     + Header
-    
+
             X-Auth-Token: 3284hedgf237ruewhfvgi2378
 
 + Response 200 (application/json)
@@ -181,19 +181,19 @@ Effectively a logout.
 
 + Response 401 (application/json)
 
-    Invalid X-Auth-Token provided , could not authorize your application. 
+    Invalid X-Auth-Token provided , could not authorize your application.
 
     + Header
-            
+
             WWW-Authenticate: X-Auth-Token
-        
+
     + Body
-            
+
             {
                 "result": "error",
                 "message": "Invalid authorization token."
             }
-        
+
 
 # Group User
 
@@ -204,10 +204,10 @@ Effectively a logout.
 
 ### Get user data [GET]
 
-+ Request 
++ Request
 
     + Header
-    
+
             X-Auth-Token: 3284hedgf237ruewhfvgi2378
 
 + Response 200 (application/json)
@@ -215,10 +215,10 @@ Effectively a logout.
     Basic user info. Credit amount is measured in kilobytes [kB].
 
     + Body
-            
+
             {
                 "result": "ok",
-                "message": null
+                "message": null,
                 "user_id": 666,
                 "login": "medvidek",
                 "credit": 413967
@@ -229,16 +229,16 @@ Effectively a logout.
     Invalid X-Auth-Token or user_token provided , could not authorize your application. Use WWW-Authenticate header value to find out which part of authentication is wrong (X-Auth-Token or user_token).
 
     + Header
-            
+
             WWW-Authenticate: X-Auth-Token
-        
+
     + Body
-            
+
             {
                 "result": "error",
                 "message": "Invalid authorization token."
             }
-        
+
 
 ## Users folders [/v1/user/{user_token}/folders{?tree}]
 
@@ -321,8 +321,8 @@ List of all user's folders. Folders are always ordered by name.
                 "result": "error",
                 "message": "Invalid tree parameter value."
             }
-            
-            
+
+
 + Response 401 (application/json)
 
     Invalid X-Auth-Token , could not authorize your application. Use correct WWW-Authenticate header.
@@ -412,7 +412,7 @@ List of all user's folders. Folders are always ordered by name.
                 "result": "error",
                 "message": "Invalid authorization token."
             }
-            
+
 ## Files in users folders [/v1/user/{user_token}/folder/{folder_id}{?page,limit,sort,search_query,filetype,include_password_protected}]
 
 + Parameters
@@ -513,7 +513,7 @@ List of all user's folders. Folders are always ordered by name.
              }
 
 
-     
+
 # Group File
 
 ## File detail info [/v1/files/{slug}{?password,user_token,upload_token}]
@@ -619,7 +619,7 @@ File detail data
 
 ### Update file properties [PATCH]
 
-Update file properties. 
+Update file properties.
 All properties are optional, every property present in request body will be changed.
 Property set to `null` will be set to default value where possible.
 Updating any property may affect other properties (e.g., changing `name` may change `url` and `realm`).
@@ -641,7 +641,7 @@ Updating any property may affect other properties (e.g., changing `name` may cha
             X-Auth-Token: 3284hedgf237ruewhfvgi2378
 
     + Body
-    
+
             {
                 "name": "New file name.jpg",
                 "description": "New\tfile\ndescription.",
@@ -736,13 +736,13 @@ Delete your file.
 + Request
 
     + Header
-    
+
             X-Auth-Token: 3284hedgf237ruewhfvgi2378
 
 + Response 204 (application/json)
 
     Delete successfull
-    
+
     + Header
 
 + Response 401 (application/json)
@@ -759,7 +759,7 @@ Delete your file.
                 "result": "error",
                 "message": "Invalid authorization token."
             }
-            
+
 
 # Group Upload
 
@@ -781,10 +781,10 @@ Delete your file.
 
 + Response 200 (application/json)
 
-    Commit succesfull 
+    Commit succesfull
 
     + Body
-    
+
             {
                 "after_upload_url": "/sem/nahrano/d5ec97a3-cb15-46d3-8f5f-5125378a22c9",
                 "files": [
@@ -811,17 +811,17 @@ Delete your file.
                 "result": "error",
                 "message": "Unknown data received."
             }
-            
+
 + Response 401 (application/json)
 
     Invalid `X-Auth-Token` or `user_token`, could not authorize your request.
-    
+
     + Header
-    
+
             WWW-Authenticate: X-Auth-Token
-    
+
     + Body
-    
+
             {
                 "result": "error",
                 "message": "Invalid authorization token."
@@ -830,9 +830,9 @@ Delete your file.
 + Response 403 (application/json)
 
     Batch is not valid for edit.
-    
+
     + Body
-    
+
             {
                 "result": "error",
                 "message": "Batch is not valid for edit."
@@ -841,9 +841,9 @@ Delete your file.
 + Response 404 (application/json)
 
     Unknown `batch_uuid`
-    
+
     + Body
-    
+
             {
                 "result": "error",
                 "message": "Unknown batch uuid."
@@ -863,7 +863,7 @@ Delete your file.
     + received: `456789` (int, required) - Number of bytes of HTTP request recieved on server
     + size: `54646546` (int, required) - Uploading HTTP request size
     + slug: `null` (string, optional) - File slug, available only when `status = done`
-    
+
 + Request
 
     + Header
@@ -873,7 +873,7 @@ Delete your file.
 + Response 200 (application/json)
 
     + Body
-    
+
             {
                 "status": "uploading",
                 "received": 2791412
@@ -884,13 +884,13 @@ Delete your file.
 + Response 401 (application/json)
 
     Invalid `X-Auth-Token` provided. Use correct `WWW-Authenticate` header.
-    
+
     + Header
-    
+
             WWW-Authenticate: X-Auth-Token
-    
+
     + Body
-    
+
             {
                 "result": "error",
                 "message": "Invalid authorization token."
@@ -899,9 +899,9 @@ Delete your file.
 + Response 404
 
     Unknown `batch_uuid` or `batch_file_id`
-    
+
     + Body
-    
+
 
 # Group Search
 
@@ -932,17 +932,17 @@ Perform search request. Response consists of two parts
 
         X-Checksum is a security checksum, assuring API that request was not tampered with.
         X-Timestamp is the time the request was created.
-        
+
 
     + Header
-    
+
             X-Auth-Token: 3284hedgf237ruewhfvgi2378
             X-Checksum: 93bd5933f956598617c73c2864b00c00
             X-Timestamp: 1436957691
 
 + Response 200 (application/json)
     + Headers
-    
+
             Link: </search/zahradniceni rostliny>;rel=self,</search/zahradniceni rostliny>;rel=next,</search/zahradniceni rostliny>;rel=previous
 
     + Attributes (object)
@@ -961,7 +961,7 @@ Perform search request. Response consists of two parts
         + media_info: array - key:value array. Key defines size and format of thumbnail, value is a list of images.
 
     + Body
-    
+
              {
                 "result": "ok",
                 "message": null,
@@ -998,7 +998,7 @@ Perform search request. Response consists of two parts
                             }
                         },
                         {
-                            "id": "BwuV4rR", 
+                            "id": "BwuV4rR",
                             "slug": "/xBwuV4rR/pozna",
                             "name": "Poznávačka rostliny.pptx",
                             "name_sanitized": "*** rostliny.pptx",
@@ -1107,38 +1107,38 @@ Perform search request. Response consists of two parts
                     ]
                 }
             }
-            
+
 + Response 429 (application/json)
 
     + Body
-    
+
             {
                 "result": "error",
                 "message": "Too many requests. Please slow down a little and try again later."
             }
 
-            
+
 + Response 412 (application/json)
 
     Wrong request parameter. For e.g. `limit` less than 1 or more than 100, unsupported filter etc.
 
     + Body
-    
+
             {
                 "result": "error",
                 "message": "Wrong request parameter.",
                 "extra": "Parameter limit must be between <1, 100>"
             }
 
-            
+
 + Response 404 (application/json)
 
     Requested response does not exist. Maybe you are trying to access `page` parameter beyond the existing results?
-    
+
     + Header
-            
+
     + Body
-            
+
             {
                 "result": "error",
                 "message": "Requested page index is out of range for given query.",
@@ -1146,24 +1146,24 @@ Perform search request. Response consists of two parts
                 "items_count": 8
             }
 
-    
+
 + Response 401 (application/json)
 
     Invalid X-Auth-Token or user_token provided , could not authorize your application. Use WWW-Authenticate header value to find out which part of authentication is wrong (X-Auth-Token or user_token).
 
     + Header
-            
+
             WWW-Authenticate: X-Auth-Token
-        
+
     + Body
-            
+
             {
                 "result": "error",
                 "message": "Invalid authorization token."
             }
 
-# Group Application info        
-            
+# Group Application info
+
 ## Aplication version [/app-version/v1/{app_name}]
 
 This entry point is not secured, and is publicly accessible.
@@ -1176,15 +1176,15 @@ This entry point is not secured, and is publicly accessible.
 + Response 200 (application/json)
 
     + Attributes (object)
-    
+
         + version.internal: `10097` (number, required) - Internal version, should at least loosely follow some kind of semantic versioning (SEMVER)
         + version.displayed: `1.1` (string, required) - Version number to show to users
         + url: `"http://uloz.to/path/to/app"` (string, required) - Url to download last version
-        + checksum: `"217acf325c6012c1a50828e74626b945"` (string, required) - MD5 checksum of the last version 
-        
+        + checksum: `"217acf325c6012c1a50828e74626b945"` (string, required) - MD5 checksum of the last version
+
 
     + Body
-            
+
             {
                 "result": "ok",
                 "message": null,
@@ -1199,9 +1199,9 @@ This entry point is not secured, and is publicly accessible.
 + Response 404 (application/json)
 
     Unknown application name (app_name)
-    
-    + Body 
-    
+
+    + Body
+
             {
                 "result": "error",
                 "message": "Unknown application."
