@@ -388,11 +388,23 @@ List of all user's folders. Folders are always ordered by name.
                 "message": "Unable to create folder.",
                 "errors": [
                     {
-                        "data-element": "name",
+                        "data_element": "name",
                         "message": "Name cannot be empty."
                     },
                     {
-                        "data-element": "parent_folder_id",
+                        "data_element": "name",
+                        "message": "Name is too long."
+                    },
+                    {
+                        "data_element": "visibility",
+                        "message": "Allowed values are public and private."
+                    },
+                    {
+                        "data_element": "parent_folder_id",
+                        "message": "Parent folder does not exist."
+                    },
+                    {
+                        "data_element": "parent_folder_id",
                         "message": "You must be owner of parent folder."
                     }
                 ]
@@ -412,6 +424,17 @@ List of all user's folders. Folders are always ordered by name.
                 "result": "error",
                 "message": "Invalid authorization token."
             }
+
++ Response 409 (application/json)
+
+    Folder with this name already exists. Use different name.
+
+    + Body
+
+          {
+                "result": "error",
+                "message": "This folder already exists"
+          }
 
 ## Files in users folders [/v1/user/{user_token}/folder/{folder_id}{?page,limit,sort,search_query,filetype,include_password_protected}]
 
