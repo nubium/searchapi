@@ -547,11 +547,7 @@ Delete your file.
 
 + Parameters
     + batch_uuid: d5ec97a3-cb15-46d3-8f5f-5125378a22c9 (string, required) - Upload batch unique ID
-    + visibility (enum[string], default, required)
-        + Default: public
-        + Members
-            + public
-            + private
+    + visibility (enum) - Either `public` or `private`
     + is_searchable: true (boolean, required) - Sets sets this searchable flag to all files currently in batch
     + user_token: asdiu328reewhfikw (string, optional) - To access user's upload batch, you need to identify yourself with his token
 
@@ -675,9 +671,16 @@ Delete your file.
                 "message": "Invalid authorization token."
             }
 
-+ Response 404
++ Response 404 (application/json)
 
     `Unknown batch_uuid or batch_file_id`
+
+    + Body
+
+            {
+                "result": "error",
+                "message:" "batch_uuid or batch_file_id not found"
+            }
 
 
 # Group Search
@@ -694,7 +697,7 @@ Delete your file.
     + sort: weight (enum, optional) - Sorting, one of [`weight`, `created`, `ratings`, `size`, `-size`]. This option may not be used without specifying `query`.
         Default: weight
     + filetype: video (string, optional) - Filter found files, value might be one of (`video`, `audio`, `image`, `document`). If empty, search will return all filetypes.
-    + include_password_protected: false (boolean, optional, default) - If set to `true`, will include password protected files in the search results.
+    + include_password_protected: false (boolean, optional) - If set to `true`, will include password protected files in the search results.
 
 ### Get search result [GET]
 
