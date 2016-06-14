@@ -55,7 +55,7 @@ to keep your client decoupled from implementation details.
 
 + Response 401 (application/json)
 
-    Invalid X-Auth-Token provided , could not authorize your application.
+    `Invalid X-Auth-Token provided , could not authorize your application.`
 
     + Header
 
@@ -95,7 +95,7 @@ We need to authenticate user to get a session token. Session token is later used
 
 + Response 201 (application/json)
 
-    User session created.
+    `User session created.`
 
     + Headers
 
@@ -111,7 +111,7 @@ We need to authenticate user to get a session token. Session token is later used
 
 + Response 401 (application/json)
 
-    Invalid X-Auth-Token provided , could not authorize your application.
+    `Invalid X-Auth-Token provided , could not authorize your application.`
 
     + Header
 
@@ -127,7 +127,7 @@ We need to authenticate user to get a session token. Session token is later used
 
 + Response 412 (application/json)
 
-    Unable to create user session.
+    `Unable to create user session.`
 
     + Body
 
@@ -135,18 +135,6 @@ We need to authenticate user to get a session token. Session token is later used
                 "token": null,
                 "result": "error",
                 "message": "Wrong password or invalid username"
-            }
-
-+ Response 429 (application/json)
-
-        Too many requests - slow down, try again later.
-
-    + Body
-
-            {
-                "token": null,
-                "result": "error"
-                "message": "Too many requests. Please slow down a little and try again later."
             }
 
 ## User sessions [/session/v1/{user_token}]
@@ -181,7 +169,7 @@ Effectively a logout.
 
 + Response 401 (application/json)
 
-    Invalid X-Auth-Token provided , could not authorize your application.
+    `Invalid X-Auth-Token provided , could not authorize your application.`
 
     + Header
 
@@ -212,7 +200,7 @@ Effectively a logout.
 
 + Response 200 (application/json)
 
-    Basic user info. Credit amount is measured in kilobytes [kB].
+    `Basic user info. Credit amount is measured in kilobytes.`
 
     + Body
 
@@ -226,7 +214,7 @@ Effectively a logout.
 
 + Response 401 (application/json)
 
-    Invalid X-Auth-Token or user_token provided , could not authorize your application. Use WWW-Authenticate header value to find out which part of authentication is wrong (X-Auth-Token or user_token).
+    `Invalid X-Auth-Token or user_token provided , could not authorize your application. Use WWW-Authenticate header value to find out which part of authentication is wrong (X-Auth-Token or user_token).`
 
     + Header
 
@@ -246,17 +234,6 @@ Effectively a logout.
 
 List of all user's folders. Folders are always ordered by name.
 
-+ Folder data format
-    + id: `25792` (int) - Folder id (`0` is root folder for each user)
-    + name: `"My very own folder"` (string) - Folder's name/caption. Root folder is always named `root`, you are advised to translate this name to something that suits your application.
-    + name_sanitized: `"My *** folder"` (string) - Folder's name/caption with bad words replaced.
-    + visibility (enum) - Either `public` or `private`
-    + public_url: `"/soubory/my_username/folder_slug"` (string) - Url to folder's public view (`null` when not available)
-    + is_password_protected (boolean) - Public folder, other users need to provide password to see contents of this folder
-    + type (enum) - One of (`root`, `gallery`, `normal`, `videoshare`, `favorites`, `documents`, `audios`, `videos`)
-    + parent_folder_id: `0` (int) - Folder id
-    + children (collection of folders) - this field is present if requesting folders in `tree` format
-
 + Parameters
     + user_token: "asdiu328reewhfikw" (string) - Identification of an user, obtained through /session entry point
     + tree (bool, optional) - If set to `true`, folder entities will be returned in the tree-like structure, with each folder entity containing its children in the `children` field.
@@ -269,51 +246,12 @@ List of all user's folders. Folders are always ordered by name.
             X-Auth-Token: 3284hedgf237ruewhfvgi2378
 
 + Response 200 (application/json)
-
-    + Body
-
-            {
-                "items": [
-                    {
-                        "id": 0,
-                        "name": "Root",
-                        "name_sanitized": "Root",
-                        "visibility": "private",
-                        "public_url": null,
-                        "is_password_protected": false,
-                        "type": "root",
-                        "parent_folder_id": null,
-                        "children": [
-                            {
-                                "id": 25792,
-                                "name": "Dokumenty",
-                                "name_sanitized": "Dokumenty",
-                                "visibility": "public",
-                                "public_url": "/soubory/my_username/folder_slug",
-                                "is_password_protected": false,
-                                "type": "documents",
-                                "parent_folder_id": 0,
-                                "children": []
-                            },
-                            {
-                                "id": 25794,
-                                "name": "Domácí porno",
-                                "name_sanitized": "Domácí ***",
-                                "visibility": "public",
-                                "public_url": "/soubory/my_username/folder_slug",
-                                "is_password_protected": false,
-                                "type": "normal",
-                                "parent_folder_id": 0,
-                                "children": []
-                            }
-                        ]
-                    }
-                ]
-            }
+    + Attributes (object)
+        + items (array[Folder entity])
 
 + Response 400 (application/json)
 
-    Invalid parameter value
+    `Invalid parameter value`
 
     + Body
 
@@ -325,7 +263,7 @@ List of all user's folders. Folders are always ordered by name.
 
 + Response 401 (application/json)
 
-    Invalid X-Auth-Token , could not authorize your application. Use correct WWW-Authenticate header.
+    `Invalid X-Auth-Token , could not authorize your application. Use correct WWW-Authenticate header.`
 
     + Header
 
@@ -379,7 +317,7 @@ List of all user's folders. Folders are always ordered by name.
 
 + Response 400 (application/json)
 
-    Unable to create folder - wrong data submitted.
+    `Unable to create folder - wrong data submitted.`
 
     + Body
 
@@ -412,7 +350,7 @@ List of all user's folders. Folders are always ordered by name.
 
 + Response 401 (application/json)
 
-    Invalid X-Auth-Token provided , could not authorize your application. Use correct WWW-Authenticate header.
+    `Invalid X-Auth-Token provided , could not authorize your application. Use correct WWW-Authenticate header.`
 
     + Header
 
@@ -427,50 +365,32 @@ List of all user's folders. Folders are always ordered by name.
 
 + Response 409 (application/json)
 
-    Folder with this name already exists. Use different name.
+    `Folder with this name already exists. Use different name.`
 
     + Body
 
-          {
+            {
                 "result": "error",
                 "message": "This folder already exists"
-          }
+            }
 
 ## Files in users folders [/v1/user/{user_token}/folder/{folder_id}{?page,limit,sort,search_query,filetype,include_password_protected}]
 
 + Parameters
     + user_token: asdiu328reewhfikw (required, string) - User token of folder owner
-    + page: 1 (optional, int) - Fetch specific page number
+    + page: 1 (number, optional) - Fetch specific page number
         Default: 1
-    + limit: 20 (optional, int) - Limit the result set to <limit> items
+    + limit: 20 (number, optional) - Limit the result set to <limit> items
         Default: 20
-    + sort: name (optional, string) - Sorting, one of [name; -name; created; -created; size; -size; extension; -extension]. This option may not be used without specifying `query`.
+    + sort: name (string, optional) - Sorting, one of [name; -name; created; -created; size; -size; extension; -extension]. This option may not be used without specifying `query`.
         Default: name
     + `search_query` (string, optional) - Return only files with names containing search_query
-    + filetype: video (optional, string) - Filter found files, value might be one of [video; audio; image; document]. If empty, search will return all filetypes.
-    + `include_password_protected`: false (optional, boolean) - If set to true, will include password protected files in the search results.
+    + filetype: video (string, optional) - Filter found files, value might be one of [video; audio; image; document]. If empty, search will return all filetypes.
+    + `include_password_protected`: false (boolean, optional) - If set to true, will include password protected files in the search results.
         Default: true
 
 
 ### Get users files in folder [GET]
-
-+ File entity
-    + id: `"xugRqqug"`
-    + slug: `"/xugRqqug/pozna"` - Identificator used for other API calls affecting file. Slug may change when file is renamed. Old slug will keep working, but new slug will be issued by API calls.
-    + url: `"/xugRqqug/poznavacka-rostliny-pptx"`,
-    + realm: `ulozto` (enum, required) - Enum, one of (`ulozto`, `pornfile`).
-    + name: `"Poznávačka rostliny.pptx"` (string, required) - Name of the file
-    + name_sanitized: `"Poznávačka ***.pptx"` (string, required) - Name of the file with bad words replaced
-    + filesize: `158367932` (number, required) - filesize in bytes
-    + extension: `"pptx"` (string, required) - file extension
-    + rating: `0` (number, required) - File rating (sum of thumbs up and thumbs down)
-    + content_type: `video` (string, required) - Enum  (`"video"`, `"audio"`, `"image"`, `"archive"`, `"document"`, `""`), new posibilities will be added.
-    + password_protected_archive: `false` (boolean, required) - IF the file is archive, AND that archive is password protected. This file can be downloaded.
-    + password_protected_file: `false` (boolean, required) - You must know correct password to access the file detail or to download this file.
-    + media_info: Array(object) - key:value array. Key defines size and format of thumbnail, value is a list of images.
-    + visibility: `public` (enum) - Either `public` or `private`
-    + duration: `296` (int, optional) - Length of the video/audio in seconds (if videofile)
-    + streamable: `false` (boolean) - `true` for streamable videofile
 
 + Request
 
@@ -484,57 +404,13 @@ List of all user's folders. Folders are always ordered by name.
 
             Link: </v1/user/{user_token}/folder/{folder_id}?page=1>;rel=self,</v1/user/{user_token}/folder/{folder_id}?page=2>;rel=next
 
-    + Body
-
-             {
-                "metadata": {
-                    "page": 1,
-                    "limit": 20,
-                    "page_count": 12,
-                    "items_count": 236
-                },
-                "items": [
-                    {
-                        "id": "ugRqqug",
-                        "slug": "/xugRqqug/vedma"
-                        "url": "/xugRqqug/vedma-z-weiry-1-cast-pdf-pro-epub-pdf",
-                        "name": "Vedma z Weiry 1 část_pdf_pro_ePub.pdf",
-                        "name_sanitized": "Vedma z Weiry 1 ***_***_pro_ePub.pdf",
-                        "realm": "ulozto",
-                        "extension": "pdf",
-                        "duration": null,
-                        "filesize": 10241024,
-                        "rating": 0,
-                        "content_type": "",
-                        "password_protected_archive": false,
-                        "password_protected_file": false,
-                        "media_info": {
-                            "s160x120": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ],
-                            "s640x360": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ]
-                        }
-                    },
-                    {
-                        "id": "BwuV4rR",
-                        "slug": "/xBwuV4rR/pozna",
-                        "url": "/xBwuV4rR/poznavacka-rostliny-pptx",
-                        "name": "Poznávačka rostliny.pptx",
-                        "name_sanitized": "Poznávačka rostliny.pptx",
-                        "realm": "pornfile",
-                        "extension": "pptx",
-                        "duration": null,
-                        "filesize": 158367932,
-                        "rating": 0,
-                        "content_type": "",
-                        "password_protected_archive": false,
-                        "password_protected_file": false,
-                        "media_info": {
-                            "s160x120": [ "http://img4.uloz.to/ul3/images/ico/unknown.png" ],
-                            "s640x360": [ "http://img4.uloz.to/ul3/images/ico/unknown.png" ]
-                        }
-                    },
-                ]
-             }
-
+    + Attributes
+        + metadata (object)
+            + page: 1
+            + limit: 20
+            + page_count: 12
+            + items_count: 236
+        + items (array[Basic file entity])
 
 
 # Group File
@@ -544,44 +420,12 @@ List of all user's folders. Folders are always ordered by name.
 File detail data
 
 + Parameters
-    + slug: `"/x2EfXNKe/tera-online-prikaz-na-stahovanie-na-steam-txt"` (string, required) - Slug from file listing API calls. Slug may change when file is renamed. Old slug will keep working, but new slug will be issued by API calls.
-    + user_token: `"asdiu328reewhfikw"` (string, optional) - To access user's private file, you need to identify yourself with his token
-    + upload_token: `"skesfwkfjsnfsefk:123"` (string, optional) - To write access to anonymous file in upload process, you need to use upload token
-    + password: `"123macko"` (string, optional) - To access password protected file, you need to provide the file's password (password is not necessary to access own files, password does not allow writing file not my own)
+    + slug: !8DzBBNAuS (string, required) - Slug from file listing API calls. Slug may change when file is renamed. Old slug will keep working, but new slug will be issued by API calls.
+    + user_token: asdiu328reewhfikw (string, optional) - To access user's private file, you need to identify yourself with his token
+    + upload_token: skesfwkfjsnfsefk:123 (string, optional) - To write access to anonymous file in upload process, you need to use upload token
+    + password: 123macko (string, optional) - To access password protected file, you need to provide the file's password (password is not necessary to access own files, password does not allow writing file not my own)
 
 ### Get file detail info [GET]
-
-+ File entity
-    + id: `"xugRqqug"`
-    + slug: `"/xugRqqug/pozna"` - Identificator used for other API calls affecting file. Slug may change when file is renamed. Old slug will keep working, but new slug will be issued by API calls.
-    + url: `"/xugRqqug/poznavacka-rostliny-pptx"`,
-    + realm: `ulozto` (enum, required) - Enum, one of (`ulozto`, `pornfile`).
-    + name: `"Poznávačka rostliny.pptx"` (string, required) - Name of the file
-    + name_sanitized: `"Poznávačka ***.pptx"` (string, required) - Name of the file with bad words replaced
-    + description: `"this could potentially be a rather\r\nlong description"` (string, optional) - File description
-    + description_sanitized: `"this could *** *** a rather\r\nlong description"` (string, optional) - File description with bad words replaced
-    + filesize: `158367932` (number, required) - filesize in bytes
-    + extension: `"pptx"` (string, required) - file extension
-    + rating: `0` (number, required) - File rating (sum of thumbs up and thumbs down)
-    + password_protected_archive: `false` (boolean, required) - IF the file is archive, AND that archive is password protected. This file can be downloaded.
-    + password_protected_file: `false` (boolean, required) - You must know correct password to access the file detail or to download this file .
-    + media_info: Array(object) - key:value array. Key defines size and format of thumbnail, value is a list of images.
-    + visibility: `public` (enum) - Either "public" or "private"
-    + status: `ok` (enum) - Either `ok` (regular file) or `incomplete` (file is in process of uploading)
-    + is_searchable: `true` (boolean, required) - When `false`, file will be hidden form public searchers
-    + expire_download: `null` (int, optional) - When not `null`, file is download resticted up to this number.
-    + expire_time: `2016-01-01` (date, optional) - When not `null`, file is download resticted up to this day.
-    + folder_id: `0` (int, required) - ID of folder containing this file. `0` is root folder for every user and only possible folder for anonymous files.
-    + format
-        + width: `320` (int, optional) - If available, width of video/image
-        + height: `200` (int, optional) - If available, height of video/image
-        + duration: `296` (int, optional) - Length of the video/audio in seconds
-        + content_type: `video` (string, required) - Enum  (`"video"`, `"audio"`, `"image"`, `"archive"`, `"document"`, `""`), new posibilities will be added.
-        + streamable: `false` (boolean) - `true` for streamable videofile
-    + attributes
-        + archive_files - to be specified
-        + video_data - to be specified
-        + audio_data - to be specified
 
 + Request
 
@@ -590,44 +434,11 @@ File detail data
             X-Auth-Token: 3284hedgf237ruewhfvgi2378
 
 + Response 200 (application/json)
-    + Body
-
-            {
-                "id": "ugRqqug",
-                "slug": "/ugRqqug/vedma",
-                "name": "Vedma z Weiry 1 část_pdf_pro_ePub.pdf",
-                "name_sanitized": "Vedma *** *** *** část_pdf_pro_ePub.pdf",
-                "description": "this could potentially be a rather\r\nlong description",
-                "description_sanitized": "this could *** *** a rather\r\nlong description",
-                "extension": "pdf",
-                "url": "/xugRqqug/vedma-z-weiry-1-cast-pdf-pro-epub-pdf",
-                "realm": "ulozto",
-                "filesize": 10241024,
-                "rating": 0,
-                "password_protected_archive": false,
-                "password_protected_file": false,
-                "visibility": "public",
-                "status": "ok",
-                "is_searchable": true,
-                "expire_download": null,
-                "expire_time": "2016-01-01",
-                "folder_id": 0,
-                "media_info": {
-                    "s160x120": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ],
-                    "s640x360": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ]
-                },
-                "format": {
-                    "width": 1024,
-                    "height": 768,
-                    "duration": 1598,
-                    "content_type": "video",
-                    "streamable": false
-                }
-            }
+    + Attributes (Detailed file entity)
 
 + Response 401 (application/json)
 
-    Invalid X-Auth-Token, password or user_token, could not authorize your request.
+    `Invalid X-Auth-Token, password or user_token, could not authorize your request.`
 
     + Header
 
@@ -647,74 +458,20 @@ All properties are optional, every property present in request body will be chan
 Property set to `null` will be set to default value where possible.
 Updating any property may affect other properties (e.g., changing `name` may change `url` and `realm`).
 
-+ Update entity
-    + `name`: (string, not empty) - Change name of the file. New name must end with same extension as old one (case-sensitive).
-    + `description`: (string, default empty) - Change file description.
-    + `visibility`: (enum, default `public`) - Either `public` or `private`.
-    + `password`: (string, default no password) - Set password protection.
-    + `is_searchable`: (boolean, default `true`) - Set to `false` to hide file from public search.
-    + `expire_download`: (int, `0..2^24`, default no limit) - Restrict public access to file by number of downloads remaining.
-    + `expire_time`: (date, default no limit) - Restrict public access to file by date.
-    + `folder_id`: (int, optional, default `0`) - Assign file to folder (`0` = root folder, file and folder owner must match).
-
 + Request (application/json)
 
     + Header
 
             X-Auth-Token: 3284hedgf237ruewhfvgi2378
 
-    + Body
-
-            {
-                "name": "New file name.jpg",
-                "description": "New\tfile\ndescription.",
-                "visibility": "private",
-                "password": "heslo",
-                "is_searchable": true,
-                "expire_download": 10,
-                "expire_time": "2000-01-01",
-                "folder_id": 0
-            }
+    + Attributes (Update file entity)
 
 + Response 200 (application/json)
-    + Body
-
-            {
-                "id": "ugRqqug",
-                "slug": "/ugRqqug/vedma",
-                "name": "Vedma z Weiry 1 část_pdf_pro_ePub.pdf",
-                "name_sanitized": "Vedma *** *** *** část_pdf_pro_ePub.pdf",
-                "description": "New\tfile\ndescription.",
-                "description_sanitized": "New\tfile\n***.",
-                "extension": "pdf",
-                "url": "/xugRqqug/vedma-z-weiry-1-cast-pdf-pro-epub-pdf",
-                "realm": "ulozto",
-                "filesize": 10241024,
-                "rating": 0,
-                "password_protected_archive": false,
-                "password_protected_file": false,
-                "visibility": "public",
-                "status": "ok",
-                "is_searchable": true,
-                "expire_download": null,
-                "expire_time": "2016-01-01",
-                "folder_id": 0,
-                "media_info": {
-                    "s160x120": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ],
-                    "s640x360": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ]
-                },
-                "format": {
-                    "width": 1024,
-                    "height": 768,
-                    "duration": 1598,
-                    "content_type": "video",
-                    "streamable": false
-                }
-            }
+    + Attributes (Detailed file entity)
 
 + Response 401 (application/json)
 
-    Invalid `X-Auth-Token`, `user_token` or `upload_token`, could not authorize your request.
+    `Invalid X-Auth-Token, password or user_token, could not authorize your request.`
 
     + Header
 
@@ -729,7 +486,7 @@ Updating any property may affect other properties (e.g., changing `name` may cha
 
 + Response 400 (application/json)
 
-    Unable to update file - wrong data submitted.
+    `Unable to update file - wrong data submitted.`
 
     + Body
 
@@ -770,7 +527,7 @@ Delete your file.
 
 + Response 401 (application/json)
 
-    Invalid `X-Auth-Token`, `user_token` or `upload_token`, could not authorize your request.
+    `Invalid X-Auth-Token, password or user_token, could not authorize your request.`
 
     + Header
 
@@ -789,10 +546,14 @@ Delete your file.
 ## Upload batch commit [/v1/upload/batch/{batch_uuid}/commit{?user_token,visibility,is_searchable}]
 
 + Parameters
-    + batch_uuid: `"d5ec97a3-cb15-46d3-8f5f-5125378a22c9"` (string, required) - Upload batch unique ID
-    + visibility: `public` (enum, required) - Either `public` or `private`, sets this visibility to all files currently in batch
-    + is_searchable: `true` (boolean, required) - Sets sets this searchable flag to all files currently in batch
-    + user_token: `"asdiu328reewhfikw"` (string, optional) - To access user's upload batch, you need to identify yourself with his token
+    + batch_uuid: d5ec97a3-cb15-46d3-8f5f-5125378a22c9 (string, required) - Upload batch unique ID
+    + visibility (enum[string], default, required)
+        + Default: public
+        + Members
+            + public
+            + private
+    + is_searchable: true (boolean, required) - Sets sets this searchable flag to all files currently in batch
+    + user_token: asdiu328reewhfikw (string, optional) - To access user's upload batch, you need to identify yourself with his token
 
 ### Upload batch commit [PUT]
 
@@ -804,7 +565,7 @@ Delete your file.
 
 + Response 200 (application/json)
 
-    Commit succesfull
+    `Commit succesfull`
 
     + Body
 
@@ -826,7 +587,7 @@ Delete your file.
 
 + Response 400 (application/json)
 
-    Input data invalid
+    `Input data invalid`
 
     + Body
 
@@ -837,7 +598,7 @@ Delete your file.
 
 + Response 401 (application/json)
 
-    Invalid `X-Auth-Token` or `user_token`, could not authorize your request.
+    `Invalid X-Auth-Token, password or user_token, could not authorize your request.`
 
     + Header
 
@@ -852,7 +613,7 @@ Delete your file.
 
 + Response 403 (application/json)
 
-    Batch is not valid for edit.
+    `Batch is not valid for edit.`
 
     + Body
 
@@ -863,7 +624,7 @@ Delete your file.
 
 + Response 404 (application/json)
 
-    Unknown `batch_uuid`
+    `Unknown batch_uuid`
 
     + Body
 
@@ -876,16 +637,10 @@ Delete your file.
 ## Upload file progress [/v1/upload/batch/{batch_uuid}/file/{batch_file_id}]
 
 + Parameters
-    + batch_uuid: `"d5ec97a3-cb15-46d3-8f5f-5125378a22c9"` (string, required) - Upload batch unique ID
-    + batch_file_id: `10` (int, required) - File ID in upload batch (i.e., ordinal number of file in upload batch)
+    + batch_uuid: d5ec97a3-cb15-46d3-8f5f-5125378a22c9 (string, required) - Upload batch unique ID
+    + batch_file_id: 10 (number, required) - File ID in upload batch (i.e., ordinal number of file in upload batch)
 
 ### Get file upload status [GET]
-
-+ Status entity
-    + status: `uploading` (enum, required) - Either `uploading`, `done`or `error`
-    + received: `456789` (int, required) - Number of bytes of HTTP request recieved on server
-    + size: `54646546` (int, required) - Uploading HTTP request size
-    + slug: `null` (string, optional) - File slug, available only when `status = done`
 
 + Request
 
@@ -895,18 +650,19 @@ Delete your file.
 
 + Response 200 (application/json)
 
-    + Body
-
-            {
-                "status": "uploading",
-                "received": 2791412
-                "size": 843344997
-                "slug": null
-            }
+    + Attributes
+        + status: uploading (enum[string], required)
+            + Members
+                + uploading
+                + done
+                + error
+        + received: 456789 (number, required) - Number of bytes of HTTP request recieved on server
+        + size: 54646546 (number, required) - Uploading HTTP request size
+        + slug: null (string, optional) - File slug, available only when status is done
 
 + Response 401 (application/json)
 
-    Invalid `X-Auth-Token` provided. Use correct `WWW-Authenticate` header.
+    `Invalid X-Auth-Token, password or user_token, could not authorize your request.`
 
     + Header
 
@@ -921,9 +677,7 @@ Delete your file.
 
 + Response 404
 
-    Unknown `batch_uuid` or `batch_file_id`
-
-    + Body
+    `Unknown batch_uuid or batch_file_id`
 
 
 # Group Search
@@ -931,33 +685,26 @@ Delete your file.
 ## Search [/search/v1/{query}{?page,limit,user_token,sort,filetype,include_password_protected}]
 
 + Parameters
-    + query: `"zahradniceni rostliny"` (string, optional) - Searched query. If query is empty, search will return random files in random order.
-    + user_token: `"asdiu328reewhfikw"` (string, required) - Perform search as a frontend user (instead of anonymous search)
-    + page: `1` (int, optional) - Fetch specific page number
-        Default: `1`
-    + limit: `20` (int, optional) - Limit the result set to <limit> items
-        Default: `20`
-    + sort: `weight` (enum, optional) - Sorting, one of [`weight`, `created`, `ratings`, `size`, `-size`]. This option may not be used without specifying `query`.
-        Default: `weight`
-    + filetype: `video` (string, optional) - Filter found files, value might be one of (`video`, `audio`, `image`, `document`). If empty, search will return all filetypes.
-    + include_password_protected: `false` (boolean, optional) - If set to `true`, will include password protected files in the search results.
-        Default: `true`
+    + query: zahradniceni rostliny (string, optional) - Searched query. If query is empty, search will return random files in random order.
+    + user_token: asdiu328reewhfikw (string, required) - Perform search as a frontend user (instead of anonymous search)
+    + page: 1 (number, optional) - Fetch specific page number
+        Default: 1
+    + limit: 20 (number, optional) - Limit the result set to <limit> items
+        Default: 20
+    + sort: weight (enum, optional) - Sorting, one of [`weight`, `created`, `ratings`, `size`, `-size`]. This option may not be used without specifying `query`.
+        Default: weight
+    + filetype: video (string, optional) - Filter found files, value might be one of (`video`, `audio`, `image`, `document`). If empty, search will return all filetypes.
+    + include_password_protected: false (boolean, optional, default) - If set to `true`, will include password protected files in the search results.
 
 ### Get search result [GET]
 
 Perform search request. Response consists of two parts
-- metadata with informaton about the search (time, page, items count etc.)
-- list of search items (list of entries, one for each file)
-
-
++ metadata with informaton about the search (time, page, items count etc.)
++ list of search items (list of entries, one for each file)
 
 + Request
 
-        X-Checksum is a security checksum, assuring API that request was not tampered with.
-        X-Timestamp is the time the request was created.
-
-
-    + Header
+    + Headers
 
             X-Auth-Token: 3284hedgf237ruewhfvgi2378
             X-Checksum: 93bd5933f956598617c73c2864b00c00
@@ -969,167 +716,19 @@ Perform search request. Response consists of two parts
             Link: </search/zahradniceni rostliny>;rel=self,</search/zahradniceni rostliny>;rel=next,</search/zahradniceni rostliny>;rel=previous
 
     + Attributes (object)
-        + id: `"xugRqqug"`
-        + slug: `"/xugRqqug/pozna"` - Identificator used for other API calls affecting file. Slug may change when file is renamed. Old slug will keep working, but new slug will be issued by API calls.
-        + url: `"http://www.uloz.to/xBwuV4rR/poznavacka-rostliny-pptx"` (string, required) - Detail url, can be used as a file identifier
-        + realm: `ulozto` (enum, required) - Enum, one of (`ulozto`, `pornfile`).
-        + name: `"Poznávačka rostliny.pptx"` (string, required) - Name of the file
-        + name_sanitized: `"Poznávačka ***.pptx"` (string, required) - Name of the file with bad words replaced
-        + filesize: `158367932` (number, required) - filesize in bytes
-        + extension: `"pptx"` (string, required) - file extension
-        + rating: `0` (number, required) - File rating (sum of thumbs up and thumbs down)
-        + content_type: `video` (string, required) - Enum  (`"video"`, `"audio"`, `"image"`, `"archive"`, `"document"`, `""`), new posibilities will be added.
-        + password_protected_archive: `false` (boolean, required) - IF the file is archive, AND that archive is password protected. This file can be downloaded.
-        + password_protected_file: `false` (boolean, required) - You must know correct password to access the file detail or to download this file.
-        + media_info: array - key:value array. Key defines size and format of thumbnail, value is a list of images.
-
-    + Body
-
-             {
-                "result": "ok",
-                "message": null,
-                "metadata": {
-                    "query": "zahradniceni rostliny",
-                    "displayed_query": "zahradniceni rostliny",
-                    "run_at": "2014-11-11T08:40:51.620Z",
-                    "page": 1,
-                    "limit": 20,
-                    "page_count": 12,
-                    "items_count": 236
-                },
-                "items": {
-                    "exact": [
-                        {
-                            "id": "ugRqqug",
-                            "slug": "/xugRqqug/vedma",
-                            "name": "Vedma z Weiry 1 část_pdf_pro_ePub.pdf",
-                            "name_sanitized": "Vedma z *** 1 část_pdf_pro_ePub.pdf",
-                            "extension": "pdf",
-                            "duration": null,
-                            "url": "/xugRqqug/vedma-z-weiry-1-cast-pdf-pro-epub-pdf",
-                            "realm": "ulozto",
-                            "filesize": 10241024,
-                            "rating": 0,
-                            "content_type": "",
-                            "password_protected_archive": false,
-                            "password_protected_file": false,
-                            "visibility": "public",
-                            "streamable": false,
-                            "media_info": {
-                                "s160x120": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ],
-                                "s640x360": [ "http://img4.uloz.to/ul3/images/ico/pdf.png" ]
-                            }
-                        },
-                        {
-                            "id": "BwuV4rR",
-                            "slug": "/xBwuV4rR/pozna",
-                            "name": "Poznávačka rostliny.pptx",
-                            "name_sanitized": "*** rostliny.pptx",
-                            "extension": "pptx",
-                            "duration": null,
-                            "url": "/xBwuV4rR/poznavacka-rostliny-pptx",
-                            "realm": "ulozto",
-                            "filesize": 158367932,
-                            "rating": 0,
-                            "content_type": "",
-                            "password_protected_archive": false,
-                            "password_protected_file": false,
-                            "visibility": "public",
-                            "streamable": false,
-                            "media_info": {
-                                "s160x120": [ "http://img4.uloz.to/ul3/images/ico/unknown.png" ],
-                                "s640x360": [ "http://img4.uloz.to/ul3/images/ico/unknown.png" ]
-                            }
-                        },
-                        {
-                            "id": "gLEqCrR",
-                            "slug": "/xgLEqCrR/tajom",
-                            "name": "Tajomstvo kruhu čarodejníc - USA 2011 dab. SK diel 11 - U17 -.avi",
-                            "name_sanitized": "Tajomstvo kruhu čarodejníc - *** *** dab. SK diel 11 - U17 -.avi",
-                            "extension": "avi",
-                            "duration": 12345,
-                            "url": "/xgLEqCrR/tajomstvo-kruhu-carodejnic-usa-2011-dab-sk-diel-11-u17-avi",
-                            "realm": "ulozto",
-                            "filesize": 622180912,
-                            "rating": 2,
-                            "content_type": "video",
-                            "password_protected_archive": false,
-                            "password_protected_file": false,
-                            "visibility": "public",
-                            "streamable": false,
-                            "media_info": {
-                                "s160x120": [ "http://videoth.uloz.to/g/L/E/xgLEqCrR.160x120.1.jpg", "http://static.uloz.to/cdn/X/T/Y/xXTYmuMs.160x120.1.jpg", "http://static.uloz.to/cdn/X/T/Y/xXTYmuMs.160x120.2.jpg" ],
-                                "s640x360": [ "http://videoth.uloz.to/g/L/E/xgLEqCrR.640x360.2.jpg", "http://videoth.uloz.to/g/L/E/xgLEqCrR.640x360.2.jpg", "http://videoth.uloz.to/g/L/E/xgLEqCrR.640x360.2.jpg", "http://videoth.uloz.to/g/L/E/xgLEqCrR.640x360.2.jpg" ]
-                            }
-                        }
-                    ],
-                    "partial": [
-                         {
-                            "id": "XnKDmxF",
-                            "slug": "/xXnKDmxF/termi",
-                            "name": "Terminator.Genisys.2015.CAM.HUN.MD-JLX.avi",
-                            "name_sanitized": "Terminator.Genisys.2015.CAM.HUN.MD-JLX.avi",
-                            "extension": "avi",
-                            "duration": 3323223,
-                            "url": "/xXnKDmxF/terminator-genisys-2015-cam-hun-md-jlx-avi",
-                            "realm": "ulozto",
-                            "filesize": 622180912,
-                            "rating": 2,
-                            "content_type": "video",
-                            "password_protected_archive": false,
-                            "password_protected_file": false,
-                            "visibility": "public",
-                            "streamable": false,
-                            "media_info": {
-                                "s160x120": [ "http://videoth.uloz.to/X/n/K/xXnKDmxF.160x120.1.jpg", "http://static.uloz.to/cdn/X/T/Y/xXTYmuMs.160x120.1.jpg", "http://static.uloz.to/cdn/X/T/Y/xXTYmuMs.160x120.2.jpg" ],
-                                "s640x360": [ "http://videoth.uloz.to/X/n/K/xXnKDmxF.640x360.1.jpg", "http://videoth.uloz.to/X/n/K/xXnKDmxF.640x360.1.jpg", "http://videoth.uloz.to/X/n/K/xXnKDmxF.640x360.1.jpg", "http://videoth.uloz.to/X/n/K/xXnKDmxF.640x360.1.jpg" ]
-                            }
-                        },
-                        {
-                            "id": "XTYmuMs",
-                            "slug": "/xXTYmuMs/linde",
-                            "name": "239-Ženatý se závazky - Married with Children (1987)(CZ).avi",
-                            "name_sanitized": "239-Ženatý se závazky - Married with Children (1987)(CZ).avi",
-                            "extension": "avi",
-                            "duration": 3432435,
-                            "url": "/xXTYmuMs/linder-bandolero-avi",
-                            "realm": "ulozto",
-                            "filesize": 622180912,
-                            "rating": -2,
-                            "content_type": "video",
-                            "password_protected_archive": false,
-                            "password_protected_file": false,
-                            "visibility": "public",
-                            "streamable": false,
-                            "media_info": {
-                                "s160x120": [ "http://static.uloz.to/cdn/X/T/Y/xXTYmuMs.160x120.0.jpg", "http://static.uloz.to/cdn/X/T/Y/xXTYmuMs.160x120.1.jpg", "http://static.uloz.to/cdn/X/T/Y/xXTYmuMs.160x120.2.jpg" ],
-                                "s640x360": [ "http://static.uloz.to/cdn/2/H/o/x2HoPV7N.640x360.0.jpg", "http://static.uloz.to/cdn/2/H/o/x2HoPV7N.640x360.0.jpg", "http://static.uloz.to/cdn/2/H/o/x2HoPV7N.640x360.0.jpg", "http://static.uloz.to/cdn/2/H/o/x2HoPV7N.640x360.0.jpg" ]
-                            }
-                        },
-                        {
-                            "id": "zXhJZzx",
-                            "slug": "/xzXhJZzx/sila-",
-                            "name": "Sila osudu - novela Mex. - Špan. 2011 HD dab.SK - diel 065 - FU17 -.avi",
-                            "name_sanitized": "Sila osudu - novela Mex. - Špan. 2011 HD dab.SK - diel 065 - FU17 -.avi",
-                            "extension": "avi",
-                            "duration": 9454954,
-                            "url": "/xzXhJZzx/sila-osudu-novela-mex-span-2011-hd-dab-sk-diel-065-fu17-avi",
-                            "realm": "ulozto",
-                            "filesize": 622180912,
-                            "rating": 2,
-                            "content_type": "video",
-                            "password_protected_archive": false,
-                            "password_protected_file": false,
-                            "visibility": "public",
-                            "streamable": false,
-                            "media_info": {
-                                "s160x120": [ "http://videoth.uloz.to/z/X/h/xzXhJZzx.160x120.0.jpg", "http://static.uloz.to/cdn/X/T/Y/xXTYmuMs.160x120.1.jpg", "http://static.uloz.to/cdn/X/T/Y/xXTYmuMs.160x120.2.jpg" ],
-                                "s640x360": [ "http://videoth.uloz.to/z/X/h/xzXhJZzx.640x360.2.jpg", "http://videoth.uloz.to/z/X/h/xzXhJZzx.640x360.2.jpg", "http://videoth.uloz.to/z/X/h/xzXhJZzx.640x360.2.jpg", "http://videoth.uloz.to/z/X/h/xzXhJZzx.640x360.2.jpg" ]
-                            }
-                        }
-                    ]
-                }
-            }
+        + result: ok
+        + message: null
+        + metadata (object)
+            + query: zahradniceni rostliny
+            + displayed_query: "zahradniceni rostliny
+            + run_at: "2014-11-11T08:40:51.620Z
+            + page: 1
+            + limit: 20
+            + page_count: 12
+            + items_count: 236
+        + items (object)
+            + exact (array[Basic file entity])
+            + partial (array[Basic file entity])
 
 + Response 429 (application/json)
 
@@ -1143,7 +742,7 @@ Perform search request. Response consists of two parts
 
 + Response 412 (application/json)
 
-    Wrong request parameter. For e.g. `limit` less than 1 or more than 100, unsupported filter etc.
+    `Wrong request parameter. For e.g. limit less than 1 or more than 100, unsupported filter etc.`
 
     + Body
 
@@ -1156,7 +755,7 @@ Perform search request. Response consists of two parts
 
 + Response 404 (application/json)
 
-    Requested response does not exist. Maybe you are trying to access `page` parameter beyond the existing results?
+    `Requested response does not exist. Maybe you are trying to access page parameter beyond the existing results?`
 
     + Header
 
@@ -1172,7 +771,7 @@ Perform search request. Response consists of two parts
 
 + Response 401 (application/json)
 
-    Invalid X-Auth-Token or user_token provided , could not authorize your application. Use WWW-Authenticate header value to find out which part of authentication is wrong (X-Auth-Token or user_token).
+    `Invalid X-Auth-Token, password or user_token, could not authorize your request.`
 
     + Header
 
@@ -1200,10 +799,10 @@ This entry point is not secured, and is publicly accessible.
 
     + Attributes (object)
 
-        + version.internal: `10097` (number, required) - Internal version, should at least loosely follow some kind of semantic versioning (SEMVER)
-        + version.displayed: `1.1` (string, required) - Version number to show to users
-        + url: `"http://uloz.to/path/to/app"` (string, required) - Url to download last version
-        + checksum: `"217acf325c6012c1a50828e74626b945"` (string, required) - MD5 checksum of the last version
+        + version.internal: 10097 (number, required) - Internal version, should at least loosely follow some kind of semantic versioning (SEMVER)
+        + version.displayed: 1.1 (string, required) - Version number to show to users
+        + url: http://uloz.to/path/to/app (string, required) - Url to download last version
+        + checksum: 217acf325c6012c1a50828e74626b945 (string, required) - MD5 checksum of the last version
 
 
     + Body
@@ -1229,3 +828,134 @@ This entry point is not secured, and is publicly accessible.
                 "result": "error",
                 "message": "Unknown application."
             }
+
+
+# Data structures
+
+## Detailed file entity (object)
+## Properties
++ id: aYu7nBQ (string, required) - encrypted id of file
++ slug: !ksiXPSXP6 (string, required) - identificator used for other API calls affecting file. Slug may change when file is renamed. Old slug will keep working, but new slug will be issued by API calls.
++ url: `/!ksiXPSXP6/poznavacka-rostlin-pptx` (string, required)
++ realm (enum[string], default, required)
+    + Default: ulozto
+    + Members
+        + ulozto
+        + pornfile
++ name: Poznávačka rostlin.pptx (string, required) - name of the file
++ name_sanitized: `Poznávačka ***.pptx` (string, required) - name of the file with bad words replaced
++ description: `this could potentially be a rather\r\nlong description` (string, optional) - File description
++ description_sanitized: `this could *** *** a rather\r\nlong description` (string, optional) - File description with bad words replaced
++ filesize: 158367932 (number, required) - filesize in bytes
++ extension: pptx (string, required) - file extension
++ rating: 0 (number, required) - file rating (sum of thumbs up and thumbs down)
++ password_protected_archive: false (boolean, required) - IF the file is archive, AND that archive is password protected. This file can be downloaded.
++ password_protected_file: false (boolean, required) - You must know correct password to access the file detail or to download this file.
++ media_info
+    + array(object) - key:value array. Key defines size and format of thumbnail, value is a list of images.
++ visibility (enum[string], default, nullable, required)
+    + Default: public
+    + Members
+        + public
+        + private
++ is_searchable: true (boolean, required) - When `false`, file will be hidden form public searchers.
++ expire_download: null (string, nullable, optional) - When not `null`, file is download resticted up to this number.
++ expire_time: 2016-01-01 (string, nullable, optional) - When not `null`, file is download resticted up to this day.
++ folder_id: 0 (number, required) - ID of folder containing this file. `0` is root folder for every user and only possible folder for anonymous files.
++ format
+    + width: 320 (number, optional) - If available, width of video/image
+    + height: 200 (number, optional) - If available, height of video/image
+    + duration: 296 (number, optional) - Length of the video/audio in seconds
+    + content_type (enum[string], default, nullable, required)
+        + Default: null
+        + Members
+            + null
+            + video
+            + audio
+            + image
+            + archive
+            + document
+    + streamable: false (boolean) - `true` for streamable videofile
++ attributes (object, optional)
+    + archive_files (array, optional)
+    + video_data (array, optional)
+    + audio_data (array, optional)
+
+## Basic file entity (object)
+## Properties
++ id: aYu7nBQ (string, required) - encrypted id of file
++ slug: !ksiXPSXP6 (string, required) - identificator used for other API calls affecting file. Slug may change when file is renamed. Old slug will keep working, but new slug will be issued by API calls.
++ url: `/!ksiXPSXP6/poznavacka-rostlin-pptx` (string, required)
++ realm (enum[string], default, required)
+    + Default: ulozto
+    + Members
+        + ulozto
+        + pornfile
++ name: Poznávačka rostlin.pptx (string, required) - name of the file
++ name_sanitized: `Poznávačka ***.pptx` (string, required) - name of the file with bad words replaced
++ filesize: 158367932 (number, required) - filesize in bytes
++ extension: pptx (string, required) - file extension
++ rating: 0 (number, required) - file rating (sum of thumbs up and thumbs down)
++ content_type (enum[string], default, nullable, required)
+    + Default: null
+    + Members
+        + null
+        + video
+        + audio
+        + image
+        + archive
+        + document
++ password_protected_archive: false (boolean, required) - IF the file is archive, AND that archive is password protected. This file can be downloaded.
++ password_protected_file: false (boolean, required) - You must know correct password to access the file detail or to download this file.
++ media_info
+    + array(object) - key:value array. Key defines size and format of thumbnail, value is a list of images.
++ visibility (enum[string], default, nullable, required)
+    + Default: public
+    + Members
+        + public
+        + private
++ duration: 296 (number, optional) - Length of the video/audio in seconds (if videofile)
++ streamable: false (boolean, optional) - `true` for streamable videofile
+
+## Update file entity (object)
+## Properties
++ name (string, required) - Change name of the file. New name must end with same extension as old one (case-sensitive).
++ description (string, required, nullable) - Change file description. No description by default.
++ visibility (enum[string], default, nullable, required)
+    + Default: public
+    + Members
+        + public
+        + private
++ password (string, optional) - Set password protection. No password when null.
++ is_searchable: true (boolean, optional) - Set to `false` to hide file from public search.
++ expire_download: 100 (number, nullable, optional) - Restrict public access to file by number of downloads remaining. No limit by default.
++ expire_time: 2016-01-01 (string , nullable, optional) - Restrict public access to file by date. No limit by default.
++ folder_id: 0 (number, optional) - Assign file to folder (`0` = root folder, file and folder owner must match).
+
+
+
+## Folder entity (object)
+## Properties
++ id: 25792 (number, required) - Folder id (`0` is root folder for each user)
++ name: My very own folder (string, required) - Folder's name. Root folder is always named `root`, you are advised to translate this name to something that suits your application.
++ name_sanitized: `"My *** folder"` (string) - Folder's namen with bad words replaced.
++ visibility (enum[string], default, nullable, required)
+    + Default: public
+    + Members
+        + public
+        + private
++ public_url: `/soubory/user_name/my-very-own-folder` (string, required) - Url to folder's public view (`null` when not available)
++ is_password_protected: true (boolean) - Public folder, other users need to provide password to see contents of this folder
++ type (enum[string], default, required)
+    + Default: normal
+    + Members
+        + root
+        + gallery
+        + normal
+        + videoshare
+        + favorites
+        + documents
+        + audios
+        + videos
++ parent_folder_id: 0 (number, required) - Parrent folder id
++ children (array[Folder entity]) - this field is present if requesting folders in `tree` format
