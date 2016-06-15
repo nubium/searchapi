@@ -15,6 +15,7 @@ This header is issued for every application. Each application should have exactl
 ## X-Checksum
 Security checksum to sign your request with, assuring API that request was not tampered with.
 
+<a name="user_token"></a>
 ## user_token
 User token is used to prove to API that your application has access to user's account. User token is obtained by [validating login information](#sessions).
 
@@ -67,17 +68,13 @@ to keep your client decoupled from implementation details.
         + message: Invalid authorization token.
 
 # Group Sessions
-<a name="sessions"></a> <!-- okay -->
+<a name="sessions"></a>
 
 ## Authentication [/session/v1]
 
 ### Authenticate user [PUT]
 
-This endpoint is used to generate a valid session token. Session token is later used to identify a user.
-
-+ user_token
-
-        User token is used to prove to API that your application has access to user's account. User token is obtained by validating login information through API /session.
+This endpoint is used to generate a valid [user_token](#user_token). [user_token](#user_token) is later used to identify a user.
 
 + Request (application/json)
 
@@ -92,11 +89,11 @@ This endpoint is used to generate a valid session token. Session token is later 
 
 + Response 201 (application/json)
 
-    User session token created.
+    [user_token](#user_token) created.
 
     + Headers
 
-            ETag: "asdiu328reewhfikw" - Session token
+            ETag: "asdiu328reewhfikw" - [user_token](#user_token)
 
     + Attributes (Successful response)
         + token_id: asdiu328reewhfikw (string, required)
@@ -115,7 +112,7 @@ This endpoint is used to generate a valid session token. Session token is later 
 
 + Response 412 (application/json)
 
-    Unable to create user session token.
+    Unable to create user [user_token](#user_token).
 
     + Attributes (Error response)
         + token: null (string, nullable, required)
@@ -171,7 +168,7 @@ Logouts an user.
 ## Basic user info [/user/v1/{user_token}]
 
 + Parameters
-    + user_token: asdiu328reewhfikw (string, optional) - User session token, obtained by authentication
+    + user_token: asdiu328reewhfikw (string, optional) - obtained by authentication
 
 ### Get user information [GET]
 
