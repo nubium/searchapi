@@ -55,18 +55,14 @@ to keep your client decoupled from implementation details.
 
 + Response 401 (application/json)
 
-    `Invalid X-Auth-Token provided , could not authorize your application.`
+    Invalid X-Auth-Token provided , could not authorize your application.
 
     + Header
 
             WWW-Authenticate: X-Auth-Token
 
-    + Body
-
-            {
-                "result": "error",
-                "message": "Invalid authorization token."
-            }
+    + Attributes (Error response)
+        + message: Invalid authorization token.
 
 # Group Sessions
 
@@ -77,78 +73,54 @@ to keep your client decoupled from implementation details.
 
 We need to authenticate user to get a session token. Session token is later used to identify a user.
 
-`device_id` parameter is optional. Maximum length 50 characters.
-
 + Request (application/json)
 
     + Header
 
             X-Auth-Token: 3284hedgf237ruewhfvgi2378
 
-    + Body
-
-            {
-                "login": "medvidek",
-                "password": "123456",
-                "device_id": "23489efgih2841"
-            }
+    + Attributes
+        + login: medvidek (string, required) - User login
+        + password: 123456 (string, required) - User password
+        + device_id: 23489efgih2841 (string, optional) - Android Device ID for example. Maximum 50 characters length.
 
 + Response 201 (application/json)
 
-    `User session created.`
+    User session created.
 
     + Headers
 
             ETag: "asdiu328reewhfikw" - Session token
 
-    + Body
-
-            {
-                "token_id": "asdiu328reewhfikw",
-                "result": "ok",
-                "message": null
-            }
+    + Attributes (Successful response)
+        + token_id: asdiu328reewhfikw (string, required)
 
 + Response 401 (application/json)
 
-    `Invalid X-Auth-Token provided , could not authorize your application.`
+    Invalid X-Auth-Token provided , could not authorize your application.
 
     + Header
 
             WWW-Authenticate: X-Auth-Token
 
-    + Body
-
-            {
-                "result": "error",
-                "message": "Invalid authorization token."
-            }
+    + Attributes (Error response)
+        + message: Invalid authorization token.
 
 
 + Response 412 (application/json)
 
-    `Unable to create user session.`
+    Unable to create user session.
 
-    + Body
-
-            {
-                "token": null,
-                "result": "error",
-                "message": "Wrong password or invalid username"
-            }
+    + Attributes (Error response)
+        + token: null (string, nullable, required)
+        + message: Wrong password or invalid username
 
 
 + Response 429 (application/json)
 
-       `Too many requests - slow down, try again later.`
-
-   + Body
-
-            {
-                "token": null,
-                "result": "error"
-                "message": "Too many requests. Please slow down a little and try again later."
-            }
+    + Attributes (Error response)
+        + token: null (string, nullable, required)
+        + message: Too many requests. Please slow down a little and try again later.
 
 
 ## User sessions [/session/v1/{user_token}]
@@ -174,27 +146,18 @@ Effectively a logout.
 
             ETag: "asdiu328reewhfikw"
 
-    + Body
-
-            {
-                "result": "ok",
-                "message": null
-            }
+    + Attributes (Successful response)
 
 + Response 401 (application/json)
 
-    `Invalid X-Auth-Token provided , could not authorize your application.`
+    Invalid X-Auth-Token provided , could not authorize your application.
 
     + Header
 
             WWW-Authenticate: X-Auth-Token
 
-    + Body
-
-            {
-                "result": "error",
-                "message": "Invalid authorization token."
-            }
+    + Attributes (Error response)
+        + message: Invalid authorization token.
 
 
 # Group User
@@ -214,32 +177,23 @@ Effectively a logout.
 
 + Response 200 (application/json)
 
-    `Basic user info. Credit amount is measured in kilobytes.`
+    Basic user info. Credit amount is measured in kilobytes.
 
-    + Body
-
-            {
-                "result": "ok",
-                "message": null,
-                "user_id": 666,
-                "login": "medvidek",
-                "credit": 413967
-            }
+    + Attributes (Successful response)
+        + user_id: 666 (number, required)
+        + login: medvidek (string, required)
+        + credit: 413967 (string, required)
 
 + Response 401 (application/json)
 
-    `Invalid X-Auth-Token or user_token provided , could not authorize your application. Use WWW-Authenticate header value to find out which part of authentication is wrong (X-Auth-Token or user_token).`
+    Invalid X-Auth-Token provided , could not authorize your application.
 
     + Header
 
             WWW-Authenticate: X-Auth-Token
 
-    + Body
-
-            {
-                "result": "error",
-                "message": "Invalid authorization token."
-            }
+    + Attributes (Error response)
+        + message: Invalid authorization token.
 
 
 ## Users folders [/v1/user/{user_token}/folders{?tree}]
@@ -250,8 +204,7 @@ List of all user's folders. Folders are always ordered by name.
 
 + Parameters
     + user_token: "asdiu328reewhfikw" (string) - Identification of an user, obtained through /session entry point
-    + tree (bool, optional) - If set to `true`, folder entities will be returned in the tree-like structure, with each folder entity containing its children in the `children` field.
-        + Default: false
+    + tree: false (bool, optional) - If set to `true`, folder entities will be returned in the tree-like structure, with each folder entity containing its children in the `children` field.
 
 + Request
 
@@ -261,42 +214,29 @@ List of all user's folders. Folders are always ordered by name.
 
 + Response 200 (application/json)
     + Attributes (object)
-        + items (array[Folder entity])
+        + items (Folder entity)
 
 + Response 400 (application/json)
 
-    `Invalid parameter value`
+    Invalid parameter value
 
-    + Body
-
-            {
-                "result": "error",
-                "message": "Invalid tree parameter value."
-            }
+    + Attributes (Error response)
+        + message: Invalid tree parameter value.
 
 
 + Response 401 (application/json)
 
-    `Invalid X-Auth-Token , could not authorize your application. Use correct WWW-Authenticate header.`
+    Invalid X-Auth-Token provided , could not authorize your application.
 
     + Header
 
             WWW-Authenticate: X-Auth-Token
 
-    + Body
-
-            {
-                "result": "error",
-                "message": "Invalid authorization token."
-            }
+    + Attributes (Error response)
+        + message: Invalid authorization token.
 
 
 ### Create new folder [PUT]
-
-+ `type` is always `normal`
-+ `public_url` is provided only for public folders
-+ `password` may be omitted or set to null if creating folder without password protection
-
 
 + Request (application/json)
 
@@ -304,30 +244,19 @@ List of all user's folders. Folders are always ordered by name.
 
             X-Auth-Token: 3284hedgf237ruewhfvgi2378
 
-    + Body
-
-            {
-                "name": "Cute folder name",
-                "visibility": "public",
-                "password": null,
-                "parent_folder_id": 100
-            }
+    + Attributes
+        + name: Cute folder name (string, required)
+        + visibility (enum[string], nullable, optional)
+            + Default: public
+            + Members
+                + public
+                + private
+        + password: null (string, nullable, optional) - no password when null
+        + parent_folder_id: 100 (number, optional) - 0 for root folder
 
 + Response 201 (application/json)
 
-    + Body
-
-            {
-                "id": 45678,
-                "name": "Cute folder name",
-                "name_sanitized": "Cute folder name",
-                "visibility": "public",
-                "public_url": "/m/soubory/my_username/cute_folder_name",
-                "is_password_protected": false,
-                "type": "normal",
-                "parent_folder_id": 100
-            }
-
+    + Attributes (Folder entity)
 
 + Response 400 (application/json)
 
@@ -364,29 +293,21 @@ List of all user's folders. Folders are always ordered by name.
 
 + Response 401 (application/json)
 
-    `Invalid X-Auth-Token provided , could not authorize your application. Use correct WWW-Authenticate header.`
+    Invalid X-Auth-Token provided , could not authorize your application.
 
     + Header
 
             WWW-Authenticate: X-Auth-Token
 
-    + Body
-
-            {
-                "result": "error",
-                "message": "Invalid authorization token."
-            }
+    + Attributes (Error response)
+        + message: Invalid authorization token.
 
 + Response 409 (application/json)
 
-    `Folder with this name already exists. Use different name.`
+    Folder with this name already exists. Use different name.
 
-    + Body
-
-            {
-                "result": "error",
-                "message": "This folder already exists"
-            }
+    + Attributes (Error response)
+        + message: This folder already exists
 
 ## Files in users folders [/v1/user/{user_token}/folder/{folder_id}{?page,limit,sort,search_query,filetype,include_password_protected}]
 
@@ -452,18 +373,14 @@ File detail data
 
 + Response 401 (application/json)
 
-    `Invalid X-Auth-Token, password or user_token, could not authorize your request.`
+    Invalid X-Auth-Token provided , could not authorize your application.
 
     + Header
 
             WWW-Authenticate: X-Auth-Token
 
-    + Body
-
-            {
-                "result": "error",
-                "message": "Invalid authorization token."
-            }
+    + Attributes (Error response)
+        + message: Invalid authorization token.
 
 ### Update file properties [PATCH]
 
@@ -485,18 +402,14 @@ Updating any property may affect other properties (e.g., changing `name` may cha
 
 + Response 401 (application/json)
 
-    `Invalid X-Auth-Token, password or user_token, could not authorize your request.`
+    Invalid X-Auth-Token provided , could not authorize your application.
 
     + Header
 
             WWW-Authenticate: X-Auth-Token
 
-    + Body
-
-            {
-                "result": "error",
-                "message": "Invalid authorization token."
-            }
+    + Attributes (Error response)
+        + message: Invalid authorization token.
 
 + Response 400 (application/json)
 
@@ -541,18 +454,14 @@ Delete your file.
 
 + Response 401 (application/json)
 
-    `Invalid X-Auth-Token, password or user_token, could not authorize your request.`
+    Invalid X-Auth-Token provided , could not authorize your application.
 
     + Header
 
             WWW-Authenticate: X-Auth-Token
 
-    + Body
-
-            {
-                "result": "error",
-                "message": "Invalid authorization token."
-            }
+    + Attributes (Error response)
+        + message: Invalid authorization token.
 
 
 # Group Upload
@@ -575,73 +484,43 @@ Delete your file.
 
 + Response 200 (application/json)
 
-    `Commit succesfull`
+    Commit succesfull
 
-    + Body
-
-            {
-                "after_upload_url": "/sem/nahrano/d5ec97a3-cb15-46d3-8f5f-5125378a22c9",
-                "files": [
-                    {
-                        "slug": "abcd/asdasd",
-                        "visibility": "public",
-                        "is_searchable": false
-                    },
-                    {
-                        "slug": "efgh/sfefefe",
-                        "visibility": "private",
-                        "is_searchable": false
-                    }
-                ]
-            }
+    + Attributes (object)
+        + after_upload_url: /sem/nahrano/d5ec97a3-cb15-46d3-8f5f-5125378a22c9 (string, required)
+        + files (array[Upload file entity])
 
 + Response 400 (application/json)
 
-    `Input data invalid`
+    Input data invalid
 
-    + Body
-
-            {
-                "result": "error",
-                "message": "Unknown data received."
-            }
+    + Attributes (Error response)
+        + message: Unknown data received.
 
 + Response 401 (application/json)
 
-    `Invalid X-Auth-Token, password or user_token, could not authorize your request.`
+    Invalid X-Auth-Token provided , could not authorize your application.
 
     + Header
 
             WWW-Authenticate: X-Auth-Token
 
-    + Body
-
-            {
-                "result": "error",
-                "message": "Invalid authorization token."
-            }
+    + Attributes (Error response)
+        + message: Invalid authorization token.
 
 + Response 403 (application/json)
 
-    `Batch is not valid for edit.`
+    Batch is not valid for edit.
 
-    + Body
-
-            {
-                "result": "error",
-                "message": "Batch is not valid for edit."
-            }
+    + Attributes (Error response)
+        + message: Batch is not valid for edit.
 
 + Response 404 (application/json)
 
-    `Unknown batch_uuid`
+    Unknown batch_uuid
 
-    + Body
-
-            {
-                "result": "error",
-                "message": "Unknown batch uuid."
-            }
+    + Attributes (Error response)
+        + message: Unknown batch uuid.
 
 
 ## Upload file progress [/v1/upload/batch/{batch_uuid}/file/{batch_file_id}]
@@ -672,29 +551,21 @@ Delete your file.
 
 + Response 401 (application/json)
 
-    `Invalid X-Auth-Token, password or user_token, could not authorize your request.`
+    Invalid X-Auth-Token provided , could not authorize your application.
 
     + Header
 
             WWW-Authenticate: X-Auth-Token
 
-    + Body
-
-            {
-                "result": "error",
-                "message": "Invalid authorization token."
-            }
+    + Attributes (Error response)
+        + message: Invalid authorization token.
 
 + Response 404 (application/json)
 
-    `Unknown batch_uuid or batch_file_id`
+    Unknown batch_uuid or batch_file_id
 
-    + Body
-
-            {
-                "result": "error",
-                "message:" "batch_uuid or batch_file_id not found"
-            }
+    + Attributes (Error response)
+        + message: batch_uuid or batch_file_id not found
 
 
 # Group Search
@@ -732,9 +603,7 @@ Perform search request. Response consists of two parts
 
             Link: </search/zahradniceni rostliny>;rel=self,</search/zahradniceni rostliny>;rel=next,</search/zahradniceni rostliny>;rel=previous
 
-    + Attributes (object)
-        + result: ok
-        + message: null
+    + Attributes (Successful response)
         + metadata (object)
             + query: zahradniceni rostliny
             + displayed_query: zahradniceni rostliny
@@ -749,57 +618,37 @@ Perform search request. Response consists of two parts
 
 + Response 429 (application/json)
 
-    + Body
-
-            {
-                "result": "error",
-                "message": "Too many requests. Please slow down a little and try again later."
-            }
-
+    + Attributes (Error response)
+        + message: Too many requests. Please slow down a little and try again later.
 
 + Response 412 (application/json)
 
-    `Wrong request parameter. For e.g. limit less than 1 or more than 100, unsupported filter etc.`
+    Wrong request parameter. For e.g. limit less than 1 or more than 100, unsupported filter etc.
 
-    + Body
-
-            {
-                "result": "error",
-                "message": "Wrong request parameter.",
-                "extra": "Parameter limit must be between <1, 100>"
-            }
-
+    + Attributes (Error response)
+        + message: Too many requests. Please slow down a little and try again later.
+        + extra: Parameter limit must be between <1, 100> (string, optional)
 
 + Response 404 (application/json)
 
-    `Requested response does not exist. Maybe you are trying to access page parameter beyond the existing results?`
+    Requested response does not exist. Maybe you are trying to access page parameter beyond the existing results?
 
-    + Header
-
-    + Body
-
-            {
-                "result": "error",
-                "message": "Requested page index is out of range for given query.",
-                "page_count": 1,
-                "items_count": 8
-            }
-
+    + Attributes (Error response)
+        + message: Requested page index is out of range for given query.
+        + page_count: 1 (number, required)
+        + items_count: 8 (number, required)
 
 + Response 401 (application/json)
 
-    `Invalid X-Auth-Token, password or user_token, could not authorize your request.`
+    Invalid X-Auth-Token provided , could not authorize your application.
 
     + Header
 
             WWW-Authenticate: X-Auth-Token
 
-    + Body
+    + Attributes (Error response)
+        + message: Invalid authorization token.
 
-            {
-                "result": "error",
-                "message": "Invalid authorization token."
-            }
 
 # Group Application info
 
@@ -808,43 +657,25 @@ Perform search request. Response consists of two parts
 This entry point is not secured, and is publicly accessible.
 
 + Parameters
-    + app_name: `ulozto-android` (required, string) - Uniquely identifies application.
+    + app_name: `ulozto-android` (required, string) - Unique application identifier.
 
 ### Get version info [GET]
 
 + Response 200 (application/json)
 
-    + Attributes (object)
-
-        + version.internal: 10097 (number, required) - Internal version, should at least loosely follow some kind of semantic versioning (SEMVER)
-        + version.displayed: 1.1 (string, required) - Version number to show to users
+    + Attributes (Successful response)
+        + version (object)
+            + internal: 10097 (number, required) - Internal version, should at least loosely follow some kind of semantic versioning (SEMVER)
+            + displayed: 1.1 (string, required) - Version number to show to users
         + url: http://uloz.to/path/to/app (string, required) - Url to download last version
         + checksum: 217acf325c6012c1a50828e74626b945 (string, required) - MD5 checksum of the last version
-
-
-    + Body
-
-            {
-                "result": "ok",
-                "message": null,
-                "version": {
-                    "internal": 21,
-                    "displayed": "1.1"
-                },
-                "url": "http://utapi.jaitner.cz/app-debug.apk",
-                "checksum": "4db14073c820e324c499f446627a3eec"
-            }
 
 + Response 404 (application/json)
 
     Unknown application name (app_name)
 
-    + Body
-
-            {
-                "result": "error",
-                "message": "Unknown application."
-            }
+    + Attributes (Error response)
+        + message: Unknown application.
 
 
 # Data structures
@@ -949,7 +780,15 @@ This entry point is not secured, and is publicly accessible.
 + expire_time: `2016-01-01` (string , nullable, optional) - Restrict public access to file by date. No limit by default.
 + folder_id: 0 (number, optional) - Assign file to folder (`0` = root folder, file and folder owner must match).
 
-
+## Upload file entity (object)
+## Properties
++ slug: abcd/asdasd (string, required)
++ visibility (enum[string], default, required)
+    + Default: public
+    + Members
+        + public
+        + private
++ is_searchable: false (boolean, required)
 
 ## Folder entity (object)
 ## Properties
@@ -961,9 +800,9 @@ This entry point is not secured, and is publicly accessible.
     + Members
         + public
         + private
-+ public_url: `/soubory/user_name/my-very-own-folder` (string, required) - Url to folder's public view (`null` when not available)
-+ is_password_protected: true (boolean) - Public folder, other users need to provide password to see contents of this folder
-+ type (enum[string], default, required)
++ public_url: `/soubory/user_name/my-very-own-folder` (string, required) - Url to folder, available only for public folders
++ is_password_protected: true (boolean) - Public folder, other users need to provide password to see contents of this folder.
++ type (enum[string], default, required) - always normal, other types are created after user registration
     + Default: normal
     + Members
         + root
@@ -974,5 +813,16 @@ This entry point is not secured, and is publicly accessible.
         + documents
         + audios
         + videos
-+ parent_folder_id: 0 (number, required) - Parrent folder id
-+ children (array[Folder entity]) - this field is present if requesting folders in `tree` format
++ parent_folder_id: 0 (number, required) - Parent folder id
++ children (array[Folder entity]) - Children folders are present when tree format is requested.
+
+## Error response (object)
+## Properties
++ result: error (string, required)
++ message: null (string, nullable, required)
+
+
+## Successful response (object)
+## Properties
++ result: ok (string, required)
++ message: null (string, nullable, required)
