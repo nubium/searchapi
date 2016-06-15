@@ -238,41 +238,25 @@ List of all user's folders. Folders are always ordered by name.
 
 ### Create new folder [PUT]
 
-+ `type` is always `normal`
-+ `public_url` is provided only for public folders
-+ `password` may be omitted or set to null if creating folder without password protection
-
-
 + Request (application/json)
 
     + Header
 
             X-Auth-Token: 3284hedgf237ruewhfvgi2378
 
-    + Body
-
-            {
-                "name": "Cute folder name",
-                "visibility": "public",
-                "password": null,
-                "parent_folder_id": 100
-            }
+    + Attributes
+        + name: Cute folder name (string, required)
+        + visibility (enum[string], nullable, optional)
+            + Default: public
+            + Members
+                + public
+                + private
+        + password: null (string, nullable, optional) - no password when null
+        + parent_folder_id: 100 (number, optional) - 0 for root folder
 
 + Response 201 (application/json)
 
-    + Body
-
-            {
-                "id": 45678,
-                "name": "Cute folder name",
-                "name_sanitized": "Cute folder name",
-                "visibility": "public",
-                "public_url": "/m/soubory/my_username/cute_folder_name",
-                "is_password_protected": false,
-                "type": "normal",
-                "parent_folder_id": 100
-            }
-
+    + Attributes (Folder entity)
 
 + Response 400 (application/json)
 
@@ -816,9 +800,9 @@ This entry point is not secured, and is publicly accessible.
     + Members
         + public
         + private
-+ public_url: `/soubory/user_name/my-very-own-folder` (string, required) - Url to folder's public view (`null` when not available)
-+ is_password_protected: true (boolean) - Public folder, other users need to provide password to see contents of this folder
-+ type (enum[string], default, required)
++ public_url: `/soubory/user_name/my-very-own-folder` (string, required) - Url to folder, available only for public folders
++ is_password_protected: true (boolean) - Public folder, other users need to provide password to see contents of this folder.
++ type (enum[string], default, required) - always normal, other types are created after user registration
     + Default: normal
     + Members
         + root
