@@ -137,6 +137,20 @@ We need to authenticate user to get a session token. Session token is later used
                 "message": "Wrong password or invalid username"
             }
 
+
++ Response 429 (application/json)
+
+       `Too many requests - slow down, try again later.`
+
+   + Body
+
+            {
+                "token": null,
+                "result": "error"
+                "message": "Too many requests. Please slow down a little and try again later."
+            }
+
+
 ## User sessions [/session/v1/{user_token}]
 
 + Parameters
