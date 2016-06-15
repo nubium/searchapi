@@ -723,8 +723,8 @@ Perform search request. Response consists of two parts
         + message: null
         + metadata (object)
             + query: zahradniceni rostliny
-            + displayed_query: "zahradniceni rostliny
-            + run_at: "2014-11-11T08:40:51.620Z
+            + displayed_query: zahradniceni rostliny
+            + run_at: `2014-11-11T08:40:51.620Z`
             + page: 1
             + limit: 20
             + page_count: 12
@@ -863,7 +863,7 @@ This entry point is not secured, and is publicly accessible.
         + private
 + is_searchable: true (boolean, required) - When `false`, file will be hidden form public searchers.
 + expire_download: null (string, nullable, optional) - When not `null`, file is download resticted up to this number.
-+ expire_time: 2016-01-01 (string, nullable, optional) - When not `null`, file is download resticted up to this day.
++ expire_time: `2016-01-01` (string, nullable, optional) - When not `null`, file is download resticted up to this day.
 + folder_id: 0 (number, required) - ID of folder containing this file. `0` is root folder for every user and only possible folder for anonymous files.
 + format
     + width: 320 (number, optional) - If available, width of video/image
@@ -922,17 +922,17 @@ This entry point is not secured, and is publicly accessible.
 
 ## Update file entity (object)
 ## Properties
-+ name (string, required) - Change name of the file. New name must end with same extension as old one (case-sensitive).
-+ description (string, required, nullable) - Change file description. No description by default.
-+ visibility (enum[string], default, nullable, required)
++ name (string, nullable, optional) - Change name of the file. New name must end with same extension as old one (case-sensitive).
++ description (string, nullable, optional) - Change file description. No description by default.
++ visibility (enum[string], default, nullable, optional)
     + Default: public
     + Members
         + public
         + private
-+ password (string, optional) - Set password protection. No password when null.
-+ is_searchable: true (boolean, optional) - Set to `false` to hide file from public search.
++ password: my_password (string, nullable, optional) - Set password protection. No password when null.
++ is_searchable: true (boolean, nullable, optional) - Set to `false` to hide file from public search.
 + expire_download: 100 (number, nullable, optional) - Restrict public access to file by number of downloads remaining. No limit by default.
-+ expire_time: 2016-01-01 (string , nullable, optional) - Restrict public access to file by date. No limit by default.
++ expire_time: `2016-01-01` (string , nullable, optional) - Restrict public access to file by date. No limit by default.
 + folder_id: 0 (number, optional) - Assign file to folder (`0` = root folder, file and folder owner must match).
 
 
