@@ -3,9 +3,9 @@ HOST: https://apis.uloz.to/
 
 # Ulož.to API
 
-First draft of Ulož.to API, with support for user login, logout and file search.
+Below you will find a current list of the available methods on our API.
 
-Security keys used thoughout the API
+Security keys used thoughout the API and their description.
 
 + X-Auth-Token
 
@@ -43,15 +43,14 @@ to keep your client decoupled from implementation details.
 
 + Response 200 (application/json)
 
-        {
-            "search_url": "/search/v1",
-            "session_url": "/session/v1",
-            "userinfo_url": "/user/v1",
-            "app_version_url": "/app-version/v1",
-            "files_url": "/v1/files",
-            "userfolders_list_url": "/v1/user/{user_token}/folders",
-            "userfolders_url": "/v1/user/{user_token}/folders/{folder_id}"
-        }
+    + Attributes
+        + search_url: `/search/v1` (string, required)
+        + session_url: `/session/v1` (string, required)
+        + userinfo_url: `/user/v1` (string, required)
+        + app_version_url: `/app-version/v1` (string, required)
+        + files_url: `/v1/files` (string, required)
+        + userfolders_list_url: `/v1/user/{user_token}/folders` (string, required)
+        + `userfolders_url`: `/v1/user/{user_token}/folders/{folder_id}` (string, required)
 
 + Response 401 (application/json)
 
@@ -71,7 +70,7 @@ to keep your client decoupled from implementation details.
 
 ### Authenticate user [PUT]
 
-We need to authenticate user to get a session token. Session token is later used to identify a user.
+This endpoint is used to generate a valid session token. Session token is later used to identify a user.
 
 + Request (application/json)
 
@@ -86,7 +85,7 @@ We need to authenticate user to get a session token. Session token is later used
 
 + Response 201 (application/json)
 
-    User session created.
+    User session token created.
 
     + Headers
 
@@ -97,7 +96,7 @@ We need to authenticate user to get a session token. Session token is later used
 
 + Response 401 (application/json)
 
-    Invalid X-Auth-Token provided , could not authorize your application.
+    Invalid X-Auth-Token provided, could not authorize your application.
 
     + Header
 
@@ -109,7 +108,7 @@ We need to authenticate user to get a session token. Session token is later used
 
 + Response 412 (application/json)
 
-    Unable to create user session.
+    Unable to create user session token.
 
     + Attributes (Error response)
         + token: null (string, nullable, required)
@@ -132,7 +131,7 @@ We need to authenticate user to get a session token. Session token is later used
 
 ### Delete user session [DELETE]
 
-Effectively a logout.
+Logouts an user.
 
 + Request
 
@@ -167,7 +166,9 @@ Effectively a logout.
 + Parameters
     + user_token: asdiu328reewhfikw (string, optional) - User session token, obtained by authentication
 
-### Get user data [GET]
+### Get user information [GET]
+
+Get the basic information for an account.
 
 + Request
 
@@ -198,7 +199,7 @@ Effectively a logout.
 
 ## Users folders [/v1/user/{user_token}/folders{?tree}]
 
-### Get all users folders [GET]
+### Get all folders [GET]
 
 List of all user's folders. Folders are always ordered by name.
 
@@ -237,6 +238,8 @@ List of all user's folders. Folders are always ordered by name.
 
 
 ### Create new folder [PUT]
+
+Creates new folder for current user.
 
 + Request (application/json)
 
@@ -325,7 +328,9 @@ List of all user's folders. Folders are always ordered by name.
         Default: true
 
 
-### Get users files in folder [GET]
+### Files in folder [GET]
+
+Get all files in specific folder.
 
 + Request
 
@@ -599,6 +604,7 @@ Perform search request. Response consists of two parts
             X-Timestamp: 1436957691
 
 + Response 200 (application/json)
+
     + Headers
 
             Link: </search/zahradniceni rostliny>;rel=self,</search/zahradniceni rostliny>;rel=next,</search/zahradniceni rostliny>;rel=previous
@@ -616,28 +622,6 @@ Perform search request. Response consists of two parts
             + exact (array[Basic file entity])
             + partial (array[Basic file entity])
 
-+ Response 429 (application/json)
-
-    + Attributes (Error response)
-        + message: Too many requests. Please slow down a little and try again later.
-
-+ Response 412 (application/json)
-
-    Wrong request parameter. For e.g. limit less than 1 or more than 100, unsupported filter etc.
-
-    + Attributes (Error response)
-        + message: Too many requests. Please slow down a little and try again later.
-        + extra: Parameter limit must be between <1, 100> (string, optional)
-
-+ Response 404 (application/json)
-
-    Requested response does not exist. Maybe you are trying to access page parameter beyond the existing results?
-
-    + Attributes (Error response)
-        + message: Requested page index is out of range for given query.
-        + page_count: 1 (number, required)
-        + items_count: 8 (number, required)
-
 + Response 401 (application/json)
 
     Invalid X-Auth-Token provided , could not authorize your application.
@@ -649,6 +633,27 @@ Perform search request. Response consists of two parts
     + Attributes (Error response)
         + message: Invalid authorization token.
 
++ Response 404 (application/json)
+
+    Requested response does not exist. Maybe you are trying to access page parameter beyond the existing results?
+
+    + Attributes (Error response)
+        + message: Requested page index is out of range for given query.
+        + page_count: 1 (number, required)
+        + items_count: 8 (number, required)
+
++ Response 412 (application/json)
+
+    Wrong request parameter. For e.g. limit less than 1 or more than 100, unsupported filter etc.
+
+    + Attributes (Error response)
+        + message: Wrong request parameter.
+        + extra: Parameter limit must be between <1, 100> (string, optional)
+
++ Response 429 (application/json)
+
+    + Attributes (Error response)
+        + message: Too many requests. Please slow down a little and try again later.
 
 # Group Application info
 
