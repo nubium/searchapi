@@ -757,6 +757,7 @@ This entry point is not secured, and is publicly accessible.
 + filesize: 158367932 (number, required) - filesize in bytes
 + extension: pptx (string, required) - file extension
 + rating: 0 (number, required) - file rating (sum of thumbs up and thumbs down)
++ is_porn: false (boolean, required) - whenever file contains porn
 + content_type (enum[string], default, nullable, required)
     + Default: null
     + Members
@@ -781,6 +782,7 @@ This entry point is not secured, and is publicly accessible.
 ## Update file entity (object)
 ## Properties
 + name (string, nullable, optional) - Change name of the file. New name must end with same extension as old one (case-sensitive).
++ is_porn: false (boolean, required) - whenever file contains porn or not
 + description (string, nullable, optional) - Change file description. No description by default.
 + visibility (enum[string], default, nullable, optional)
     + Default: public
