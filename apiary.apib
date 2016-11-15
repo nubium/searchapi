@@ -359,7 +359,7 @@ Get all files in specific folder.
 
 # Group File
 
-## File detail info [/v1/files/{slug}{?password,user_token,upload_token}]
+## Detail [/v1/files/{slug}{?password,user_token,upload_token}]
 
 + Parameters
     + slug: !8DzBBNAuS (string, required) - Slug from file listing API calls. Slug may change when file is renamed. Old slug will keep working, but new slug will be issued by API calls.
@@ -472,6 +472,31 @@ Delete your file.
     + Attributes (Error response)
         + message: Invalid authorization token.
 
+## Parameters  [/v1/files/{slug}/parameters{?password,user_token,upload_token}]
+
+### Get parameters [GET]
+
+Returns additional information about multimedia files and archives.
+
++ Request
+
+    + Header
+
+            X-Auth-Token: 3284hedgf237ruewhfvgi2378
+
++ Response 200 (application/json)
+    + Attributes (File parameters entity)
+
++ Response 401 (application/json)
+
+    Invalid X-Auth-Token provided , could not authorize your application.
+
+    + Header
+
+            WWW-Authenticate: X-Auth-Token
+
+    + Attributes (Error response)
+        + message: Invalid authorization token.
 
 # Group Upload
 
@@ -804,6 +829,40 @@ This entry point is not secured, and is publicly accessible.
         + public
         + private
 + is_searchable: false (boolean, required)
+
+## File parameters entity (object)
+## Properties
++ id: aYu7nBQ (string, required) - encrypted id of file
++ slug: !ksiXPSXP6 (string, required) - identificator used for other API calls affecting file. Slug may change when file is renamed. Old slug will keep working, but new slug will be issued by API calls.
++ content_type (enum[string], default, nullable, required)
+    + Default: null
+    + Members
+        + null
+        + video
+        + audio
+        + image
+        + archive
+        + document
++ media_info (object, required)
+    + duration: 2547 (number, optional) - video / audio duration in seconds
+    + width: 624 (number, optional) - video / image width in pixels
+    + height: 352 (number, optional) - video / image height in pixels
+    + pixel_aspect: 1 (number, optional)  - pixel aspect ratio
+    + video_bitrate: 990074 (number, optional) - video bitrate in kbps
+    + video_framerate: 23.976 (number, optional) - framerate in frames per second (FPS)
+    + audio_bitrate: 128000 (number, optional) - audio bitrate in kbps
+    + audio_channels: 2 (number, optional) - number of audio channels
+    + video_format: MPEG-4 Visual (string, optional)
+    + video_codec: XviD (string, optional)
+    + audio_format: MPEG Audio (string, optional)
+    + audio_codec: MPEG-1 Audio layer 3 (string, optional)
++ archive_files (array[Archive Item entity], required)
+
+## Archive Item entity (object)
+## Properties
++ name: Screen Shot 2016-11-11 at 14.47.12.png (string, required)
++ size: 459328 (number, required) - file size in archive
++ password_protected: false (boolean, required) - whether file is protected by archive password
 
 ## Folder entity (object)
 ## Properties
