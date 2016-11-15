@@ -734,6 +734,8 @@ This entry point is not secured, and is publicly accessible.
 + description_sanitized: `this could *** *** a rather\r\nlong description` (string, optional) - File description with bad words replaced
 + filesize: 158367932 (number, required) - filesize in bytes
 + extension: pptx (string, required) - file extension
++ is_porn: false (boolean, required)
++ is_porn_by_uploader: false (boolean, required)
 + rating: 0 (number, required) - file rating (sum of thumbs up and thumbs down)
 + password_protected_archive: false (boolean, required) - IF the file is archive, AND that archive is password protected. This file can be downloaded.
 + password_protected_file: false (boolean, required) - You must know correct password to access the file detail or to download this file.
@@ -744,6 +746,16 @@ This entry point is not secured, and is publicly accessible.
     + Members
         + public
         + private
++ malware_status (enum[string], default, nullable, required)
+    + Default: unknown
+    + Members
+        + unknown
+        + unwanted
++ content_status (enum[string], default, nullable, required)
+    + Default: normal
+    + Members
+        + normal
+        + limited
 + is_searchable: true (boolean, required) - When `false`, file will be hidden form public searchers.
 + expire_download: null (string, nullable, optional) - When not `null`, file is download resticted up to this number.
 + expire_time: `2016-01-01` (string, nullable, optional) - When not `null`, file is download resticted up to this day.
