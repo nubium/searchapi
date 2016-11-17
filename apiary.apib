@@ -478,6 +478,12 @@ Delete your file.
 
 Returns additional information about multimedia files and archives.
 
++ Parameters
+    + slug: !8DzBBNAuS (string, required) - Slug from file listing API calls. Slug may change when file is renamed. Old slug will keep working, but new slug will be issued by API calls.
+    + user_token: asdiu328reewhfikw (string, optional) - To access user's private file, you need to identify yourself with his token
+    + upload_token: 2c628b89-a989-4abc-9c31-9d7525bdf2b1:1 (string, optional) - To write access to anonymous file in upload process, you need to use upload token. Also you need to use upload token to view the file as anonymous user.
+    + password: 123macko (string, optional) - To access password protected file, you need to provide the file's password (password is not necessary to access own files, password does not allow writing file not my own)
+
 + Request
 
     + Header
