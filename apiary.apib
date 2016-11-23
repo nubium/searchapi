@@ -565,6 +565,65 @@ Commits upload batch. Changes visibility of files being uploaded.
         + message: Unknown batch uuid.
 
 
+## Files in upload batch [/v1/upload/batch/{batch_uuid}/files{?user_token}]
+
+Determines files in batch. 
+
++ Parameters
+    + batch_uuid: d5ec97a3-cb15-46d3-8f5f-5125378a22c9 (string, required) - Upload batch unique ID
+    + user_token: asdiu328reewhfikw (string, optional) - To access user's upload batch, you need to identify yourself with his token
+
+### Files in upload batch [PUT]
+
+Expects list of files that should be present in upload batch. Unknown files will cause error. Every file not included in given list will be deleted.
+
++ Request
+
+    + Header
+
+            X-Auth-Token: 3284hedgf237ruewhfvgi2378
+            
+    + Attributes (object)
+        + batch_files_ids (array[number], required) - list of files IDs in upload batch (i.e., ordinal number of file in upload batch)
+
++ Response 204 (application/json)
+
+    Batch contains exactly given files. No modification needed.
+    
+    + Header
+    
++ Response 200 (application/json)
+
+    Superfluous files in batch were deleted.
+
+    + Attributes (object)
+        + deleted_batch_files_ids (array[number])
+
++ Response 422 (application/json)
+
+    Some of given files are unknown. No modification was done.
+
+    + Body
+
+            {
+                "result": "error",
+                "message": "Unknown batch_files_ids found.",
+                "errors": {
+                    "unknown_batch_files_ids": [1, 2, 3]
+                }
+            }
+
++ Response 401 (application/json)
+
+    + Attributes (Error response)
+        + message: Invalid authorization token.
+        
++ Response 404 (application/json)
+
+    + Attributes (Error response)
+        + message: Unknown batch uuid.
+
+
 ## Upload file progress [/v1/upload/batch/{batch_uuid}/file/{batch_file_id}]
 
 Returns upload progress of file.
