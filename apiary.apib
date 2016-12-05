@@ -91,7 +91,7 @@ Execute multiple commands using single http request. Get all results in the sing
     All bulk commands were executed, their return values are present in the response in the order they were
 
     + Attributes
-        + response (array[Bulk response entry])
+        + responses (array[Bulk response entry])
 
 + Response 500 (application/json)
 
@@ -1019,7 +1019,7 @@ This entry point is not secured, and is publicly accessible.
 
 ## Bulk request entry (object)
 ## Properties
-+ method: (enum[string], required)
++ method: get (enum[string], required)
     + Members
         + get
         + post
