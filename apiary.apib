@@ -55,6 +55,7 @@ to keep your client decoupled from implementation details.
         + files_url: `/v1/files` (string, required)
         + userfolders_list_url: `/v1/user/{user_token}/folders` (string, required)
         + `userfolders_url`: `/v1/user/{user_token}/folders/{folder_id}` (string, required)
+        + `bulk_url`: `/v1/bulk` {string, required}
 
 + Response 401 (application/json)
 
@@ -66,6 +67,39 @@ to keep your client decoupled from implementation details.
 
     + Attributes (Error response)
         + message: Invalid authorization token.
+
+# Group Bulk
+
+## Bulk commands [/v1/bulk]
+
+### Execute bulk commands [PUT]
+
+Execute multiple commands using single http request. Get all results in the single http response.
+
++ Request (application/json)
+
+    + Header
+
+            X-Auth-Token: 3284hedgf237ruewhfvgi2378
+
+    + Attributes (object)
+        + bulk_header (array[Bulk http header item])
+        + bulk (array[Bulk request entry])
+
++ Response 200 (application/json)
+
+    All bulk commands were executed, their return values are present in the response in the order they were
+
+    + Attributes
+        + response (array[Bulk response entry])
+
++ Response 500 (application/json)
+
+    Fatal error, unable to resume operations. Bulk commands were not executed.
+    
+    + Attributes (Error response)
+        + message: `Fatal error, unable to execute bulk batch.` (string, optional)
+
 
 # Group Sessions
 <a name="sessions"></a>
@@ -567,7 +601,7 @@ Commits upload batch. Changes visibility of files being uploaded.
 
 ## Files in upload batch [/v1/upload/batch/{batch_uuid}/files{?user_token}]
 
-Determines files in batch. 
+Determines files in batch.
 
 + Parameters
     + batch_uuid: d5ec97a3-cb15-46d3-8f5f-5125378a22c9 (string, required) - Upload batch unique ID
@@ -582,16 +616,16 @@ Expects list of files that should be present in upload batch. Unknown files will
     + Header
 
             X-Auth-Token: 3284hedgf237ruewhfvgi2378
-            
+
     + Attributes (object)
         + batch_files_ids (array[number], required) - list of files IDs in upload batch (i.e., ordinal number of file in upload batch)
 
 + Response 204 (application/json)
 
     Batch contains exactly given files. No modification needed.
-    
+
     + Header
-    
+
 + Response 200 (application/json)
 
     Superfluous files in batch were deleted.
@@ -617,7 +651,7 @@ Expects list of files that should be present in upload batch. Unknown files will
 
     + Attributes (Error response)
         + message: Invalid authorization token.
-        
+
 + Response 404 (application/json)
 
     + Attributes (Error response)
@@ -977,3 +1011,30 @@ This entry point is not secured, and is publicly accessible.
 ## Properties
 + result: ok (string, required)
 + message: null (string, nullable, required)
+
+## Bulk http header item (object)
+## Properties
++ name: Content-Type (string, required) - HTTP header item name
++ value: `text/javascript; charset=UTF-8` (string, required, nullable) - HTTP header item value
+
+## Bulk request entry (object)
+## Properties
++ method: (enum[string], required)
+    + Members
+        + get
+        + post
+        + put
+        + delete
+        + patch
+        + options
++ name: `custom-name` (string, optional) - Optionally every request can be named. The names are then assigned to responses making them easier to navigate.
++ headers (array[Bulk http header item], optional)
++ url: /v1/user (string, required) - Url of entry point
++ body (string, optional) - Body of the request
+
+## Bulk response entry (object)
+## Properties
++ code: 200 (number, required) - HTTP response code
++ name: `custom-name` (string, optional) - If request had a name, the name is retained
++ headers (array[Bulk http header item], optional)
++ body - `{inner_payload: ["data1", "data2"]}` (string, optional)
