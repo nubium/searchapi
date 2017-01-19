@@ -96,7 +96,7 @@ Execute multiple commands using single http request. Get all results in the sing
 + Response 500 (application/json)
 
     Fatal error, unable to resume operations. Bulk commands were not executed.
-    
+
     + Attributes (Error response)
         + message: `Fatal error, unable to execute bulk batch.` (string, optional)
 
@@ -235,15 +235,22 @@ Get the basic information for an account.
         + message: Invalid authorization token.
 
 
-## User's folders [/v1/user/{user_token}/folders{?tree}]
-
-### Get all folders [GET]
-
-List of all user's folders. Folders are always ordered by name.
+## User's folders [/v1/user/{user_token}/folders/{folder_ids}{?tree,format}]
 
 + Parameters
-    + user_token: "asdiu328reewhfikw" (string) - Identification of an user, obtained through /session entry point
-    + tree: false (bool, optional) - If set to `true`, folder entities will be returned in the tree-like structure, with each folder entity containing its children in the `children` field.
+    + `user_token`: "asdiu328reewhfikw" (string) - Identification of an user, obtained through /session entry point
+    + `tree`: false (bool, optional) - If set to `true`, folder entities will be returned in the tree-like structure, with each folder entity containing its children in the `children` field.
+    + `format`: info (enum, optional) - Format of the response. For correct response format, check one of two possible 200 OK results below.
+        + Default: info
+        + Members
+            + info
+            + size
+    + `folder_ids`: 4,6,29 (array[number], optional) - List of comma-separated folder ids. If not present, we are returning all folders. Cannot be combined with `tree` argument.
+
+
+### Get folders [GET]
+
+List of user's folders. Folders are always ordered by name.
 
 + Request
 
@@ -252,8 +259,14 @@ List of all user's folders. Folders are always ordered by name.
             X-Auth-Token: 3284hedgf237ruewhfvgi2378
 
 + Response 200 (application/json)
+Response for parameter format = `info`
     + Attributes (object)
-        + items (Folder entity)
+        + items (array[Folder entity info])
+
++ Response 200 (application/json)
+Response for parameter format = `size`
+    + Attributes (object)
+        + items (array[Folder entity size])
 
 + Response 400 (application/json)
 
@@ -275,7 +288,7 @@ List of all user's folders. Folders are always ordered by name.
         + message: Invalid authorization token.
 
 
-### Create new folder [PUT]
+### Create new folder [PUT /v1/user/{user_token}/folders]
 
 Creates new folder for current user.
 
@@ -297,7 +310,7 @@ Creates new folder for current user.
 
 + Response 201 (application/json)
 
-    + Attributes (Folder entity)
+    + Attributes (Folder entity info)
 
 + Response 400 (application/json)
 
@@ -976,7 +989,7 @@ This entry point is not secured, and is publicly accessible.
 + size: 459328 (number, required) - file size in archive
 + password_protected: false (boolean, required) - whether file is protected by archive password
 
-## Folder entity (object)
+## Folder entity info (object)
 ## Properties
 + id: 25792 (number, required) - Folder id (`0` is root folder for each user)
 + name: My very own folder (string, required) - Folder's name. Root folder is always named `root`, you are advised to translate this name to something that suits your application.
@@ -1000,7 +1013,17 @@ This entry point is not secured, and is publicly accessible.
         + audios
         + videos
 + parent_folder_id: 0 (number, required) - Parent folder id
-+ children (array[Folder entity]) - Children folders are present when tree format is requested.
++ children (array[Folder entity info]) - Children folders are present when tree format is requested.
+
+## Folder entity size (object)
+## Properties
++ id: 25792 (number, required) - Folder id (`0` is root folder for each user)
++ parent_folder_id: 0 (number, required) - Parent folder id
++ children (array[Folder entity size]) - Children folders are present when tree format is requested.
++ files_size: 8340213 (number, required) -
++ files_size_recursive
++ files_count
++ files_count_recursive
 
 ## Error response (object)
 ## Properties
