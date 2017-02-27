@@ -290,6 +290,8 @@ Response for parameter format = `size`
 
 ### Create new folder [PUT /v1/user/{user_token}/folders]
 
+Validation error messages are returned in language set by `Accept-Language` header.
+
 Creates new folder for current user.
 
 + Request (application/json)
@@ -405,6 +407,8 @@ Get all files in specific folder.
 
 
 # Group File
+
+Validation error messages are returned in language set by `Accept-Language` header.
 
 ## Detail [/v1/files/{slug}{?password,user_token,upload_token}]
 
@@ -829,6 +833,13 @@ This entry point is not secured, and is publicly accessible.
 
 
 # Group Error Messages
+
+Returns list of messages translated into language set using `Accept-Language` header. This entry point is not secured, and is publicly accessible.
+Accepted languages:
+ + cs_CZ
+ + sk_SK
+ + pl_PL
+ + en_US
 
 ## File [/v1/files/error-messages]
 
