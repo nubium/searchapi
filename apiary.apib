@@ -323,27 +323,22 @@ Creates new folder for current user.
                 "message": "Unable to create folder.",
                 "errors": [
                     {
-                        "code": 201
                         "data_element": "name",
                         "message": "Name cannot be empty."
                     },
                     {
-                        "code": 202
                         "data_element": "name",
                         "message": "Name is too long."
                     },
                     {
-                        "code": 203
                         "data_element": "visibility",
                         "message": "Allowed values are public and private."
                     },
                     {
-                        "code": 204
                         "data_element": "parent_folder_id",
                         "message": "Parent folder does not exist."
                     },
                     {
-                        "code": 205
                         "data_element": "parent_folder_id",
                         "message": "You must be owner of parent folder."
                     }
@@ -483,17 +478,14 @@ Updating any property may affect other properties (e.g., changing `name` may cha
                 "message": "Unable to update file.",
                 "errors": [
                     {
-                        "code": 105,
                         "data_element": "name",
                         "message": "Name cannot be empty."
                     },
                     {
-                        "code": 113,
                         "data_element": "folder_id",
                         "message": "File owner must own the folder too."
                     },
                     {
-                        "code": 109,
                         "data_element": "visibility",
                         "message": "Public visibility is forbidden for this file."
                     }
@@ -558,10 +550,6 @@ Returns additional information about multimedia files and archives.
 
     + Attributes (Error response)
         + message: Invalid authorization token.
-
-# Group Folder
-
-## Get user folder list [/v1/folders{?user_token}]
 
 # Group Upload
 
@@ -812,6 +800,34 @@ Perform search request. Response consists of two parts
     + Attributes (Error response)
         + message: Too many requests. Please slow down a little and try again later.
 
+# Group Application info
+
+## Aplication version [/app-version/v1/{app_name}]
+
+This entry point is not secured, and is publicly accessible.
+
++ Parameters
+    + app_name: `ulozto-android` (required, string) - Unique application identifier.
+
+### Get version info [GET]
+
++ Response 200 (application/json)
+
+    + Attributes (Successful response)
+        + version (object)
+            + internal: 10097 (number, required) - Internal version, should at least loosely follow some kind of semantic versioning (SEMVER)
+            + displayed: 1.1 (string, required) - Version number to show to users
+        + url: http://uloz.to/path/to/app (string, required) - Url to download last version
+        + checksum: 217acf325c6012c1a50828e74626b945 (string, required) - MD5 checksum of the last version
+
++ Response 404 (application/json)
+
+    Unknown application name (app_name)
+
+    + Attributes (Error response)
+        + message: Unknown application.
+
+
 # Data structures
 
 ## Detailed file entity (object)
@@ -1046,138 +1062,3 @@ Perform search request. Response consists of two parts
 + name: `custom-name` (string, optional) - If request had a name, the name is retained
 + headers (array[Bulk http header item], optional)
 + body: `{inner_payload: ["data1", "data2"]}` (string, optional)
-
-## Error message (object)
-## Properties
-+ code: 101 (number, required) - Error code
-+ message: `Name is too long.` (string, required) - Error message in language specified by Accept-Language header
-
-# Group Application info
-
-## Aplication version [/app-version/v1/{app_name}]
-
-This entry point is not secured, and is publicly accessible.
-
-+ Parameters
-    + app_name: `ulozto-android` (required, string) - Unique application identifier.
-
-### Get version info [GET]
-
-+ Response 200 (application/json)
-
-    + Attributes (Successful response)
-        + version (object)
-            + internal: 10097 (number, required) - Internal version, should at least loosely follow some kind of semantic versioning (SEMVER)
-            + displayed: 1.1 (string, required) - Version number to show to users
-        + url: http://uloz.to/path/to/app (string, required) - Url to download last version
-        + checksum: 217acf325c6012c1a50828e74626b945 (string, required) - MD5 checksum of the last version
-
-+ Response 404 (application/json)
-
-    Unknown application name (app_name)
-
-    + Attributes (Error response)
-        + message: Unknown application.
-
-# Group Localized message list
-
-## Message list [/message-list/v1]
-
-Shows list of localized error messages for API
-This entry point is not secured, and is publicly accessible.
-Accepted languages: 
-- cs_CZ
-- sk_SK
-- pl_PL
-- en_US
-
-### Get list [GET]
-
-+ Request
-    + Header
-    
-            Accept-Language: cs_CZ (string, required)
-
-+ Response 200 (application/json)
-
-    + Attributes
-        + locale: cs_CZ (string, required)
-        + Messages: [
-            {
-                "code": 101,
-                "message": "You are not the owner of the file."
-            },
-            {
-                "code": 102,
-                "message": "Invalid upload token."
-            },
-            {
-                "code": 103,
-                "message": "You need to send valid upload_token."
-            },
-            {
-                "code": 104,
-                "message": "This file is not available."
-            },
-            {
-                "code": 105,
-                "message": "Name cannot be empty."
-            },
-            {
-                "code": 106,
-                "message": "Changing file extension is forbidden."
-            },
-            {
-                "code": 107,
-                "message": "Description contains forbidden text."
-            },
-            {
-                "code": 108,
-                "message": "Invalid visibility value."
-            },
-            {
-                "code": 109,
-                "message": "Visibility %s is forbidden for this file."
-            },
-            {
-                "code": 110,
-                "message": "Expire_download must be greater than 0."
-            },
-            {
-                "code": 111,
-                "message": "Expire_time must be greater than today."
-            },
-            {
-                "code": 112,
-                "message": "Folder not found."
-            },
-            {
-                "code": 113,
-                "message": "File owner must own the folder too."
-            },
-            {
-                "code": 201,
-                "message": "Name cannot be empty."
-            },
-            {
-                "code": 202,
-                "message": "Name is too long."
-            },
-            {
-                "code": 203,
-                "message": "Allowed values are public and private."
-            },
-            {
-                "code": 204,
-                "message": "Parent folder does not exist."
-            },
-            {
-                "code": 205,
-                "message": "Parent folder does is not yours."
-            },
-        ]
-            
-+ Response 400 (application/json)
-
-    + Attributes
-        + Message: Invalid language specified.
