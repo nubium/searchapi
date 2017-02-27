@@ -828,6 +828,36 @@ This entry point is not secured, and is publicly accessible.
         + message: Unknown application.
 
 
+# Group Error Messages
+
+## File [/v1/files/error-messages]
+
+### Get messages [GET]
+
++ Request
+
+    + Headers
+
+            Accept-Language: cs-CZ
+
++ Response 200 (application/json)
+
+    + Attributes (array[Error message])
+
+## Folder [/v1/user/folder/error-messages]
+
+### Get messages [GET]
+
++ Request
+
+    + Headers
+
+            Accept-Language: cs-CZ
+
++ Response 200 (application/json)
+
+    + Attributes (array[Error message])
+
 # Data structures
 
 ## Detailed file entity (object)
@@ -1062,3 +1092,8 @@ This entry point is not secured, and is publicly accessible.
 + name: `custom-name` (string, optional) - If request had a name, the name is retained
 + headers (array[Bulk http header item], optional)
 + body: `{inner_payload: ["data1", "data2"]}` (string, optional)
+
+## Error message (object)
+## Properties
++ code: 601 (number, required) - Unique error code. You can use this to handle validation errors in your application.
++ message: Valid visibilities are public and private (string, required) - Messsage in language specified by `Accept-Language` header
