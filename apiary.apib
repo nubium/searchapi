@@ -290,6 +290,8 @@ Response for parameter format = `size`
 
 ### Create new folder [PUT /v1/user/{user_token}/folders]
 
+Validation error messages are returned in language set by `Accept-Language` header.
+
 Creates new folder for current user.
 
 + Request (application/json)
@@ -405,6 +407,8 @@ Get all files in specific folder.
 
 
 # Group File
+
+Validation error messages are returned in language set by `Accept-Language` header.
 
 ## Detail [/v1/files/{slug}{?password,user_token,upload_token}]
 
@@ -828,6 +832,43 @@ This entry point is not secured, and is publicly accessible.
         + message: Unknown application.
 
 
+# Group Error Messages
+
+Returns list of messages translated into language set using `Accept-Language` header. This entry point is not secured, and is publicly accessible.
+Accepted languages:
+ + cs_CZ
+ + sk_SK
+ + pl_PL
+ + en_US
+
+## File [/v1/files/error-messages]
+
+### Get messages [GET]
+
++ Request
+
+    + Headers
+
+            Accept-Language: cs-CZ
+
++ Response 200 (application/json)
+
+    + Attributes (array[Error message])
+
+## Folder [/v1/user/folder/error-messages]
+
+### Get messages [GET]
+
++ Request
+
+    + Headers
+
+            Accept-Language: cs-CZ
+
++ Response 200 (application/json)
+
+    + Attributes (array[Error message])
+
 # Data structures
 
 ## Detailed file entity (object)
@@ -1062,3 +1103,8 @@ This entry point is not secured, and is publicly accessible.
 + name: `custom-name` (string, optional) - If request had a name, the name is retained
 + headers (array[Bulk http header item], optional)
 + body: `{inner_payload: ["data1", "data2"]}` (string, optional)
+
+## Error message (object)
+## Properties
++ code: 601 (number, required) - Unique error code. You can use this to handle validation errors in your application.
++ message: Valid visibilities are public and private (string, required) - Messsage in language specified by `Accept-Language` header
