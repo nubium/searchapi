@@ -724,7 +724,7 @@ Returns upload progress of file.
 
 # Group Search
 
-## Search [/search/v1/{query}{?page,limit,user_token,sort,filetype,include_password_protected}]
+## Search [/search/v1/{query}{?page,limit,user_token,sort,filetype,duration,quality,include_password_protected}]
 
 + Parameters
     + query: zahradniceni rostliny (string, optional) - Searched query. If query is empty, search will return random files in random order.
@@ -735,7 +735,21 @@ Returns upload progress of file.
         Default: 20
     + sort: weight (enum, optional) - Sorting, one of [`weight`, `created`, `ratings`, `size`, `-size`]. This option may not be used without specifying `query`.
         Default: weight
-    + filetype: video (string, optional) - Filter found files, value might be one of (`video`, `audio`, `image`, `document`). If empty, search will return all filetypes.
+    + filetype: video (string, optional) - Filter found files, value might be one of (`video`, `audio`, `image`, `document`, `archive`). If empty, search will return all filetypes.
+    + duration (enum[string], optional) - filter by duration. available only for music and videos.
+        + Default: ''
+        + Members
+            + ''
+            + short
+            + middle
+            + long
+    + quality (enum[string], optional) - filter by quality. available for music, videos and images.
+        + Default: ''
+        + Members
+            + ''
+            + high
+            + middle
+            + low
     + include_password_protected: false (boolean, optional) - If set to `true`, will include password protected files in the search results.
 
 ### Get search result [GET]
