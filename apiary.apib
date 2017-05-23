@@ -724,7 +724,7 @@ Returns upload progress of file.
 
 # Group Search
 
-## Search [/search/v1/{query}{?page,limit,user_token,sort,filetype,duration,quality,include_password_protected}]
+## Search [/search/v1/{query}{?page,limit,user_token,sort,filetype,duration,quality,include_password_protected,streaming}]
 
 + Parameters
     + query: zahradniceni rostliny (string, optional) - Searched query. If query is empty, search will return random files in random order.
@@ -750,6 +750,13 @@ Returns upload progress of file.
             + high
             + middle
             + low
+    + streaming (enum[string], optional) - filter streaming type. available only for videos
+        + Default: ''
+        + Members
+            + ''
+            + live
+            + stream
+            + download
     + include_password_protected: false (boolean, optional) - If set to `true`, will include password protected files in the search results.
 
 ### Get search result [GET]
