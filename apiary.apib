@@ -403,7 +403,7 @@ Get all files in specific folder.
             + limit: 20
             + page_count: 12
             + items_count: 236
-        + items (array[Basic file entity])
+        + items (array[File entity])
 
 
 # Group File
@@ -429,7 +429,7 @@ Returns everything we know about file.
             X-Auth-Token: 3284hedgf237ruewhfvgi2378
 
 + Response 200 (application/json)
-    + Attributes (Detailed file entity)
+    + Attributes (File entity)
 
 + Response 401 (application/json)
 
@@ -458,7 +458,7 @@ Updating any property may affect other properties (e.g., changing `name` may cha
     + Attributes (Update file entity)
 
 + Response 200 (application/json)
-    + Attributes (Detailed file entity)
+    + Attributes (File entity)
 
 + Response 401 (application/json)
 
@@ -789,8 +789,8 @@ Perform search request. Response consists of two parts
             + page_count: 12
             + items_count: 236
         + items (object)
-            + exact (array[Basic file entity])
-            + partial (array[Basic file entity])
+            + exact (array[File entity])
+            + partial (array[File entity])
 
 + Response 401 (application/json)
 
@@ -892,7 +892,7 @@ Accepted languages:
 
 # Data structures
 
-## Detailed file entity (object)
+## File entity (object)
 ## Properties
 + id: aYu7nBQ (string, required) - encrypted id of file
 + slug: !ksiXPSXP6 (string, required) - identificator used for other API calls affecting file. Slug may change when file is renamed. Old slug will keep working, but new slug will be issued by API calls.
@@ -953,43 +953,6 @@ Accepted languages:
     + archive_files (array, optional)
     + video_data (array, optional)
     + audio_data (array, optional)
-
-## Basic file entity (object)
-## Properties
-+ id: aYu7nBQ (string, required) - encrypted id of file
-+ slug: !ksiXPSXP6 (string, required) - identificator used for other API calls affecting file. Slug may change when file is renamed. Old slug will keep working, but new slug will be issued by API calls.
-+ url: `/!ksiXPSXP6/poznavacka-rostlin-pptx` (string, required)
-+ realm (enum[string], default, required)
-    + Default: ulozto
-    + Members
-        + ulozto
-        + pornfile
-+ name: Poznávačka rostlin.pptx (string, required) - name of the file
-+ name_sanitized: `Poznávačka ***.pptx` (string, required) - name of the file with bad words replaced
-+ filesize: 158367932 (number, required) - filesize in bytes
-+ extension: pptx (string, required) - file extension
-+ rating: 0 (number, required) - file rating (sum of thumbs up and thumbs down)
-+ is_porn: false (boolean, required) - whenever file contains porn
-+ content_type (enum[string], default, nullable, required)
-    + Default: null
-    + Members
-        + null
-        + video
-        + audio
-        + image
-        + archive
-        + document
-+ password_protected_archive: false (boolean, required) - IF the file is archive, AND that archive is password protected. This file can be downloaded.
-+ password_protected_file: false (boolean, required) - You must know correct password to access the file detail or to download this file.
-+ media_info
-    + array(object) - key:value array. Key defines size and format of thumbnail, value is a list of images.
-+ visibility (enum[string], default, nullable, required)
-    + Default: public
-    + Members
-        + public
-        + private
-+ duration: 296 (number, optional) - Length of the video/audio in seconds (if videofile)
-+ streamable: false (boolean, optional) - `true` for streamable videofile
 
 ## Update file entity (object)
 ## Properties
