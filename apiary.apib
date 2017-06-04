@@ -935,19 +935,19 @@ Accepted languages:
 + expire_time: `2016-01-01` (string, nullable, optional) - When not `null`, file is download resticted up to this day.
 + upload_date: `2016-01-01` (string, nullable, optional) - File was uploaded on this date.
 + folder_id: 0 (number, required) - ID of folder containing this file. `0` is root folder for every user and only possible folder for anonymous files.
++ content_type (enum[string], default, nullable, required)
+    + Default: null
+    + Members
+        + null
+        + video
+        + audio
+        + image
+        + archive
+        + document
 + format
     + width: 320 (number, optional) - If available, width of video/image
     + height: 200 (number, optional) - If available, height of video/image
     + duration: 296 (number, optional) - Length of the video/audio in seconds
-    + content_type (enum[string], default, nullable, required)
-        + Default: null
-        + Members
-            + null
-            + video
-            + audio
-            + image
-            + archive
-            + document
     + streamable: false (boolean) - `true` for streamable videofile
 + attributes (object, optional)
     + archive_files (array, optional)
