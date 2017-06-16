@@ -588,6 +588,24 @@ Returns additional information about multimedia files and archives.
     + Attributes (Error response)
         + message: Invalid authorization token.
 
+## Download link [/v2/files/{slug}/download/{type}/{?captcha_token,user_token,password}]
+
++ Parameters
+    + type (enum[string], default, optional)
+        + Default: free
+        + Members
+            + free
+            + premium
+    + slug: !northys (string, required)
+    + user_token: asdiu328reewhfikw (string, optional) - To access user's private file, you need to identify yourself with this token
+    + captcha_token: `2c628b89-a989-4abc-9c31-9d7525bdf2b1:1` (string, optional) - Token you received after validation of captcha input. Needed
+    + password: my_password (string, optional) - To download password protected file.
+
+### Create download link [POST]
+
++ Response 201 (application/json)
+    + Attributes (Download link entity)
+
 # Group Upload
 
 ## Upload batch commit [/v1/upload/batch/{batch_uuid}/commit{?user_token,visibility,is_searchable}]
@@ -1144,3 +1162,8 @@ Accepted languages:
 ## Captcha token entity (object)
 ## Properties
 + token: 231de4af3f255e0d6b797327ecc2a7b9 (string, required)
+
+## Download link entity (object)
+## Properties
++ hash: 231de4af3f255e0d6b797327ecc2a7b9 (string, required) - md5 hash to verify downloaded file
++ link: https://dla.uloz.to/ (string, required) - download link
