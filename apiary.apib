@@ -588,18 +588,24 @@ Returns additional information about multimedia files and archives.
     + Attributes (Error response)
         + message: Invalid authorization token.
 
-## Download link [/v2/files/{slug}/download/{type}/{?captcha_token,user_token,password}]
+## Download link [/v2/files/{slug}/download/{type}{?captcha_token,user_token,password,device_id}]
+
+API currently supports free downloads only. VIP downloading will be implemented in the future.
+
+## Free download required parameters
+- **captcha_token**
+- **user_token**
+- **device_id**
 
 + Parameters
-    + type (enum[string], default, optional)
-        + Default: free
+    + type (enum[string], required)
         + Members
             + free
-            + premium
     + slug: !northys (string, required)
     + user_token: asdiu328reewhfikw (string, optional) - To access user's private file, you need to identify yourself with this token
     + captcha_token: `2c628b89-a989-4abc-9c31-9d7525bdf2b1:1` (string, optional) - Token you received after validation of captcha input. Needed
     + password: my_password (string, optional) - To download password protected file.
+    + device_id: 23489efgih2841 (string, optional) - Android Device ID for example. Maximum 50 characters length.
 
 ### Create download link [POST]
 
