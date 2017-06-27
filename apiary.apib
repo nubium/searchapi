@@ -405,6 +405,39 @@ Get all files in specific folder.
             + items_count: 236
         + items (array[File entity])
 
+# Group Captcha
+
+## Captcha [/v1/captcha/{?user_token}]
+
++ Parameters
+    + user_token: asdiu328reewhfikw (string, required) - To get captcha, you need to identify yourself with this token.
+
+### Create captcha [POST]
+
++ Response 201 (application/json)
+    + Attributes (Captcha entity)
+
+## Validate captcha [/v1/captcha/{id}/validate{?user_token}]
+
++ Parameters
+    + id: d41d8cd98f00b204e9800998ecf8427e (string, required) - Captcha id from Create captcha endpoint
+    + user_token: asdiu328reewhfikw (string, optional) - To validate captcha input, you need to identify yourself with this token.
+
+### Validate captcha input [POST]
+
++ Request (application/json)
+    + Attributes (Validate captcha entity)
+
++ Response 201 (application/json)
+    + Attributes (Captcha token entity)
+
++ Response 403 (application/json)
+    + Attributes (Error response)
+        + message: Invalid input for captcha.
+
++ Response 422 (application/json)
+    + Attributes (Error response)
+        + message: Invalid parameters for captcha input.
 
 # Group File
 
@@ -414,11 +447,12 @@ Validation error messages are returned in language set by `Accept-Language` head
 
 + Parameters
     + slug: !8DzBBNAuS (string, required) - Slug from file listing API calls. Slug may change when file is renamed. Old slug will keep working, but new slug will be issued by API calls.
-    + user_token: asdiu328reewhfikw (string, optional) - To access user's private file, you need to identify yourself with his token
+    + user_token: asdiu328reewhfikw (string, optional) - To access user's private file, you need to identify yourself with this token
     + upload_token: `2c628b89-a989-4abc-9c31-9d7525bdf2b1:1` (string, optional) - To write access to anonymous file in upload process, you need to use upload token. Also you need to use upload token to view the file as anonymous user.
     + password: 123macko (string, optional) - To access password protected file, you need to provide the file's password (password is not necessary to access own files, password does not allow writing file not my own)
 
 ### Get file [GET]
+<a name="file"></a>
 
 Returns everything we know about file.
 
@@ -554,6 +588,30 @@ Returns additional information about multimedia files and archives.
 
     + Attributes (Error response)
         + message: Invalid authorization token.
+
+## Download link [/v2/files/{slug}/download/{type}{?captcha_token,user_token,password,device_id}]
+
+API currently supports free downloads only. VIP downloading will be implemented in the future. For permissions error responses see [file endpoint](#file).
+
+## Free download required parameters
+- **captcha_token**
+- **user_token**
+- **device_id**
+
++ Parameters
+    + type (enum[string], required)
+        + Members
+            + free
+    + slug: !northys (string, required)
+    + user_token: asdiu328reewhfikw (string, optional) - To access user's private file, you need to identify yourself with this token
+    + captcha_token: `2c628b89-a989-4abc-9c31-9d7525bdf2b1:1` (string, optional) - Token you received after validation of captcha input. Needed
+    + password: my_password (string, optional) - To download password protected file.
+    + device_id: 23489efgih2841 (string, optional) - Android Device ID for example. Maximum 50 characters length.
+
+### Create download link [POST]
+
++ Response 201 (application/json)
+    + Attributes (Download link entity)
 
 # Group Upload
 
@@ -1094,3 +1152,25 @@ Accepted languages:
 ## Properties
 + code: 601 (number, required) - Unique error code. You can use this to handle validation errors in your application.
 + message: Valid visibilities are public and private (string, required) - Messsage in language specified by `Accept-Language` header
+
+## Captcha entity (object)
+## Properties
++ id: d41d8cd98f00b204e9800998ecf8427e (string, required)
++ type: xapca
++ sound: https://httpbin.org/get?type=sound&data=md5
++ image: https://httpbin.org/get?type=image&data=md5
++ data (object) - This field contains "random" fields which are specific to captcha service.  You have to send them back to /validate endpoint as request body.
+
+## Validate captcha entity (object)
+## Properties
++ value: xena (string, required)
++ data (object) - This field contains "random" fields which are specific to captcha service.  You have to send them back to /validate endpoint as request body.
+
+## Captcha token entity (object)
+## Properties
++ token: 231de4af3f255e0d6b797327ecc2a7b9 (string, required)
+
+## Download link entity (object)
+## Properties
++ hash: 231de4af3f255e0d6b797327ecc2a7b9 (string, required) - md5 hash to verify downloaded file
++ link: https://dla.uloz.to/ (string, required) - download link
