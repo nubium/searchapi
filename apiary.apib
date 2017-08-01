@@ -613,6 +613,16 @@ API currently supports free downloads only. VIP downloading will be implemented 
 + Response 201 (application/json)
     + Attributes (Download link entity)
 
+
+## Favourite [/v2/files/{slug}/favourite]
+
+New file is created when you favourite an existing file. The new file is returned as body response.
+
+### Favourite file [POST]
+
++ Response 201 (application/json)
+    + Attributes (File entity)
+
 # Group Upload
 
 ## Upload batch commit [/v1/upload/batch/{batch_uuid}/commit{?user_token,visibility,is_searchable}]
