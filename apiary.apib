@@ -627,6 +627,13 @@ New file is created when you favorite an existing file. The new file is returned
 
     + Attributes (File entity)
 
++ Response 409 (application/json)
+
+    When file is in favorite folder already.
+
+    + Attributes (Error response)
+        + message: File is already in favourites.
+
 # Group Upload
 
 ## Upload batch commit [/v1/upload/batch/{batch_uuid}/commit{?user_token,visibility,is_searchable}]
