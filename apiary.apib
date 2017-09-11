@@ -613,6 +613,27 @@ API currently supports free downloads only. VIP downloading will be implemented 
 + Response 201 (application/json)
     + Attributes (Download link entity)
 
+
+## Favorite [/v2/files/{slug}/favorite{?user_token,password}]
+
+New file is created when you favorite an existing file. The new file is returned as body response.
+
+### Favorite file [POST]
+
++ Response 201 (application/json)
+    + Headers
+
+            Location: https://apis.uloz.to/!slug/favorited-file
+
+    + Attributes (File entity)
+
++ Response 409 (application/json)
+
+    When file is in favorite folder already.
+
+    + Attributes (Error response)
+        + message: File is already in favourites.
+
 # Group Upload
 
 ## Upload batch commit [/v1/upload/batch/{batch_uuid}/commit{?user_token,visibility,is_searchable}]
