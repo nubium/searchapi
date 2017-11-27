@@ -756,7 +756,7 @@ Expects list of files that should be present in upload batch. Unknown files will
 
 ## Upload file progress [/v1/upload/batch/{batch_uuid}/file/{batch_file_id}]
 
-Returns upload progress of file.
+DEPRECATED - Returns upload progress of file.
 
 + Parameters
     + batch_uuid: d5ec97a3-cb15-46d3-8f5f-5125378a22c9 (string, required) - Upload batch unique ID
@@ -773,13 +773,10 @@ Returns upload progress of file.
 + Response 200 (application/json)
 
     + Attributes
-        + status: uploading (enum[string], required)
+        + status: done (enum[string], required) - Always done
             + Members
-                + uploading
                 + done
-                + error
-        + received: 456789 (number, required) - Number of bytes of HTTP request recieved on server
-        + size: 54646546 (number, required) - Uploading HTTP request size
+        + size: 54646546 (number, required) - File size, available only when status is done
         + slug: null (string, optional) - File slug, available only when status is done
 
 + Response 401 (application/json)
@@ -795,7 +792,7 @@ Returns upload progress of file.
 
 + Response 404 (application/json)
 
-    Unknown batch_uuid or batch_file_id
+    Unknown batch_uuid or batch_file_id or upload still in progress
 
     + Attributes (Error response)
         + message: batch_uuid or batch_file_id not found
