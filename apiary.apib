@@ -119,7 +119,7 @@ This endpoint is used to generate a valid [user_token](#user_token). [user_token
     + Attributes
         + login: medvidek (string, required) - User login
         + password: 123456 (string, required) - User password
-        + device_id: 23489efgih2841 (string, optional) - Android Device ID for example. Maximum 50 characters length.
+        + device_id: 23489efgih2841 (string, optional) - Android Device ID for example. Maximum 40 characters length.
 
 + Response 201 (application/json)
 
@@ -606,7 +606,7 @@ API currently supports free downloads only. VIP downloading will be implemented 
     + user_token: asdiu328reewhfikw (string, optional) - To access user's private file, you need to identify yourself with this token
     + captcha_token: `2c628b89-a989-4abc-9c31-9d7525bdf2b1:1` (string, optional) - Token you received after validation of captcha input. Needed
     + password: my_password (string, optional) - To download password protected file.
-    + device_id: 23489efgih2841 (string, optional) - Android Device ID for example. Maximum 50 characters length.
+    + device_id: 23489efgih2841 (string, optional) - Android Device ID for example. Maximum 40 characters length.
 
 ### Create download link [POST]
 
