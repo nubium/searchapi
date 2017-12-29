@@ -1,0 +1,4303 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Below you will find a current list of the available methods on our API.\n\n# Global headers\n\nSecurity headers used thoughout the API and their description.\n\n## X-Auth-Token\n\nThis header is issued for every application. Each application should have exactly one, unique auth token. This is basically an **API key**.\n\n## X-Checksum\n\nSecurity checksum to sign your request with, assuring API that request was not tampered with.\n\n<a name=\"user_token\"></a>\n\n## user_token\n\nUser token is used to prove to API that your application has access to user's account. User token is obtained by [validating login information](#sessions).\n\n# Content types\n\nThe Ulož.to API currently supports both JSON and XML. JSON is prefered and you can choose between xml and json using `Accept` header.",
+    "title": "Ulož.to API",
+    "version": ""
+  },
+  "host": "apis.uloz.to",
+  "basePath": "/",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "app_version_url": "/app-version/v1",
+                "bulk_url": [
+                  "`/v1/bulk` {string",
+                  "required}"
+                ],
+                "files_url": "/v1/files",
+                "search_url": "/search/v1",
+                "session_url": "/session/v1",
+                "userfolders_list_url": "/v1/user/{user_token}/folders",
+                "userfolders_url": "/v1/user/{user_token}/folders/{folder_id}",
+                "userinfo_url": "/user/v1"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "app_version_url": {
+                  "type": "string"
+                },
+                "bulk_url": {
+                  "items": {},
+                  "type": "array"
+                },
+                "files_url": {
+                  "type": "string"
+                },
+                "search_url": {
+                  "type": "string"
+                },
+                "session_url": {
+                  "type": "string"
+                },
+                "userfolders_list_url": {
+                  "type": "string"
+                },
+                "userfolders_url": {
+                  "type": "string"
+                },
+                "userinfo_url": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "search_url",
+                "session_url",
+                "userinfo_url",
+                "app_version_url",
+                "files_url",
+                "userfolders_list_url",
+                "userfolders_url"
+              ],
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "Invalid X-Auth-Token provided , could not authorize your application.",
+            "examples": {
+              "application/json": {
+                "message": "Invalid authorization token.",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "tags": [
+          "Root"
+        ],
+        "description": "",
+        "summary": "Retrieve entry points"
+      }
+    },
+    "/app-version/v1/{app_name}": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Unique application identifier.",
+            "in": "path",
+            "name": "app_name",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "checksum": "217acf325c6012c1a50828e74626b945",
+                "message": "null",
+                "result": "ok",
+                "url": "http://uloz.to/path/to/app",
+                "version": {
+                  "displayed": "1.1",
+                  "internal": 10097
+                }
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "checksum": {
+                  "description": "MD5 checksum of the last version",
+                  "type": "string"
+                },
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                },
+                "url": {
+                  "description": "Url to download last version",
+                  "type": "string"
+                },
+                "version": {
+                  "properties": {
+                    "displayed": {
+                      "description": "Version number to show to users",
+                      "type": "string"
+                    },
+                    "internal": {
+                      "description": "Internal version, should at least loosely follow some kind of semantic versioning (SEMVER)",
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "internal",
+                    "displayed"
+                  ],
+                  "type": "object"
+                }
+              },
+              "required": [
+                "result",
+                "message",
+                "url",
+                "checksum"
+              ],
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "Unknown application name (app_name)",
+            "examples": {
+              "application/json": {
+                "message": "Unknown application.",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "tags": [
+          "Application info"
+        ],
+        "description": "",
+        "summary": "Get version info"
+      }
+    },
+    "/search/v1/{query}": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Searched query. If query is empty, search will return random files in random order.",
+            "in": "path",
+            "name": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "Perform search as a frontend user (instead of anonymous search)",
+            "in": "query",
+            "name": "user_token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Fetch specific page number\nDefault: 1\n",
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "description": "Limit the result set to <limit> items\nDefault: 20\n",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "description": "Sorting, one of [`weight`, `created`, `ratings`, `size`, `-size`]. This option may not be used without specifying `query`.\nDefault: weight\n",
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "Filter found files, value might be one of (`video`, `audio`, `image`, `document`, `archive`). If empty, search will return all filetypes.",
+            "in": "query",
+            "name": "filetype",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "default": "''",
+            "description": "filter by duration. available only for music and videos.",
+            "enum": [
+              "''",
+              "short",
+              "middle",
+              "long"
+            ],
+            "in": "query",
+            "name": "duration",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "default": "''",
+            "description": "filter by quality. available for music, videos and images.",
+            "enum": [
+              "''",
+              "high",
+              "middle",
+              "low"
+            ],
+            "in": "query",
+            "name": "quality",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "default": "''",
+            "description": "filter streaming type. available only for videos",
+            "enum": [
+              "''",
+              "live",
+              "stream",
+              "download"
+            ],
+            "in": "query",
+            "name": "streaming",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "If set to `true`, will include password protected files in the search results.",
+            "in": "query",
+            "name": "include_password_protected",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "items": {
+                  "exact": [
+                    {
+                      "attributes": {},
+                      "content_status": "normal",
+                      "content_type": "null",
+                      "description": "this could potentially be a rather\\r\\nlong description",
+                      "description_sanitized": "this could *** *** a rather\\r\\nlong description",
+                      "expire_download": "null",
+                      "expire_time": "2016-01-01",
+                      "extension": "pptx",
+                      "filesize": 158367932,
+                      "folder_id": 0,
+                      "format": {
+                        "duration": 296,
+                        "height": 200,
+                        "streamable": false,
+                        "width": 320
+                      },
+                      "id": "aYu7nBQ",
+                      "is_porn": false,
+                      "is_porn_by_uploader": false,
+                      "is_searchable": true,
+                      "malware_status": "unknown",
+                      "media_info": {
+                        "array": {}
+                      },
+                      "media_info_default_index": 4,
+                      "name": "Poznávačka rostlin.pptx",
+                      "name_sanitized": "Poznávačka ***.pptx",
+                      "password_protected_archive": false,
+                      "password_protected_file": false,
+                      "rating": 0,
+                      "realm": "ulozto",
+                      "slug": "!ksiXPSXP6",
+                      "upload_date": "2016-01-01",
+                      "url": "/!ksiXPSXP6/poznavacka-rostlin-pptx",
+                      "visibility": "public"
+                    }
+                  ],
+                  "partial": [
+                    {
+                      "attributes": {},
+                      "content_status": "normal",
+                      "content_type": "null",
+                      "description": "this could potentially be a rather\\r\\nlong description",
+                      "description_sanitized": "this could *** *** a rather\\r\\nlong description",
+                      "expire_download": "null",
+                      "expire_time": "2016-01-01",
+                      "extension": "pptx",
+                      "filesize": 158367932,
+                      "folder_id": 0,
+                      "format": {
+                        "duration": 296,
+                        "height": 200,
+                        "streamable": false,
+                        "width": 320
+                      },
+                      "id": "aYu7nBQ",
+                      "is_porn": false,
+                      "is_porn_by_uploader": false,
+                      "is_searchable": true,
+                      "malware_status": "unknown",
+                      "media_info": {
+                        "array": {}
+                      },
+                      "media_info_default_index": 4,
+                      "name": "Poznávačka rostlin.pptx",
+                      "name_sanitized": "Poznávačka ***.pptx",
+                      "password_protected_archive": false,
+                      "password_protected_file": false,
+                      "rating": 0,
+                      "realm": "ulozto",
+                      "slug": "!ksiXPSXP6",
+                      "upload_date": "2016-01-01",
+                      "url": "/!ksiXPSXP6/poznavacka-rostlin-pptx",
+                      "visibility": "public"
+                    }
+                  ]
+                },
+                "message": "null",
+                "metadata": {
+                  "displayed_query": "zahradniceni rostliny",
+                  "items_count": "236",
+                  "limit": "20",
+                  "page": "1",
+                  "page_count": "12",
+                  "query": "zahradniceni rostliny",
+                  "run_at": "2017-12-11T14:46:31+01:00"
+                },
+                "result": "ok"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "items": {
+                  "properties": {
+                    "exact": {
+                      "items": {},
+                      "type": "array"
+                    },
+                    "partial": {
+                      "items": {},
+                      "type": "array"
+                    }
+                  },
+                  "type": "object"
+                },
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "metadata": {
+                  "properties": {
+                    "displayed_query": {
+                      "type": "string"
+                    },
+                    "items_count": {
+                      "type": "string"
+                    },
+                    "limit": {
+                      "type": "string"
+                    },
+                    "page": {
+                      "type": "string"
+                    },
+                    "page_count": {
+                      "type": "string"
+                    },
+                    "query": {
+                      "type": "string"
+                    },
+                    "run_at": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "Invalid X-Auth-Token provided , could not authorize your application.",
+            "examples": {
+              "application/json": {
+                "message": "Invalid authorization token.",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "Requested response does not exist. Maybe you are trying to access page parameter beyond the existing results?",
+            "examples": {
+              "application/json": {
+                "items_count": 8,
+                "message": "Requested page index is out of range for given query.",
+                "page_count": 1,
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "items_count": {
+                  "type": "number"
+                },
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "page_count": {
+                  "type": "number"
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message",
+                "page_count",
+                "items_count"
+              ],
+              "type": "object"
+            }
+          },
+          "412": {
+            "description": "Wrong request parameter. For e.g. limit less than 1 or more than 100, unsupported filter etc.",
+            "examples": {
+              "application/json": {
+                "extra": "Parameter limit must be between <1, 100>",
+                "message": "Wrong request parameter.",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "extra": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "examples": {
+              "application/json": {
+                "message": "Too many requests. Please slow down a little and try again later.",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "tags": [
+          "Search"
+        ],
+        "description": "Perform search request. Response consists of two parts\n\n+ metadata with informaton about the search (time, page, items count etc.)\n\n+ list of search items (list of entries, one for each file)",
+        "summary": "Get search result"
+      }
+    },
+    "/session/v1": {
+      "put": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "properties": {
+                "device_id": {
+                  "description": "Android Device ID for example. Maximum 40 characters length.",
+                  "type": "string"
+                },
+                "login": {
+                  "description": "User login",
+                  "type": "string"
+                },
+                "password": {
+                  "description": "User password",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "login",
+                "password"
+              ],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "[user_token](#user_token) created.",
+            "examples": {
+              "application/json": {
+                "message": "null",
+                "result": "ok",
+                "token_id": "asdiu328reewhfikw"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                },
+                "token_id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message",
+                "token_id"
+              ],
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "Invalid X-Auth-Token provided, could not authorize your application.",
+            "examples": {
+              "application/json": {
+                "message": "Invalid authorization token.",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          },
+          "412": {
+            "description": "Unable to create user [user_token](#user_token).",
+            "examples": {
+              "application/json": {
+                "message": "Wrong password or invalid username",
+                "result": "error",
+                "token": "null"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                },
+                "token": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "result",
+                "message",
+                "token"
+              ],
+              "type": "object"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "examples": {
+              "application/json": {
+                "message": "Too many requests. Please slow down a little and try again later.",
+                "result": "error",
+                "token": "null"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                },
+                "token": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "result",
+                "message",
+                "token"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "tags": [
+          "Sessions"
+        ],
+        "description": "This endpoint is used to generate a valid [user_token](#user_token). [user_token](#user_token) is later used to identify a user.",
+        "summary": "Authenticate user"
+      }
+    },
+    "/session/v1/{user_token}": {
+      "delete": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Identifier of session",
+            "in": "path",
+            "name": "user_token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "message": "null",
+                "result": "ok"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "Invalid X-Auth-Token provided , could not authorize your application.",
+            "examples": {
+              "application/json": {
+                "message": "Invalid authorization token.",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "tags": [
+          "Sessions"
+        ],
+        "description": "Logouts an user.",
+        "summary": "Delete user session"
+      }
+    },
+    "/user/v1/{user_token}": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "obtained by authentication",
+            "in": "path",
+            "name": "user_token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Basic user info. Credit amount is measured in kilobytes.",
+            "examples": {
+              "application/json": {
+                "credit": "413967",
+                "login": "medvidek",
+                "message": "null",
+                "result": "ok",
+                "user_id": 666
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "credit": {
+                  "type": "string"
+                },
+                "login": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                },
+                "user_id": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "result",
+                "message",
+                "user_id",
+                "login",
+                "credit"
+              ],
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "Invalid X-Auth-Token provided , could not authorize your application.",
+            "examples": {
+              "application/json": {
+                "message": "Invalid authorization token.",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ],
+        "description": "Get the basic information for an account.",
+        "summary": "Get user information"
+      }
+    },
+    "/v1/bulk": {
+      "put": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "properties": {
+                "bulk": {
+                  "type": "array"
+                },
+                "bulk_header": {
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All bulk commands were executed, their return values are present in the response in the order they were",
+            "examples": {
+              "application/json": {
+                "responses": [
+                  {
+                    "body": "{inner_payload: [\"data1\", \"data2\"]}",
+                    "code": 200,
+                    "headers": [
+                      {
+                        "name": "Content-Type",
+                        "value": "text/javascript; charset=UTF-8"
+                      }
+                    ],
+                    "name": "custom-name"
+                  }
+                ]
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "responses": {
+                  "items": {},
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "Fatal error, unable to resume operations. Bulk commands were not executed.",
+            "examples": {
+              "application/json": {
+                "message": "Fatal error, unable to execute bulk batch.",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string"
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "tags": [
+          "Bulk"
+        ],
+        "description": "Execute multiple commands using single http request. Get all results in the single http response.",
+        "summary": "Execute bulk commands"
+      }
+    },
+    "/v1/captcha/": {
+      "post": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "To get captcha, you need to identify yourself with this token.",
+            "in": "query",
+            "name": "user_token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "examples": {
+              "application/json": {
+                "data": {},
+                "id": "d41d8cd98f00b204e9800998ecf8427e",
+                "image": "https://httpbin.org/get?type=image&data=md5",
+                "sound": "https://httpbin.org/get?type=sound&data=md5",
+                "type": "xapca"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "data": {
+                  "description": "This field contains \"random\" fields which are specific to captcha service.  You have to send them back to /validate endpoint as request body.",
+                  "properties": {},
+                  "type": "object"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "image": {
+                  "type": "string"
+                },
+                "sound": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "tags": [
+          "Captcha"
+        ],
+        "description": "",
+        "summary": "Create captcha"
+      }
+    },
+    "/v1/captcha/{id}/validate": {
+      "post": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Captcha id from Create captcha endpoint",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "To validate captcha input, you need to identify yourself with this token.",
+            "in": "query",
+            "name": "user_token",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "properties": {
+                "data": {
+                  "description": "This field contains \"random\" fields which are specific to captcha service.  You have to send them back to /validate endpoint as request body.",
+                  "properties": {},
+                  "type": "object"
+                },
+                "value": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "value"
+              ],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "examples": {
+              "application/json": {
+                "token": "231de4af3f255e0d6b797327ecc2a7b9"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "token": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "token"
+              ],
+              "type": "object"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "examples": {
+              "application/json": {
+                "message": "Invalid input for captcha.",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "message": "Invalid parameters for captcha input.",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "tags": [
+          "Captcha"
+        ],
+        "description": "",
+        "summary": "Validate captcha input"
+      }
+    },
+    "/v1/files/error-messages": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": [
+                {
+                  "code": 601,
+                  "message": "Valid visibilities are public and private"
+                }
+              ]
+            },
+            "headers": {},
+            "schema": {
+              "items": {},
+              "type": "array"
+            }
+          }
+        },
+        "tags": [
+          "Error Messages"
+        ],
+        "description": "",
+        "summary": "Get messages"
+      }
+    },
+    "/v1/files/{slug}": {
+      "delete": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Slug from file listing API calls. Slug may change when file is renamed. Old slug will keep working, but new slug will be issued by API calls.",
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "To access user's private file, you need to identify yourself with this token",
+            "in": "query",
+            "name": "user_token",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "To write access to anonymous file in upload process, you need to use upload token. Also you need to use upload token to view the file as anonymous user.",
+            "in": "query",
+            "name": "upload_token",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "To access password protected file, you need to provide the file's password (password is not necessary to access own files, password does not allow writing file not my own)",
+            "in": "query",
+            "name": "password",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Delete successfull",
+            "examples": {},
+            "headers": {}
+          },
+          "401": {
+            "description": "Invalid X-Auth-Token provided , could not authorize your application.",
+            "examples": {
+              "application/json": {
+                "message": "Invalid authorization token.",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "tags": [
+          "File"
+        ],
+        "description": "Delete your file.",
+        "summary": "Delete file"
+      },
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Slug from file listing API calls. Slug may change when file is renamed. Old slug will keep working, but new slug will be issued by API calls.",
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "To access user's private file, you need to identify yourself with this token",
+            "in": "query",
+            "name": "user_token",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "To write access to anonymous file in upload process, you need to use upload token. Also you need to use upload token to view the file as anonymous user.",
+            "in": "query",
+            "name": "upload_token",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "To access password protected file, you need to provide the file's password (password is not necessary to access own files, password does not allow writing file not my own)",
+            "in": "query",
+            "name": "password",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "attributes": {},
+                "content_status": "normal",
+                "content_type": "null",
+                "description": "this could potentially be a rather\\r\\nlong description",
+                "description_sanitized": "this could *** *** a rather\\r\\nlong description",
+                "expire_download": "null",
+                "expire_time": "2016-01-01",
+                "extension": "pptx",
+                "filesize": 158367932,
+                "folder_id": 0,
+                "format": {
+                  "duration": 296,
+                  "height": 200,
+                  "streamable": false,
+                  "width": 320
+                },
+                "id": "aYu7nBQ",
+                "is_porn": false,
+                "is_porn_by_uploader": false,
+                "is_searchable": true,
+                "malware_status": "unknown",
+                "media_info": {
+                  "array": {}
+                },
+                "media_info_default_index": 4,
+                "name": "Poznávačka rostlin.pptx",
+                "name_sanitized": "Poznávačka ***.pptx",
+                "password_protected_archive": false,
+                "password_protected_file": false,
+                "rating": 0,
+                "realm": "ulozto",
+                "slug": "!ksiXPSXP6",
+                "upload_date": "2016-01-01",
+                "url": "/!ksiXPSXP6/poznavacka-rostlin-pptx",
+                "visibility": "public"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "attributes": {
+                  "properties": {
+                    "archive_files": {},
+                    "audio_data": {},
+                    "video_data": {}
+                  },
+                  "type": "object"
+                },
+                "content_status": {
+                  "default": "normal",
+                  "enum": [
+                    "normal",
+                    "limited"
+                  ],
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "content_type": {
+                  "default": "null",
+                  "enum": [
+                    "null",
+                    "video",
+                    "audio",
+                    "image",
+                    "archive",
+                    "document"
+                  ],
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "description": {
+                  "description": "File description",
+                  "type": "string"
+                },
+                "description_sanitized": {
+                  "description": "File description with bad words replaced",
+                  "type": "string"
+                },
+                "expire_download": {
+                  "description": "When not `null`, file is download resticted up to this number.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "expire_time": {
+                  "description": "When not `null`, file is download resticted up to this day.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "extension": {
+                  "description": "file extension",
+                  "type": "string"
+                },
+                "filesize": {
+                  "description": "filesize in bytes",
+                  "type": "number"
+                },
+                "folder_id": {
+                  "description": "ID of folder containing this file. `0` is root folder for every user and only possible folder for anonymous files.",
+                  "type": "number"
+                },
+                "format": {
+                  "properties": {
+                    "duration": {
+                      "description": "Length of the video/audio in seconds",
+                      "type": "number"
+                    },
+                    "height": {
+                      "description": "If available, height of video/image",
+                      "type": "number"
+                    },
+                    "streamable": {
+                      "description": "`true` for streamable videofile",
+                      "type": "boolean"
+                    },
+                    "width": {
+                      "description": "If available, width of video/image",
+                      "type": "number"
+                    }
+                  },
+                  "type": "object"
+                },
+                "id": {
+                  "description": "encrypted id of file",
+                  "type": "string"
+                },
+                "is_porn": {
+                  "type": "boolean"
+                },
+                "is_porn_by_uploader": {
+                  "type": "boolean"
+                },
+                "is_searchable": {
+                  "description": "When `false`, file will be hidden form public searchers.",
+                  "type": "boolean"
+                },
+                "malware_status": {
+                  "default": "unknown",
+                  "enum": [
+                    "unknown",
+                    "unwanted"
+                  ],
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "media_info": {
+                  "properties": {
+                    "array": {
+                      "description": "key:value array. Key defines size and format of thumbnail, value is a list of images.",
+                      "properties": {},
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                },
+                "media_info_default_index": {
+                  "description": "index of first image in slideshow. 0 is the first image from media_info",
+                  "type": "number"
+                },
+                "name": {
+                  "description": "name of the file",
+                  "type": "string"
+                },
+                "name_sanitized": {
+                  "description": "name of the file with bad words replaced",
+                  "type": "string"
+                },
+                "password_protected_archive": {
+                  "description": "IF the file is archive, AND that archive is password protected. This file can be downloaded.",
+                  "type": "boolean"
+                },
+                "password_protected_file": {
+                  "description": "You must know correct password to access the file detail or to download this file.",
+                  "type": "boolean"
+                },
+                "rating": {
+                  "description": "file rating (sum of thumbs up and thumbs down)",
+                  "type": "number"
+                },
+                "realm": {
+                  "default": "ulozto",
+                  "enum": [
+                    "ulozto",
+                    "pornfile"
+                  ],
+                  "type": "string"
+                },
+                "slug": {
+                  "description": "identificator used for other API calls affecting file. Slug may change when file is renamed. Old slug will keep working, but new slug will be issued by API calls.",
+                  "type": "string"
+                },
+                "upload_date": {
+                  "description": "File was uploaded on this date.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "url": {
+                  "type": "string"
+                },
+                "visibility": {
+                  "default": "public",
+                  "enum": [
+                    "public",
+                    "private"
+                  ],
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "slug",
+                "url",
+                "realm",
+                "name",
+                "name_sanitized",
+                "filesize",
+                "extension",
+                "is_porn",
+                "is_porn_by_uploader",
+                "rating",
+                "password_protected_archive",
+                "password_protected_file",
+                "media_info_default_index",
+                "visibility",
+                "malware_status",
+                "content_status",
+                "is_searchable",
+                "folder_id",
+                "content_type"
+              ],
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "Invalid X-Auth-Token provided , could not authorize your application.",
+            "examples": {
+              "application/json": {
+                "message": "Invalid authorization token.",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "tags": [
+          "File"
+        ],
+        "description": "<a name=\"file\"></a>\n\nReturns everything we know about file.",
+        "summary": "Get file"
+      },
+      "patch": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Slug from file listing API calls. Slug may change when file is renamed. Old slug will keep working, but new slug will be issued by API calls.",
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "To access user's private file, you need to identify yourself with this token",
+            "in": "query",
+            "name": "user_token",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "To write access to anonymous file in upload process, you need to use upload token. Also you need to use upload token to view the file as anonymous user.",
+            "in": "query",
+            "name": "upload_token",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "To access password protected file, you need to provide the file's password (password is not necessary to access own files, password does not allow writing file not my own)",
+            "in": "query",
+            "name": "password",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "properties": {
+                "description": {
+                  "description": "Change file description. No description by default.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "expire_download": {
+                  "description": "Restrict public access to file by number of downloads remaining. No limit by default.",
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "expire_time": {
+                  "description": "Restrict public access to file by date. No limit by default.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "folder_id": {
+                  "description": "Assign file to folder (`0` = root folder, file and folder owner must match).",
+                  "type": "number"
+                },
+                "is_porn": {
+                  "description": "whenever file contains porn or not",
+                  "type": "boolean"
+                },
+                "is_searchable": {
+                  "description": "Set to `false` to hide file from public search.",
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "name": {
+                  "description": "Change name of the file. New name must end with same extension as old one (case-sensitive).",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "password": {
+                  "description": "Set password protection. No password when null.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "visibility": {
+                  "default": "public",
+                  "enum": [
+                    "public",
+                    "private"
+                  ],
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "is_porn"
+              ],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "attributes": {},
+                "content_status": "normal",
+                "content_type": "null",
+                "description": "this could potentially be a rather\\r\\nlong description",
+                "description_sanitized": "this could *** *** a rather\\r\\nlong description",
+                "expire_download": "null",
+                "expire_time": "2016-01-01",
+                "extension": "pptx",
+                "filesize": 158367932,
+                "folder_id": 0,
+                "format": {
+                  "duration": 296,
+                  "height": 200,
+                  "streamable": false,
+                  "width": 320
+                },
+                "id": "aYu7nBQ",
+                "is_porn": false,
+                "is_porn_by_uploader": false,
+                "is_searchable": true,
+                "malware_status": "unknown",
+                "media_info": {
+                  "array": {}
+                },
+                "media_info_default_index": 4,
+                "name": "Poznávačka rostlin.pptx",
+                "name_sanitized": "Poznávačka ***.pptx",
+                "password_protected_archive": false,
+                "password_protected_file": false,
+                "rating": 0,
+                "realm": "ulozto",
+                "slug": "!ksiXPSXP6",
+                "upload_date": "2016-01-01",
+                "url": "/!ksiXPSXP6/poznavacka-rostlin-pptx",
+                "visibility": "public"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "attributes": {
+                  "properties": {
+                    "archive_files": {},
+                    "audio_data": {},
+                    "video_data": {}
+                  },
+                  "type": "object"
+                },
+                "content_status": {
+                  "default": "normal",
+                  "enum": [
+                    "normal",
+                    "limited"
+                  ],
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "content_type": {
+                  "default": "null",
+                  "enum": [
+                    "null",
+                    "video",
+                    "audio",
+                    "image",
+                    "archive",
+                    "document"
+                  ],
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "description": {
+                  "description": "File description",
+                  "type": "string"
+                },
+                "description_sanitized": {
+                  "description": "File description with bad words replaced",
+                  "type": "string"
+                },
+                "expire_download": {
+                  "description": "When not `null`, file is download resticted up to this number.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "expire_time": {
+                  "description": "When not `null`, file is download resticted up to this day.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "extension": {
+                  "description": "file extension",
+                  "type": "string"
+                },
+                "filesize": {
+                  "description": "filesize in bytes",
+                  "type": "number"
+                },
+                "folder_id": {
+                  "description": "ID of folder containing this file. `0` is root folder for every user and only possible folder for anonymous files.",
+                  "type": "number"
+                },
+                "format": {
+                  "properties": {
+                    "duration": {
+                      "description": "Length of the video/audio in seconds",
+                      "type": "number"
+                    },
+                    "height": {
+                      "description": "If available, height of video/image",
+                      "type": "number"
+                    },
+                    "streamable": {
+                      "description": "`true` for streamable videofile",
+                      "type": "boolean"
+                    },
+                    "width": {
+                      "description": "If available, width of video/image",
+                      "type": "number"
+                    }
+                  },
+                  "type": "object"
+                },
+                "id": {
+                  "description": "encrypted id of file",
+                  "type": "string"
+                },
+                "is_porn": {
+                  "type": "boolean"
+                },
+                "is_porn_by_uploader": {
+                  "type": "boolean"
+                },
+                "is_searchable": {
+                  "description": "When `false`, file will be hidden form public searchers.",
+                  "type": "boolean"
+                },
+                "malware_status": {
+                  "default": "unknown",
+                  "enum": [
+                    "unknown",
+                    "unwanted"
+                  ],
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "media_info": {
+                  "properties": {
+                    "array": {
+                      "description": "key:value array. Key defines size and format of thumbnail, value is a list of images.",
+                      "properties": {},
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                },
+                "media_info_default_index": {
+                  "description": "index of first image in slideshow. 0 is the first image from media_info",
+                  "type": "number"
+                },
+                "name": {
+                  "description": "name of the file",
+                  "type": "string"
+                },
+                "name_sanitized": {
+                  "description": "name of the file with bad words replaced",
+                  "type": "string"
+                },
+                "password_protected_archive": {
+                  "description": "IF the file is archive, AND that archive is password protected. This file can be downloaded.",
+                  "type": "boolean"
+                },
+                "password_protected_file": {
+                  "description": "You must know correct password to access the file detail or to download this file.",
+                  "type": "boolean"
+                },
+                "rating": {
+                  "description": "file rating (sum of thumbs up and thumbs down)",
+                  "type": "number"
+                },
+                "realm": {
+                  "default": "ulozto",
+                  "enum": [
+                    "ulozto",
+                    "pornfile"
+                  ],
+                  "type": "string"
+                },
+                "slug": {
+                  "description": "identificator used for other API calls affecting file. Slug may change when file is renamed. Old slug will keep working, but new slug will be issued by API calls.",
+                  "type": "string"
+                },
+                "upload_date": {
+                  "description": "File was uploaded on this date.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "url": {
+                  "type": "string"
+                },
+                "visibility": {
+                  "default": "public",
+                  "enum": [
+                    "public",
+                    "private"
+                  ],
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "slug",
+                "url",
+                "realm",
+                "name",
+                "name_sanitized",
+                "filesize",
+                "extension",
+                "is_porn",
+                "is_porn_by_uploader",
+                "rating",
+                "password_protected_archive",
+                "password_protected_file",
+                "media_info_default_index",
+                "visibility",
+                "malware_status",
+                "content_status",
+                "is_searchable",
+                "folder_id",
+                "content_type"
+              ],
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "`Unable to update file - wrong data submitted.`",
+            "examples": {
+              "application/json": {
+                "errors": [
+                  {
+                    "data_element": "name",
+                    "message": "Name cannot be empty."
+                  },
+                  {
+                    "data_element": "folder_id",
+                    "message": "File owner must own the folder too."
+                  },
+                  {
+                    "data_element": "visibility",
+                    "message": "Public visibility is forbidden for this file."
+                  }
+                ],
+                "message": "Unable to update file.",
+                "result": "error"
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Invalid X-Auth-Token provided , could not authorize your application.",
+            "examples": {
+              "application/json": {
+                "message": "Invalid authorization token.",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "tags": [
+          "File"
+        ],
+        "description": "Update file properties.\nAll properties are optional, every property present in request body will be changed.\nProperty set to `null` will be set to default value where possible.\nUpdating any property may affect other properties (e.g., changing `name` may change `url` and `realm`).",
+        "summary": "Update file"
+      }
+    },
+    "/v1/upload/batch/{batch_uuid}/commit": {
+      "put": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "cb15-46d3-8f5f-5125378a22c9 (string, required) - Upload batch unique ID",
+            "in": "path",
+            "name": "batch_uuid",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Either `public` or `private`",
+            "in": "query",
+            "name": "visibility",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Sets sets this searchable flag to all files currently in batch",
+            "in": "query",
+            "name": "is_searchable",
+            "required": true,
+            "type": "boolean"
+          },
+          {
+            "description": "To access user's upload batch, you need to identify yourself with his token",
+            "in": "query",
+            "name": "user_token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Commit succesfull",
+            "examples": {
+              "application/json": {
+                "after_upload_url": "/sem/nahrano/d5ec97a3",
+                "files": [
+                  {
+                    "is_searchable": false,
+                    "slug": "abcd/asdasd",
+                    "visibility": "public"
+                  }
+                ]
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "after_upload_url": {
+                  "description": "cb15-46d3-8f5f-5125378a22c9 (string, required)",
+                  "type": "string"
+                },
+                "files": {
+                  "items": {},
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Input data invalid",
+            "examples": {
+              "application/json": {
+                "message": "Unknown data received.",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "Invalid X-Auth-Token provided , could not authorize your application.",
+            "examples": {
+              "application/json": {
+                "message": "Invalid authorization token.",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          },
+          "403": {
+            "description": "Batch is not valid for edit.",
+            "examples": {
+              "application/json": {
+                "message": "Batch is not valid for edit.",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "Unknown batch_uuid",
+            "examples": {
+              "application/json": {
+                "message": "Unknown batch uuid.",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "tags": [
+          "Upload"
+        ],
+        "description": "",
+        "summary": "Upload batch commit"
+      }
+    },
+    "/v1/upload/batch/{batch_uuid}/file/{batch_file_id}": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "cb15-46d3-8f5f-5125378a22c9 (string, required) - Upload batch unique ID",
+            "in": "path",
+            "name": "batch_uuid",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "File ID in upload batch (i.e., ordinal number of file in upload batch)",
+            "in": "path",
+            "name": "batch_file_id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "size": 54646546,
+                "slug": "null",
+                "status": "done"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "size": {
+                  "description": "File size, available only when status is done",
+                  "type": "number"
+                },
+                "slug": {
+                  "description": "File slug, available only when status is done",
+                  "type": "string"
+                },
+                "status": {
+                  "description": "Always done",
+                  "enum": [
+                    "done"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "status",
+                "size"
+              ],
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "Invalid X-Auth-Token provided , could not authorize your application.",
+            "examples": {
+              "application/json": {
+                "message": "Invalid authorization token.",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "Unknown batch_uuid or batch_file_id or upload still in progress",
+            "examples": {
+              "application/json": {
+                "message": "batch_uuid or batch_file_id not found",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "tags": [
+          "Upload"
+        ],
+        "description": "",
+        "summary": "Get file upload status"
+      }
+    },
+    "/v1/upload/batch/{batch_uuid}/files": {
+      "put": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "cb15-46d3-8f5f-5125378a22c9 (string, required) - Upload batch unique ID",
+            "in": "path",
+            "name": "batch_uuid",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "To access user's upload batch, you need to identify yourself with his token",
+            "in": "query",
+            "name": "user_token",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "batch_files_ids": {
+                  "items": {},
+                  "type": "array"
+                }
+              },
+              "required": [
+                "batch_files_ids"
+              ],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Superfluous files in batch were deleted.",
+            "examples": {
+              "application/json": {
+                "deleted_batch_files_ids": []
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "deleted_batch_files_ids": {
+                  "items": {},
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "204": {
+            "description": "Batch contains exactly given files. No modification needed.",
+            "examples": {},
+            "headers": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "examples": {
+              "application/json": {
+                "message": "Invalid authorization token.",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "examples": {
+              "application/json": {
+                "message": "Unknown batch uuid.",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          },
+          "422": {
+            "description": "Some of given files are unknown. No modification was done.",
+            "examples": {
+              "application/json": {
+                "errors": {
+                  "unknown_batch_files_ids": [
+                    1,
+                    2,
+                    3
+                  ]
+                },
+                "message": "Unknown batch_files_ids found.",
+                "result": "error"
+              }
+            },
+            "headers": {}
+          }
+        },
+        "tags": [
+          "Upload"
+        ],
+        "description": "Expects list of files that should be present in upload batch. Unknown files will cause error. Every file not included in given list will be deleted.",
+        "summary": "Files in upload batch"
+      }
+    },
+    "/v1/user/folder/error-messages": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": [
+                {
+                  "code": 601,
+                  "message": "Valid visibilities are public and private"
+                }
+              ]
+            },
+            "headers": {},
+            "schema": {
+              "items": {},
+              "type": "array"
+            }
+          }
+        },
+        "tags": [
+          "Error Messages"
+        ],
+        "description": "",
+        "summary": "Get messages"
+      }
+    },
+    "/v1/user/{user_token}/folder/{folder_id}": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "User token of folder owner",
+            "in": "path",
+            "name": "user_token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Fetch specific page number\nDefault: 1\n",
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "description": "Limit the result set to <limit> items\nDefault: 20\n",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "description": "Sorting, one of [name; -name; created; -created; size; -size; extension; -extension]. This option may not be used without specifying `query`.\nDefault: name\n",
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "Return only files with names containing search_query",
+            "in": "query",
+            "name": "search_query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "Filter found files, value might be one of [video; audio; image; document]. If empty, search will return all filetypes.",
+            "in": "query",
+            "name": "filetype",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "If set to true, will include password protected files in the search results.\nDefault: true\n",
+            "in": "query",
+            "name": "include_password_protected",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "items": [
+                  {
+                    "attributes": {},
+                    "content_status": "normal",
+                    "content_type": "null",
+                    "description": "this could potentially be a rather\\r\\nlong description",
+                    "description_sanitized": "this could *** *** a rather\\r\\nlong description",
+                    "expire_download": "null",
+                    "expire_time": "2016-01-01",
+                    "extension": "pptx",
+                    "filesize": 158367932,
+                    "folder_id": 0,
+                    "format": {
+                      "duration": 296,
+                      "height": 200,
+                      "streamable": false,
+                      "width": 320
+                    },
+                    "id": "aYu7nBQ",
+                    "is_porn": false,
+                    "is_porn_by_uploader": false,
+                    "is_searchable": true,
+                    "malware_status": "unknown",
+                    "media_info": {
+                      "array": {}
+                    },
+                    "media_info_default_index": 4,
+                    "name": "Poznávačka rostlin.pptx",
+                    "name_sanitized": "Poznávačka ***.pptx",
+                    "password_protected_archive": false,
+                    "password_protected_file": false,
+                    "rating": 0,
+                    "realm": "ulozto",
+                    "slug": "!ksiXPSXP6",
+                    "upload_date": "2016-01-01",
+                    "url": "/!ksiXPSXP6/poznavacka-rostlin-pptx",
+                    "visibility": "public"
+                  }
+                ],
+                "metadata": {
+                  "items_count": "236",
+                  "limit": "20",
+                  "page": "1",
+                  "page_count": "12"
+                }
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "items": {
+                  "items": {},
+                  "type": "array"
+                },
+                "metadata": {
+                  "properties": {
+                    "items_count": {
+                      "type": "string"
+                    },
+                    "limit": {
+                      "type": "string"
+                    },
+                    "page": {
+                      "type": "string"
+                    },
+                    "page_count": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ],
+        "description": "Get all files in specific folder.",
+        "summary": "Files in folder"
+      }
+    },
+    "/v1/user/{user_token}/folders": {
+      "put": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "parent_folder_id": {
+                  "description": "0 for root folder",
+                  "type": "number"
+                },
+                "password": {
+                  "description": "no password when null",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "visibility": {
+                  "default": "public",
+                  "enum": [
+                    "public",
+                    "private"
+                  ],
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "name"
+              ],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "examples": {
+              "application/json": {
+                "children": [
+                  {}
+                ],
+                "id": 25792,
+                "is_password_protected": true,
+                "name": "My very own folder",
+                "name_sanitized": "\"My *** folder\"",
+                "parent_folder_id": 0,
+                "public_url: `/soubory/user_name/my": "",
+                "type": "normal",
+                "visibility": "public"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "children": {
+                  "description": "Children folders are present when tree format is requested.",
+                  "items": {},
+                  "type": "array"
+                },
+                "id": {
+                  "description": "Folder id (`0` is root folder for each user)",
+                  "type": "number"
+                },
+                "is_password_protected": {
+                  "description": "Public folder, other users need to provide password to see contents of this folder.",
+                  "type": "boolean"
+                },
+                "name": {
+                  "description": "Folder's name. Root folder is always named `root`, you are advised to translate this name to something that suits your application.",
+                  "type": "string"
+                },
+                "name_sanitized": {
+                  "description": "Folder's namen with bad words replaced.",
+                  "type": "string"
+                },
+                "parent_folder_id": {
+                  "description": "Parent folder id",
+                  "type": "number"
+                },
+                "public_url: `/soubory/user_name/my": {
+                  "description": "very-own-folder` (string, required) - Url to folder, available only for public folders",
+                  "type": "string"
+                },
+                "type": {
+                  "default": "normal",
+                  "description": "always normal, other types are created after user registration",
+                  "enum": [
+                    "root",
+                    "gallery",
+                    "normal",
+                    "videoshare",
+                    "favorites",
+                    "documents",
+                    "audios",
+                    "videos"
+                  ],
+                  "type": "string"
+                },
+                "visibility": {
+                  "default": "public",
+                  "enum": [
+                    "public",
+                    "private"
+                  ],
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "visibility",
+                "type",
+                "parent_folder_id"
+              ],
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "`Unable to create folder - wrong data submitted.`",
+            "examples": {
+              "application/json": {
+                "errors": [
+                  {
+                    "data_element": "name",
+                    "message": "Name cannot be empty."
+                  },
+                  {
+                    "data_element": "name",
+                    "message": "Name is too long."
+                  },
+                  {
+                    "data_element": "visibility",
+                    "message": "Allowed values are public and private."
+                  },
+                  {
+                    "data_element": "parent_folder_id",
+                    "message": "Parent folder does not exist."
+                  },
+                  {
+                    "data_element": "parent_folder_id",
+                    "message": "You must be owner of parent folder."
+                  }
+                ],
+                "message": "Unable to create folder.",
+                "result": "error"
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Invalid X-Auth-Token provided , could not authorize your application.",
+            "examples": {
+              "application/json": {
+                "message": "Invalid authorization token.",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          },
+          "409": {
+            "description": "Folder with this name already exists. Use different name.",
+            "examples": {
+              "application/json": {
+                "message": "This folder already exists",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ],
+        "description": "Validation error messages are returned in language set by `Accept-Language` header.\n\nCreates new folder for current user.",
+        "summary": "Create new folder"
+      }
+    },
+    "/v1/user/{user_token}/folders/{folder_ids}": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Identification of an user, obtained through /session entry point",
+            "in": "path",
+            "name": "user_token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "If set to `true`, folder entities will be returned in the tree-like structure, with each folder entity containing its children in the `children` field.",
+            "in": "query",
+            "name": "tree",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "default": "info",
+            "description": "Format of the response. For correct response format, check one of two possible 200 OK results below.",
+            "enum": [
+              "info",
+              "size"
+            ],
+            "in": "query",
+            "name": "format",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "List of comma-separated folder ids. If not present, we are returning all folders. Cannot be combined with `tree` argument.",
+            "in": "path",
+            "name": "folder_ids",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response for parameter format = `size`",
+            "examples": {
+              "application/json": {
+                "items": [
+                  {
+                    "children": [
+                      {}
+                    ],
+                    "files_count": "",
+                    "files_count_recursive": "",
+                    "files_size": 8340213,
+                    "files_size_recursive": "",
+                    "id": 25792,
+                    "parent_folder_id": 0
+                  }
+                ]
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "items": {
+                  "items": {},
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Invalid parameter value",
+            "examples": {
+              "application/json": {
+                "message": "Invalid tree parameter value.",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "Invalid X-Auth-Token provided , could not authorize your application.",
+            "examples": {
+              "application/json": {
+                "message": "Invalid authorization token.",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ],
+        "description": "List of user's folders. Folders are always ordered by name.",
+        "summary": "Get folders"
+      }
+    },
+    "/v2/files/{slug}/comments": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Slug from file listing API calls. Slug may change when file is renamed. Old slug will keep working, but new slug will be issued by API calls.",
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Paging parameter\nDefault: 1\n",
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "description": "Paging parameter - size of returned page\nDefault: 20\n",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "items": [
+                  {
+                    "author": {
+                      "avatar_url": "https://avatar.uloz.to/u/avatar/j/johndoe.jpg",
+                      "id": 876234,
+                      "login": "Johndoe"
+                    },
+                    "date": "2017-12-11T14:46:31+01:00",
+                    "message": "lorem ipsum dolor sit amet",
+                    "rating": 1
+                  }
+                ],
+                "metadata": {
+                  "items_count": "236",
+                  "limit": "20",
+                  "page": "1",
+                  "page_count": "12"
+                }
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "items": {
+                  "items": {},
+                  "type": "array"
+                },
+                "metadata": {
+                  "properties": {
+                    "items_count": {
+                      "type": "string"
+                    },
+                    "limit": {
+                      "type": "string"
+                    },
+                    "page": {
+                      "type": "string"
+                    },
+                    "page_count": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "Invalid X-Auth-Token provided , could not authorize your application.",
+            "examples": {
+              "application/json": {
+                "message": "Invalid authorization token.",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "Requested response does not exist. Accessing nonexistent page.",
+            "examples": {
+              "application/json": {
+                "items_count": 8,
+                "message": "Requested page index is out of range.",
+                "page_count": 1,
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "items_count": {
+                  "type": "number"
+                },
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "page_count": {
+                  "type": "number"
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message",
+                "page_count",
+                "items_count"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "tags": [
+          "File"
+        ],
+        "description": "Fetch list of file comments",
+        "summary": "Get comments list"
+      }
+    },
+    "/v2/files/{slug}/download/{type}": {
+      "post": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "",
+            "enum": [
+              "free"
+            ],
+            "in": "path",
+            "name": "type",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "",
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "To access user's private file, you need to identify yourself with this token",
+            "in": "query",
+            "name": "user_token",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "Token you received after validation of captcha input. Needed",
+            "in": "query",
+            "name": "captcha_token",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "To download password protected file.",
+            "in": "query",
+            "name": "password",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "Android Device ID for example. Maximum 40 characters length.",
+            "in": "query",
+            "name": "device_id",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "examples": {
+              "application/json": {
+                "hash": "231de4af3f255e0d6b797327ecc2a7b9",
+                "link": "https://dla.uloz.to/"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "hash": {
+                  "description": "md5 hash to verify downloaded file",
+                  "type": "string"
+                },
+                "link": {
+                  "description": "download link",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "hash",
+                "link"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "tags": [
+          "File"
+        ],
+        "description": "",
+        "summary": "Create download link"
+      }
+    },
+    "/v2/files/{slug}/favorite": {
+      "post": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "examples": {
+              "application/json": {
+                "attributes": {},
+                "content_status": "normal",
+                "content_type": "null",
+                "description": "this could potentially be a rather\\r\\nlong description",
+                "description_sanitized": "this could *** *** a rather\\r\\nlong description",
+                "expire_download": "null",
+                "expire_time": "2016-01-01",
+                "extension": "pptx",
+                "filesize": 158367932,
+                "folder_id": 0,
+                "format": {
+                  "duration": 296,
+                  "height": 200,
+                  "streamable": false,
+                  "width": 320
+                },
+                "id": "aYu7nBQ",
+                "is_porn": false,
+                "is_porn_by_uploader": false,
+                "is_searchable": true,
+                "malware_status": "unknown",
+                "media_info": {
+                  "array": {}
+                },
+                "media_info_default_index": 4,
+                "name": "Poznávačka rostlin.pptx",
+                "name_sanitized": "Poznávačka ***.pptx",
+                "password_protected_archive": false,
+                "password_protected_file": false,
+                "rating": 0,
+                "realm": "ulozto",
+                "slug": "!ksiXPSXP6",
+                "upload_date": "2016-01-01",
+                "url": "/!ksiXPSXP6/poznavacka-rostlin-pptx",
+                "visibility": "public"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "attributes": {
+                  "properties": {
+                    "archive_files": {},
+                    "audio_data": {},
+                    "video_data": {}
+                  },
+                  "type": "object"
+                },
+                "content_status": {
+                  "default": "normal",
+                  "enum": [
+                    "normal",
+                    "limited"
+                  ],
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "content_type": {
+                  "default": "null",
+                  "enum": [
+                    "null",
+                    "video",
+                    "audio",
+                    "image",
+                    "archive",
+                    "document"
+                  ],
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "description": {
+                  "description": "File description",
+                  "type": "string"
+                },
+                "description_sanitized": {
+                  "description": "File description with bad words replaced",
+                  "type": "string"
+                },
+                "expire_download": {
+                  "description": "When not `null`, file is download resticted up to this number.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "expire_time": {
+                  "description": "When not `null`, file is download resticted up to this day.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "extension": {
+                  "description": "file extension",
+                  "type": "string"
+                },
+                "filesize": {
+                  "description": "filesize in bytes",
+                  "type": "number"
+                },
+                "folder_id": {
+                  "description": "ID of folder containing this file. `0` is root folder for every user and only possible folder for anonymous files.",
+                  "type": "number"
+                },
+                "format": {
+                  "properties": {
+                    "duration": {
+                      "description": "Length of the video/audio in seconds",
+                      "type": "number"
+                    },
+                    "height": {
+                      "description": "If available, height of video/image",
+                      "type": "number"
+                    },
+                    "streamable": {
+                      "description": "`true` for streamable videofile",
+                      "type": "boolean"
+                    },
+                    "width": {
+                      "description": "If available, width of video/image",
+                      "type": "number"
+                    }
+                  },
+                  "type": "object"
+                },
+                "id": {
+                  "description": "encrypted id of file",
+                  "type": "string"
+                },
+                "is_porn": {
+                  "type": "boolean"
+                },
+                "is_porn_by_uploader": {
+                  "type": "boolean"
+                },
+                "is_searchable": {
+                  "description": "When `false`, file will be hidden form public searchers.",
+                  "type": "boolean"
+                },
+                "malware_status": {
+                  "default": "unknown",
+                  "enum": [
+                    "unknown",
+                    "unwanted"
+                  ],
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "media_info": {
+                  "properties": {
+                    "array": {
+                      "description": "key:value array. Key defines size and format of thumbnail, value is a list of images.",
+                      "properties": {},
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                },
+                "media_info_default_index": {
+                  "description": "index of first image in slideshow. 0 is the first image from media_info",
+                  "type": "number"
+                },
+                "name": {
+                  "description": "name of the file",
+                  "type": "string"
+                },
+                "name_sanitized": {
+                  "description": "name of the file with bad words replaced",
+                  "type": "string"
+                },
+                "password_protected_archive": {
+                  "description": "IF the file is archive, AND that archive is password protected. This file can be downloaded.",
+                  "type": "boolean"
+                },
+                "password_protected_file": {
+                  "description": "You must know correct password to access the file detail or to download this file.",
+                  "type": "boolean"
+                },
+                "rating": {
+                  "description": "file rating (sum of thumbs up and thumbs down)",
+                  "type": "number"
+                },
+                "realm": {
+                  "default": "ulozto",
+                  "enum": [
+                    "ulozto",
+                    "pornfile"
+                  ],
+                  "type": "string"
+                },
+                "slug": {
+                  "description": "identificator used for other API calls affecting file. Slug may change when file is renamed. Old slug will keep working, but new slug will be issued by API calls.",
+                  "type": "string"
+                },
+                "upload_date": {
+                  "description": "File was uploaded on this date.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "url": {
+                  "type": "string"
+                },
+                "visibility": {
+                  "default": "public",
+                  "enum": [
+                    "public",
+                    "private"
+                  ],
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "slug",
+                "url",
+                "realm",
+                "name",
+                "name_sanitized",
+                "filesize",
+                "extension",
+                "is_porn",
+                "is_porn_by_uploader",
+                "rating",
+                "password_protected_archive",
+                "password_protected_file",
+                "media_info_default_index",
+                "visibility",
+                "malware_status",
+                "content_status",
+                "is_searchable",
+                "folder_id",
+                "content_type"
+              ],
+              "type": "object"
+            }
+          },
+          "409": {
+            "description": "When file is in favorite folder already.",
+            "examples": {
+              "application/json": {
+                "message": "File is already in favourites.",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "tags": [
+          "File"
+        ],
+        "description": "",
+        "summary": "Favorite file"
+      }
+    },
+    "/v2/files/{slug}/parameters": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "archive_files": [
+                  {
+                    "name": "Screen Shot 2016-11-11 at 14.47.12.png",
+                    "password_protected": false,
+                    "size": 459328
+                  }
+                ],
+                "content_type": "null",
+                "id": "aYu7nBQ",
+                "media_info": {
+                  "audio_bitrate": 128000,
+                  "audio_channels": 2,
+                  "audio_codec": "MPEG",
+                  "audio_format": "MPEG Audio",
+                  "duration": 2547,
+                  "height": 352,
+                  "languages": [],
+                  "pixel_aspect": 1,
+                  "subtitles": [],
+                  "video_bitrate": 990074,
+                  "video_codec": "XviD",
+                  "video_format": "MPEG",
+                  "video_framerate": 23.976,
+                  "width": 624
+                },
+                "slug": "!ksiXPSXP6"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "archive_files": {
+                  "items": {},
+                  "type": "array"
+                },
+                "content_type": {
+                  "default": "null",
+                  "enum": [
+                    "null",
+                    "video",
+                    "audio",
+                    "image",
+                    "archive",
+                    "document"
+                  ],
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "id": {
+                  "description": "encrypted id of file",
+                  "type": "string"
+                },
+                "media_info": {
+                  "properties": {
+                    "audio_bitrate": {
+                      "description": "audio bitrate in kbps",
+                      "type": "number"
+                    },
+                    "audio_channels": {
+                      "description": "number of audio channels",
+                      "type": "number"
+                    },
+                    "audio_codec": {
+                      "description": "1 Audio layer 3 (string, optional)",
+                      "type": "string"
+                    },
+                    "audio_format": {
+                      "type": "string"
+                    },
+                    "duration": {
+                      "description": "video / audio duration in seconds",
+                      "type": "number"
+                    },
+                    "height": {
+                      "description": "video / image height in pixels",
+                      "type": "number"
+                    },
+                    "languages": {
+                      "description": "list of available languages inside container",
+                      "items": {},
+                      "type": "array"
+                    },
+                    "pixel_aspect": {
+                      "description": "pixel aspect ratio",
+                      "type": "number"
+                    },
+                    "subtitles": {
+                      "description": "list of available subtitles inside container",
+                      "items": {},
+                      "type": "array"
+                    },
+                    "video_bitrate": {
+                      "description": "video bitrate in kbps",
+                      "type": "number"
+                    },
+                    "video_codec": {
+                      "type": "string"
+                    },
+                    "video_format": {
+                      "description": "4 Visual (string, optional)",
+                      "type": "string"
+                    },
+                    "video_framerate": {
+                      "description": "framerate in frames per second (FPS)",
+                      "type": "number"
+                    },
+                    "width": {
+                      "description": "video / image width in pixels",
+                      "type": "number"
+                    }
+                  },
+                  "type": "object"
+                },
+                "slug": {
+                  "description": "identificator used for other API calls affecting file. Slug may change when file is renamed. Old slug will keep working, but new slug will be issued by API calls.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "slug",
+                "content_type",
+                "media_info",
+                "archive_files"
+              ],
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "Invalid X-Auth-Token provided , could not authorize your application.",
+            "examples": {
+              "application/json": {
+                "message": "Invalid authorization token.",
+                "result": "error"
+              }
+            },
+            "headers": {},
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "result": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result",
+                "message"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "tags": [
+          "File"
+        ],
+        "description": "Returns additional information about multimedia files and archives.",
+        "summary": "Get parameters"
+      }
+    }
+  },
+  "definitions": {
+    "API Root": {},
+    "Aplication version": {},
+    "Archive Item entity": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "password_protected": {
+          "type": "boolean"
+        },
+        "size": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "name",
+        "size",
+        "password_protected"
+      ],
+      "type": "object"
+    },
+    "Authentication": {},
+    "Basic user info": {},
+    "Bulk commands": {},
+    "Bulk http header item": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "value"
+      ],
+      "type": "object"
+    },
+    "Bulk request entry": {
+      "properties": {
+        "body": {
+          "type": "string"
+        },
+        "headers": {
+          "items": {},
+          "type": "array"
+        },
+        "method": {
+          "type": "enum"
+        },
+        "name": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "method",
+        "url"
+      ],
+      "type": "object"
+    },
+    "Bulk response entry": {
+      "properties": {
+        "body": {
+          "type": "string"
+        },
+        "code": {
+          "type": "number"
+        },
+        "headers": {
+          "items": {},
+          "type": "array"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "code"
+      ],
+      "type": "object"
+    },
+    "Captcha": {},
+    "Captcha entity": {
+      "properties": {
+        "data": {
+          "type": "object"
+        },
+        "id": {
+          "type": "string"
+        },
+        "image": {
+          "type": "string"
+        },
+        "sound": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "type": "object"
+    },
+    "Captcha token entity": {
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "token"
+      ],
+      "type": "object"
+    },
+    "Comment author": {
+      "properties": {
+        "avatar_url": {
+          "type": "string"
+        },
+        "id": {
+          "type": "number"
+        },
+        "login": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "login",
+        "id"
+      ],
+      "type": "object"
+    },
+    "Comments": {},
+    "Detail": {},
+    "Download link": {},
+    "Download link entity": {
+      "properties": {
+        "hash": {
+          "type": "string"
+        },
+        "link": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "hash",
+        "link"
+      ],
+      "type": "object"
+    },
+    "Error message": {
+      "properties": {
+        "code": {
+          "type": "number"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "Error response": {
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "result": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "result",
+        "message"
+      ],
+      "type": "object"
+    },
+    "Favorite": {},
+    "File": {},
+    "File entity": {
+      "properties": {
+        "attributes": {
+          "type": "object"
+        },
+        "content_status": {
+          "type": "enum"
+        },
+        "content_type": {
+          "type": "enum"
+        },
+        "description": {
+          "type": "string"
+        },
+        "description_sanitized": {
+          "type": "string"
+        },
+        "expire_download": {
+          "type": "string"
+        },
+        "expire_time": {
+          "type": "string"
+        },
+        "extension": {
+          "type": "string"
+        },
+        "filesize": {
+          "type": "number"
+        },
+        "folder_id": {
+          "type": "number"
+        },
+        "format": {
+          "type": "object"
+        },
+        "id": {
+          "type": "string"
+        },
+        "is_porn": {
+          "type": "boolean"
+        },
+        "is_porn_by_uploader": {
+          "type": "boolean"
+        },
+        "is_searchable": {
+          "type": "boolean"
+        },
+        "malware_status": {
+          "type": "enum"
+        },
+        "media_info": {
+          "type": "object"
+        },
+        "media_info_default_index": {
+          "type": "number"
+        },
+        "name": {
+          "type": "string"
+        },
+        "name_sanitized": {
+          "type": "string"
+        },
+        "password_protected_archive": {
+          "type": "boolean"
+        },
+        "password_protected_file": {
+          "type": "boolean"
+        },
+        "rating": {
+          "type": "number"
+        },
+        "realm": {
+          "type": "enum"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "upload_date": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "visibility": {
+          "type": "enum"
+        }
+      },
+      "required": [
+        "id",
+        "slug",
+        "url",
+        "realm",
+        "name",
+        "name_sanitized",
+        "filesize",
+        "extension",
+        "is_porn",
+        "is_porn_by_uploader",
+        "rating",
+        "password_protected_archive",
+        "password_protected_file",
+        "media_info_default_index",
+        "visibility",
+        "malware_status",
+        "content_status",
+        "is_searchable",
+        "folder_id",
+        "content_type"
+      ],
+      "type": "object"
+    },
+    "File parameters entity": {
+      "properties": {
+        "archive_files": {
+          "items": {},
+          "type": "array"
+        },
+        "content_type": {
+          "type": "enum"
+        },
+        "id": {
+          "type": "string"
+        },
+        "media_info": {
+          "type": "object"
+        },
+        "slug": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "slug",
+        "content_type",
+        "media_info",
+        "archive_files"
+      ],
+      "type": "object"
+    },
+    "Files in upload batch": {},
+    "Files in user's folder": {},
+    "Folder": {},
+    "Folder entity info": {
+      "properties": {
+        "children": {
+          "items": {},
+          "type": "array"
+        },
+        "id": {
+          "type": "number"
+        },
+        "is_password_protected": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        },
+        "name_sanitized": {
+          "type": "string"
+        },
+        "parent_folder_id": {
+          "type": "number"
+        },
+        "public_url: `/soubory/user_name/my": {
+          "type": "string"
+        },
+        "type": {
+          "type": "enum"
+        },
+        "visibility": {
+          "type": "enum"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "visibility",
+        "type",
+        "parent_folder_id"
+      ],
+      "type": "object"
+    },
+    "Folder entity size": {
+      "properties": {
+        "children": {
+          "items": {},
+          "type": "array"
+        },
+        "files_count": {
+          "type": "string"
+        },
+        "files_count_recursive": {
+          "type": "string"
+        },
+        "files_size": {
+          "type": "number"
+        },
+        "files_size_recursive": {
+          "type": "string"
+        },
+        "id": {
+          "type": "number"
+        },
+        "parent_folder_id": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "parent_folder_id",
+        "files_size"
+      ],
+      "type": "object"
+    },
+    "Parameters": {},
+    "Search": {},
+    "Successful response": {
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "result": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "result",
+        "message"
+      ],
+      "type": "object"
+    },
+    "Update file entity": {
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "expire_download": {
+          "type": "number"
+        },
+        "expire_time": {
+          "type": "string"
+        },
+        "folder_id": {
+          "type": "number"
+        },
+        "is_porn": {
+          "type": "boolean"
+        },
+        "is_searchable": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "visibility": {
+          "type": "enum"
+        }
+      },
+      "required": [
+        "is_porn"
+      ],
+      "type": "object"
+    },
+    "Upload batch commit": {},
+    "Upload file entity": {
+      "properties": {
+        "is_searchable": {
+          "type": "boolean"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "visibility": {
+          "type": "enum"
+        }
+      },
+      "required": [
+        "slug",
+        "visibility",
+        "is_searchable"
+      ],
+      "type": "object"
+    },
+    "Upload file progress": {},
+    "User comment": {
+      "properties": {
+        "author": {
+          "type": "Comment author"
+        },
+        "date": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "rating": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "date",
+        "message",
+        "rating"
+      ],
+      "type": "object"
+    },
+    "User sessions": {},
+    "User's folders": {},
+    "Validate captcha": {},
+    "Validate captcha entity": {
+      "properties": {
+        "data": {
+          "type": "object"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "type": "object"
+    }
+  }
+}
