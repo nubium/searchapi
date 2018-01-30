@@ -239,7 +239,7 @@ Get the basic information for an account.
 
 + Parameters
     + `user_token`: "asdiu328reewhfikw" (string) - Identification of an user, obtained through /session entry point
-    + `tree`: false (bool, optional) - If set to `true`, folder entities will be returned in the tree-like structure, with each folder entity containing its children in the `children` field.
+    + `tree`: false (boolean, optional) - If set to `true`, folder entities will be returned in the tree-like structure, with each folder entity containing its children in the `children` field.
     + `format`: info (enum, optional) - Format of the response. For correct response format, check one of two possible 200 OK results below.
         + Default: info
         + Members
@@ -1061,6 +1061,7 @@ Accepted languages:
     + Members
         + normal
         + limited
++ available_for_download: true (boolean, required) - Whether the file is available at our CDN or not.
 + is_searchable: true (boolean, required) - When `false`, file will be hidden form public searchers.
 + expire_download: null (string, nullable, optional) - When not `null`, file is download resticted up to this number.
 + expire_time: `2016-01-01` (string, nullable, optional) - When not `null`, file is download resticted up to this day.
