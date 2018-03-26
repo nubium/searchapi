@@ -861,26 +861,26 @@ DEPRECATED - Returns upload progress of file.
             X-Auth-Token: 3284hedgf237ruewhfvgi2378 (string, required)
             X-User-Token: 83jhf94l2jk34 (string, optional) - Authorize `user`, see [User session]
 
-    + Parameters
+    + Attributes
         + did: ulozto (enum, required) - Source site requesting the upload
             + Members
                 + ulozto
                 + pornfile
         + user: `mackousko` (string, optional) - Login name of uploading user - you also have to authorize the user by providing X-Auth-Token in the header
             + Default: null
-        + captcha_token: 4j45je8ckrd38 (string, optional) - Provide this value ONLY if you had to be validated by captcha. For more information see Response 401
+        + `captcha_token`: 4j45je8ckrd38 (string, optional) - Provide this value ONLY if you had to be validated by captcha. For more information see Response 401
             + Default: null
-        + batch_id: `d5ec97a3-cb15-46d3-8f5f-5125378a22c9` (string, optional) - If provided, file will be uploaded as part of provided batch. If null, new batch will be created and its batch_id returned.
+        + `batch_id`: `d5ec97a3-cb15-46d3-8f5f-5125378a22c9` (string, optional) - If provided, file will be uploaded as part of provided batch. If null, new batch will be created and its batch_id returned.
 
 + Response 200
     + Attributes
         + upload_url (string, required) - The url where the upload should POST the file
-        + upload_params (object) - This should be taken "as-is" and posted as parameters to upload_url. Content of this list may change without further notice, so be prepared for this eventuality.
+        + `upload_params` (object) - This should be taken "as-is" and posted as parameters to upload_url. Content of this list may change without further notice, so be prepared for this eventuality.
             + token
             + uid
             + vt
             + a
-        + batch_id: `d5ec97a3-cb15-46d3-8f5f-5125378a22c9` (string, required) - The id of batch the file will be uploaded to.
+        + `batch_id`: `d5ec97a3-cb15-46d3-8f5f-5125378a22c9` (string, required) - The id of batch the file will be uploaded to.
 
 + Response 401
 
@@ -891,7 +891,7 @@ DEPRECATED - Returns upload progress of file.
                 WWW-Authenticate: X-Captcha-Validation
 
     + Attributes
-        + captcha_token: aw42de2gt4f (string, required)
+        + `captcha_token`: aw42de2gt4f (string, required)
 
 
 # Group Search
