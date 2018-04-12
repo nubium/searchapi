@@ -876,13 +876,7 @@ This entrypoint is not protected by X-Checksum security signature. You do not ha
 
 + Response 200
     + Attributes
-        + upload_url (string, required) - The url where the upload should POST the file
-        + upload_url_base (string, required) - Use this url in case you want to control the upload parameters yorself.
-        + `upload_params` (object) - This should be taken "as-is" and posted as parameters to upload_url_base. Content of this list may change without further notice, so be prepared for this eventuality.
-            + token
-            + uid
-            + vt
-            + a
+        + upload_url (string, required) - The url where the upload should POST the file. It is possible to remove the GET url parameters and send them as part of POST.
         + `batch_id`: `d5ec97a3-cb15-46d3-8f5f-5125378a22c9` (string, required) - The id of batch the file will be uploaded to. You should provide this batch to following upload calls, so that all the files owned by the same user are uploaded in the single batch.
 
 + Response 401
