@@ -407,6 +407,35 @@ Get all files in specific folder.
 
 # Group Captcha
 
+## HTML captcha [/v2/captcha/{captcha_token}/]
+
++ Parameters
+    + captcha_token: `2c628b89-a989-4abc-9c31-9d7525bdf2b1:1` (required) - Token you received as denied response at original endpoint.
+
+### Get captcha status [GET]
+
++ Response 200 (application/json)
+
+    + Attributes
+        + verified: false (required, boolean)
+
+## HTML captcha URL [/v2/captcha/{captcha_token}/url]
+
++ Parameters
+    + captcha_token: `2c628b89-a989-4abc-9c31-9d7525bdf2b1:1` (required) - Token you received as denied response at original endpoint.
+
+### Create captcha URL [POST]
+
++ Request (application/json)
+
+    + Attributes
+        + success_url: `myapp://example.com` (optional) - User will be redirected to this URL after successful captcha validation.
+
++ Response 201 (application/json)
+
+    + Attributes
+        + url: `https://auth.uloz.to/html/captcha?captcha_token=2c628b89-a989-4abc-9c31-9d7525bdf2b1:1` (string)
+
 ## Captcha [/v1/captcha/{?user_token}]
 
 + Parameters
