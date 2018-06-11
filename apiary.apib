@@ -873,11 +873,14 @@ This entrypoint is not protected by X-Checksum security signature. You do not ha
         + `captcha_token`: 4j45je8ckrd38 (string, optional) - Provide this value ONLY if you had to be validated by captcha. For more information see Response 401
             + Default: null
         + `batch_id`: `d5ec97a3-cb15-46d3-8f5f-5125378a22c9` (string, optional) - If provided, file will be uploaded as part of provided batch. If null, new batch will be created and its batch_id returned.
+        + `force_captcha`: true (boolean, optional) - By setting this flag you can force the endpoint to require the captcha validation. This flag is meant only for debug purposes as there is no meaningful reason
 
 + Response 200
     + Attributes
-        + upload_url (string, required) - The url where the upload should POST the file. It is possible to remove the GET url parameters and send them as part of POST.
+        + `upload_url` (string, required) - The url where the upload should POST the file. It is possible to remove the GET url parameters and send them as part of POST.
         + `batch_id`: `d5ec97a3-cb15-46d3-8f5f-5125378a22c9` (string, required) - The id of batch the file will be uploaded to. You should provide this batch to following upload calls, so that all the files owned by the same user are uploaded in the single batch.
+        + `validity_interval`: 172800 (number, required) - Time interval in seconds until the upload link expires
+        + `valid_until`: `2018-06-11T16:43:44+02:00` (string, required) - Time when the upload link expires
 
 + Response 401
 
