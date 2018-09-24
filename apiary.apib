@@ -429,7 +429,9 @@ Get all files in specific folder.
 + Request (application/json)
 
     + Attributes
-        + success_url: `myapp://example.com` (optional) - User will be redirected to this URL after successful captcha validation.
+        + success_url: `myapp://example.com/success` (optional) - User will be redirected to this URL after successful captcha validation.
+        + cancel_url: `myapp://example.com/cancel` (optional) - User will be redirected to this URL if he cancels captcha validation.
+        + error_url: `myapp://example.com/error` (optional) - User will be redirected to this URL in case of error (e.g. expired token).
 
 + Response 201 (application/json)
 
