@@ -403,7 +403,7 @@ Get all files in specific folder.
             + limit: 20
             + page_count: 12
             + items_count: 236
-        + items (array[File entity])
+        + items (array[Private file entity])
 
 # Group HTML Captcha v2
 
@@ -511,7 +511,7 @@ Returns everything we know about file.
             X-Auth-Token: 3284hedgf237ruewhfvgi2378
 
 + Response 200 (application/json)
-    + Attributes (File entity)
+    + Attributes (Public file entity)
 
 + Response 401 (application/json)
 
@@ -540,7 +540,7 @@ Updating any property may affect other properties (e.g., changing `name` may cha
     + Attributes (Update file entity)
 
 + Response 200 (application/json)
-    + Attributes (File entity)
+    + Attributes (Public file entity)
 
 + Response 401 (application/json)
 
@@ -667,7 +667,7 @@ New file is created when you favorite an existing file. The new file is returned
 
             Location: https://apis.uloz.to/!slug/favorited-file
 
-    + Attributes (File entity)
+    + Attributes (Public file entity)
 
 + Response 409 (application/json)
 
@@ -1005,8 +1005,8 @@ Perform search request. Response consists of two parts
             + page_count: 12
             + items_count: 236
         + items (object)
-            + exact (array[File entity])
-            + partial (array[File entity])
+            + exact (array[Public file entity])
+            + partial (array[Public file entity])
 
 + Response 401 (application/json)
 
@@ -1108,7 +1108,11 @@ Accepted languages:
 
 # Data structures
 
-## File entity (object)
+## Public file entity (Private file entity)
+## Properties
++ name_sanitized: `Poznávačka ***.pptx` (string, required) - name of the file with bad words replaced
+
+## Private file entity (object)
 ## Properties
 + id: aYu7nBQ (string, required) - encrypted id of file
 + slug: !ksiXPSXP6 (string, required) - identificator used for other API calls affecting file. Slug may change when file is renamed. Old slug will keep working, but new slug will be issued by API calls.
@@ -1119,7 +1123,6 @@ Accepted languages:
         + ulozto
         + pornfile
 + name: Poznávačka rostlin.pptx (string, required) - name of the file
-+ name_sanitized: `Poznávačka ***.pptx` (string, required) - name of the file with bad words replaced
 + description: `this could potentially be a rather\r\nlong description` (string, optional) - File description
 + description_sanitized: `this could *** *** a rather\r\nlong description` (string, optional) - File description with bad words replaced
 + filesize: 158367932 (number, required) - filesize in bytes
@@ -1238,7 +1241,6 @@ Accepted languages:
 ## Properties
 + id: 25792 (number, required) - Folder id (`0` is root folder for each user)
 + name: My very own folder (string, required) - Folder's name. Root folder is always named `root`, you are advised to translate this name to something that suits your application.
-+ name_sanitized: `"My *** folder"` (string) - Folder's namen with bad words replaced.
 + visibility (enum[string], default, nullable, required)
     + Default: public
     + Members
