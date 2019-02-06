@@ -10,19 +10,19 @@ Below you will find a current list of the available methods on our API.
 Security headers used thoughout the API and their description.
 
 ## X-Auth-Token
-This header is issued for every application. Each application should have exactly one, unique auth token. This is basically an **API key**.
+This header is issued for every application. Each application should have exactly one, unique auth token. This is basically an **API key**. Failure to provide correct X-Auth-Token will result in error 401 with header "WWW-Authenticate: X-Auth-Token".
 
 ## X-Checksum
-Security checksum to sign your request with, assuring API that request was not tampered with.
+Security checksum to sign your request with, assuring API that request was not tampered with.  Failure to provide correct X-Auth-Token will result in error 401 with header "WWW-Authenticate: X-Auth-Token". Yeah, this might be slighly confusing with previous case, sorry for that.
 
 <a name="user_token"></a>
 ## user_token
-User token is used to prove to API that your application has access to user's account. User token is obtained by [validating login information](#sessions).
+User token is used to prove to API that your application has access to user's account. User token is obtained by [validating login information](#sessions).  Failure to provide correct user_token (can be caused by simple user_token expiration) will result in error 401 with header "WWW-Authenticate: user_token".
 
 
 # Content types
 
-The Ulož.to API currently supports both JSON and XML. JSON is prefered and you can choose between xml and json using `Accept` header.
+The Ulož.to API currently supports both JSON and XML. JSON is prefered and you can choose between xml and json using `Accept` header. We currently actively support only json versions of endpoints, thus XML feed may not work correctly for all endpoints.
 
 # Group Root
 
